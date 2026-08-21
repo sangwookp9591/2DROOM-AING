@@ -1,0 +1,206 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=IBM+Plex+Sans+KR:wght@300;400;600&display=swap">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #F6F4EE; font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', sans-serif; }
+    a { color: #2E2A6B; } a:hover { color: #5A54B0; }
+    .serif { font-family: 'Gowun Batang', 'Apple SD Gothic Neo', serif; }
+  </style>
+</helmet>
+
+<div style="width: 1080px; height: 880px; background: #F6F4EE; color: #24223F; display: flex; flex-direction: column;">
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding: 30px 36px 16px 36px; border-bottom: 1px solid #C4BFB2;">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.16em; color: #8A8574;">방 향 &nbsp;B</div>
+      <div class="serif" style="font-size: 40px; font-weight: 700; line-height: 1;">에디토리얼 일러스트</div>
+    </div>
+    <div style="font-size: 13px; font-weight: 300; line-height: 1.7; color: #55524A; max-width: 420px; text-align: right;">
+      잡지에 실린 단면도처럼 한 장으로 이어 그립니다. 그림자 대신 빗금으로 두께를 주고,
+      지시선이 사물의 이름을 대신 말합니다.
+    </div>
+  </div>
+
+  <div style="padding: 18px 36px 0 36px;">
+   <div style="position: relative; width: 1008px; height: 548px;">
+    <svg viewBox="0 0 1008 548" width="1008" height="548"><title>에디토리얼 방향의 웹 작업실 단면도</title>
+      <defs>
+        <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <path d="M 3 0 V 6" stroke="#24223F" stroke-width="1"></path>
+        </pattern>
+        <pattern id="hatchFine" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <path d="M 2 0 V 4" stroke="#24223F" stroke-width="0.7" opacity="0.55"></path>
+        </pattern>
+        <pattern id="hatchCross" width="7" height="7" patternUnits="userSpaceOnUse">
+          <path d="M 3.5 0 V 7 M 0 3.5 H 7" stroke="#24223F" stroke-width="0.6" opacity="0.4"></path>
+        </pattern>
+      </defs>
+
+      <g stroke="#24223F" fill="none" stroke-linecap="round" stroke-linejoin="round">
+
+        <path d="M 24 84 H 984" stroke-width="1.2"></path>
+        <path d="M 24 452 H 984" stroke-width="1.6"></path>
+        <path d="M 24 84 V 452 M 984 84 V 452" stroke-width="1.2" stroke-dasharray="3 5" opacity="0.5"></path>
+
+        <rect x="24" y="452" width="960" height="14" fill="url(#hatch)" opacity="0.35" stroke="none"></rect>
+        <path d="M 24 466 H 984" stroke-width="1"></path>
+
+        <rect x="196" y="84" width="26" height="368" fill="url(#hatch)" opacity="0.5" stroke="none"></rect>
+        <path d="M 196 84 V 452 M 222 84 V 452" stroke-width="1.6"></path>
+
+        <rect x="196" y="168" width="26" height="284" fill="#F6F4EE" stroke="none"></rect>
+        <path d="M 196 168 H 222" stroke-width="1.4"></path>
+        <path d="M 222 168 V 452" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.55"></path>
+        <path d="M 196 168 V 452" stroke-width="1.4"></path>
+        <path d="M 222 172 q 46 42 46 128 q 0 86 -46 128" stroke-width="1" stroke-dasharray="3 4" opacity="0.45"></path>
+        <circle cx="212" cy="316" r="3.4" stroke-width="1.4"></circle>
+
+        <text x="108" y="120" text-anchor="middle" style="font-family: 'IBM Plex Sans KR', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; fill: #8A8574;" stroke="none">복 도</text>
+
+        <rect x="286" y="128" width="150" height="118" fill="none" stroke-width="1.6"></rect>
+        <rect x="286" y="128" width="150" height="118" fill="url(#hatchFine)" stroke="none" opacity="0.35"></rect>
+        <g stroke-width="0.9" opacity="0.8">
+          <path d="M 307.4 128 V 246 M 328.8 128 V 246 M 350.2 128 V 246 M 371.6 128 V 246 M 393 128 V 246 M 414.4 128 V 246"></path>
+          <path d="M 286 187 H 436"></path>
+        </g>
+
+        <rect x="746" y="118" width="196" height="12" stroke-width="1.6"></rect>
+        <rect x="746" y="196" width="196" height="12" stroke-width="1.6"></rect>
+        <g stroke-width="1.4">
+          <rect x="760" y="82" width="30" height="36"></rect>
+          <rect x="796" y="92" width="22" height="26"></rect>
+          <rect x="824" y="76" width="38" height="42" fill="url(#hatchCross)"></rect>
+          <rect x="880" y="88" width="26" height="30"></rect>
+          <rect x="760" y="156" width="48" height="40" fill="url(#hatchCross)"></rect>
+          <path d="M 760 168 H 808" stroke-width="0.8" opacity="0.6"></path>
+          <rect x="820" y="152" width="34" height="44"></rect>
+        </g>
+        <g stroke-width="1.4">
+          <path d="M 902 196 v -16 M 894 180 q 8 -20 8 -28 M 910 180 q -8 -20 -8 -28"></path>
+          <path d="M 886 164 q 16 -13 16 -5 q 0 8 -16 5 Z"></path>
+          <path d="M 918 158 q -16 -13 -16 -4 q 0 8 16 4 Z"></path>
+          <path d="M 898 144 q 4 -17 8 -8 q 2 8 -8 8 Z"></path>
+          <path d="M 890 196 h 24 l -3 20 h -18 Z" fill="url(#hatch)" opacity="0.5"></path>
+          <path d="M 890 196 h 24 l -3 20 h -18 Z"></path>
+        </g>
+
+        <path d="M 268 386 H 852 L 878 356 H 294 Z" stroke-width="1.8"></path>
+        <path d="M 268 386 H 852 V 396 H 268 Z" fill="url(#hatch)" opacity="0.4" stroke="none"></path>
+        <path d="M 268 386 V 396 H 852 V 386" stroke-width="1.6"></path>
+        <path d="M 300 396 V 452 M 820 396 V 452" stroke-width="1.6"></path>
+        <path d="M 300 428 H 820" stroke-width="1" stroke-dasharray="4 5" opacity="0.4"></path>
+
+        <g stroke-width="1.6">
+          <rect x="318" y="272" width="132" height="90"></rect>
+          <path d="M 384 362 v 12 M 366 374 h 36"></path>
+          <rect x="468" y="256" width="164" height="106"></rect>
+          <path d="M 550 362 v 12 M 528 374 h 44"></path>
+          <rect x="652" y="274" width="128" height="88"></rect>
+          <path d="M 716 362 v 12 M 698 374 h 36"></path>
+        </g>
+
+        <g stroke-width="1.3">
+          <rect x="452" y="366" width="120" height="12"></rect>
+          <path d="M 452 372 H 572" stroke-width="0.7" opacity="0.5"></path>
+          <path d="M 606 386 q 5 -20 19 -20 q 14 0 18 20 Z"></path>
+          <path d="M 643 372 q 12 -2 10 5 q -2 7 -10 5"></path>
+          <path d="M 610 372 h 26" stroke-width="0.7" opacity="0.5"></path>
+        </g>
+
+        <g stroke-width="1.2" opacity="0.85">
+          <path d="M 384 374 q -20 26 14 34 q 52 12 108 2 q 62 -12 132 -2 q 84 12 164 -6"></path>
+          <path d="M 716 374 q 18 24 62 30"></path>
+          <path d="M 802 402 q 60 -8 66 -46 q 4 -30 -12 -48"></path>
+        </g>
+      </g>
+
+      <g>
+        <rect x="324" y="278" width="120" height="14" fill="#1A5DF7" opacity="0.12"></rect>
+        <rect x="324" y="300" width="54" height="34" fill="#E3E6EC"></rect>
+        <rect x="386" y="300" width="54" height="34" fill="#E3E6EC"></rect>
+        <rect x="324" y="342" width="116" height="6" fill="#E3E6EC"></rect>
+
+        <rect x="474" y="262" width="152" height="22" fill="#FFFFFF"></rect>
+        <rect x="482" y="269" width="58" height="8" rx="4" fill="#1E2128"></rect>
+        <rect x="474" y="290" width="152" height="44" fill="#FFFFFF"></rect>
+        <rect x="482" y="298" width="28" height="28" rx="3" fill="#E9EDFF"></rect>
+        <rect x="518" y="300" width="70" height="8" rx="4" fill="#1E2128"></rect>
+        <rect x="518" y="313" width="50" height="7" rx="3" fill="#6A7280"></rect>
+        <rect x="474" y="340" width="152" height="22" fill="#1A5DF7"></rect>
+        <rect x="524" y="347" width="52" height="8" rx="4" fill="#FFFFFF"></rect>
+
+        <rect x="658" y="282" width="116" height="14" fill="#B4BAC5" opacity="0.45"></rect>
+        <rect x="658" y="304" width="116" height="22" fill="#E3E6EC"></rect>
+        <rect x="658" y="332" width="116" height="22" fill="#E3E6EC"></rect>
+      </g>
+
+      <g stroke="#B4645A" stroke-width="1.1" fill="none">
+        <path d="M 436 168 L 560 118 L 640 118"></path>
+        <path d="M 550 256 L 550 176 L 640 176"></path>
+        <path d="M 868 356 L 868 268 L 966 268"></path>
+        <path d="M 212 316 L 150 268 L 88 268"></path>
+        <path d="M 630 386 L 630 486 L 676 486"></path>
+      </g>
+      <g fill="#B4645A" stroke="none">
+        <circle cx="436" cy="168" r="2.6"></circle>
+        <circle cx="550" cy="256" r="2.6"></circle>
+        <circle cx="868" cy="356" r="2.6"></circle>
+        <circle cx="212" cy="316" r="2.6"></circle>
+        <circle cx="630" cy="386" r="2.6"></circle>
+      </g>
+
+      <g style="font-family: 'IBM Plex Sans KR', sans-serif; fill: #24223F;" stroke="none">
+        <text x="646" y="112" style="font-size: 11.5px; font-weight: 600;">창틀 열넷</text>
+        <text x="646" y="127" style="font-size: 10.5px; font-weight: 300; fill: #6B6759;">지원 언어 14개</text>
+
+        <text x="646" y="170" style="font-size: 11.5px; font-weight: 600; fill: #1A5DF7;">가운데만 살아 있음</text>
+        <text x="646" y="185" style="font-size: 10.5px; font-weight: 300; fill: #6B6759;">진짜 QR 결제 화면이 돌아감</text>
+
+        <text x="978" y="294" text-anchor="end" style="font-size: 11.5px; font-weight: 600;">케이블은 벽을 넘어감</text>
+        <text x="978" y="309" style="font-size: 10.5px; font-weight: 300; fill: #6B6759; text-anchor: end;">옆방 백엔드로 이어짐</text>
+
+        <text x="82" y="262" text-anchor="end" style="font-size: 11.5px; font-weight: 600;">손잡이 높이</text>
+        <text x="82" y="277" text-anchor="end" style="font-size: 10.5px; font-weight: 300; fill: #6B6759;">여기서 방이 열림</text>
+
+        <text x="684" y="490" style="font-size: 11.5px; font-weight: 600;">식은 컵과 화분</text>
+        <text x="684" y="506" style="font-size: 10.5px; font-weight: 300; fill: #6B6759;">어제도 누가 앉아 있었다는 표시</text>
+      </g>
+
+      <rect x="0.8" y="0.8" width="1006.4" height="546.4" fill="none" stroke="#C4BFB2" stroke-width="1.6"></rect>
+    </svg>
+    <img src="./aing-coding.webp" alt="복도에서 방으로 들어서려는 아잉" style="position: absolute; left: 96px; top: 341px; width: 100px; height: auto; pointer-events: none;">
+   </div>
+  </div>
+
+  <div style="display: flex; gap: 12px; padding: 18px 36px 0 36px;">
+    <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 5px; border-top: 2px solid #24223F; padding-top: 10px;">
+      <div class="serif" style="font-size: 18px; font-weight: 700;">이 방향이 잘하는 것</div>
+      <div style="font-size: 12.5px; font-weight: 300; line-height: 1.65; color: #55524A;">지시선이 설명을 대신해, 그림 자체가 문서가 됩니다. 차분해서 이력서 톤과 부딪히지 않습니다.</div>
+    </div>
+    <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 5px; border-top: 2px solid #24223F; padding-top: 10px;">
+      <div class="serif" style="font-size: 18px; font-weight: 700;">대신 감수할 것</div>
+      <div style="font-size: 12.5px; font-weight: 300; line-height: 1.65; color: #55524A;">선이 얇아 작은 화면에서 뭉갭니다. 아잉의 둥근 인상과도 톤이 잘 안 맞아 캐릭터가 겉돌 수 있습니다.</div>
+    </div>
+    <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 5px; border-top: 2px solid #1A5DF7; padding-top: 10px;">
+      <div class="serif" style="font-size: 18px; font-weight: 700; color: #1A5DF7;">두 방향의 공통 규칙</div>
+      <div style="font-size: 12.5px; font-weight: 300; line-height: 1.65; color: #55524A;">세계에서 <strong style="font-weight: 600;">모니터 화면만</strong> 손그림이 아닙니다. 진짜 ZIVO UI가 또렷하게 켜져 있어, 눈이 자연히 그리로 갑니다.</div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1080,"height":880}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

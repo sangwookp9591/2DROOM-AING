@@ -1,0 +1,143 @@
+{
+  "name": "Ai-ng",
+  "hangul": "아잉",
+  "description": "Ai-ng character kit — expressions, action poses, motion loops and a 3D model.",
+  "palette": {
+    "ice": "#A8DDF0",
+    "lavender": "#B8B0E8",
+    "cream": "#F4F1EA",
+    "ink": "#2E2A6B",
+    "blush": "#F5C6D0"
+  },
+  "sets": {
+    "expr": {
+      "image": "sheets/aing-expr.webp",
+      "atlas": "sheets/aing-expr.json",
+      "cell": 256,
+      "cols": 4,
+      "rows": 4,
+      "frames": [
+        "cheer",
+        "confused",
+        "focused",
+        "happy",
+        "love",
+        "neutral",
+        "pout",
+        "proud",
+        "relief",
+        "sad",
+        "shy",
+        "sleepy",
+        "surprised",
+        "thinking",
+        "wink",
+        "wow"
+      ],
+      "files": [
+        "expr/cheer.webp",
+        "expr/confused.webp",
+        "expr/focused.webp",
+        "expr/happy.webp",
+        "expr/love.webp",
+        "expr/neutral.webp",
+        "expr/pout.webp",
+        "expr/proud.webp",
+        "expr/relief.webp",
+        "expr/sad.webp",
+        "expr/shy.webp",
+        "expr/sleepy.webp",
+        "expr/surprised.webp",
+        "expr/thinking.webp",
+        "expr/wink.webp",
+        "expr/wow.webp"
+      ]
+    },
+    "pose": {
+      "image": "sheets/aing-pose.webp",
+      "atlas": "sheets/aing-pose.json",
+      "cell": 256,
+      "cols": 4,
+      "rows": 4,
+      "frames": [
+        "bow",
+        "carry",
+        "celebrate",
+        "coding",
+        "idle",
+        "jump",
+        "point_down",
+        "point_side",
+        "present",
+        "read",
+        "run",
+        "sit",
+        "sleep",
+        "think",
+        "thumbsup",
+        "wave"
+      ],
+      "files": [
+        "pose/bow.webp",
+        "pose/carry.webp",
+        "pose/celebrate.webp",
+        "pose/coding.webp",
+        "pose/idle.webp",
+        "pose/jump.webp",
+        "pose/point_down.webp",
+        "pose/point_side.webp",
+        "pose/present.webp",
+        "pose/read.webp",
+        "pose/run.webp",
+        "pose/sit.webp",
+        "pose/sleep.webp",
+        "pose/think.webp",
+        "pose/thumbsup.webp",
+        "pose/wave.webp"
+      ]
+    }
+  },
+  "motion": [
+    {
+      "name": "celebrate",
+      "webp": "motion/celebrate.webp",
+      "frames": "motion/frames/celebrate/  (aing-kit.zip)"
+    },
+    {
+      "name": "idle",
+      "webp": "motion/idle.webp",
+      "frames": "motion/frames/idle/  (aing-kit.zip)"
+    },
+    {
+      "name": "jump",
+      "webp": "motion/jump.webp",
+      "frames": "motion/frames/jump/  (aing-kit.zip)"
+    },
+    {
+      "name": "think",
+      "webp": "motion/think.webp",
+      "frames": "motion/frames/think/  (aing-kit.zip)"
+    },
+    {
+      "name": "type",
+      "webp": "motion/type.webp",
+      "frames": "motion/frames/type/  (aing-kit.zip)"
+    },
+    {
+      "name": "wave",
+      "webp": "motion/wave.webp",
+      "frames": "motion/frames/wave/  (aing-kit.zip)"
+    }
+  ],
+  "model3d": {
+    "aing-lite": "3d/aing-lite.glb",
+    "aing": "3d/aing.glb"
+  },
+  "usage": {
+    "web": "expr/ and pose/ are alpha WebP; motion/ are animated WebP (alpha).",
+    "phaser_pixi": "Load sheets/aing-<set>.json as a TextureAtlas (hash format).",
+    "unity": "Import sheets/aing-<set>.png, Sprite Mode = Multiple, Slice = Grid By Cell Size 256x256, pivot Center.",
+    "threejs_webgpu": "sheets/*.webp tile on a uniform grid — index a frame as (i % cols, floor(i / cols)). 3d/aing.glb is meshopt-compressed: register MeshoptDecoder on GLTFLoader. aing-lite.glb is the 200kB build."
+  },
+  "download": "aing-kit.zip"
+}

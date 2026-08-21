@@ -1,0 +1,393 @@
+:root {
+  --paper: #f4f1ea;
+  --card: #fbfaf6;
+  --band: #ede7da;
+  --ink: #2e2a6b;
+  --muted: #575379;
+  --faint: #8a85b8;
+  --line: #b5aecb;
+  --live: #2a6a8c;
+  --live-bg: #eaf4fa;
+  --hand: 'Gaegu', 'Apple SD Gothic Neo', sans-serif;
+  --pen: 'Nanum Pen Script', 'Apple SD Gothic Neo', sans-serif;
+  --body: 'Gowun Dodum', 'Apple SD Gothic Neo', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* 당겨서 새로고침·바운스만 막습니다. 스크롤 자체는 읽기 모드에서 필요합니다. */
+  overscroll-behavior: none;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--ink);
+}
+a:hover {
+  color: #5a54b0;
+}
+
+.shell {
+  min-height: 100svh;
+}
+
+.canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ── 떠 있는 조작부 ───────────────────────────────── */
+
+.mode,
+.back,
+.prompt button {
+  font-family: var(--hand);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  padding: 7px 14px;
+  cursor: pointer;
+  box-shadow: 3px 4px 0 rgba(46, 42, 107, 0.15);
+}
+.mode:hover,
+.back:hover,
+.prompt button:hover {
+  background: var(--band);
+}
+
+.mode {
+  position: fixed;
+  z-index: 3;
+  top: 20px;
+  right: 20px;
+}
+
+.back {
+  position: fixed;
+  z-index: 3;
+  top: 20px;
+  left: 20px;
+}
+
+.prompt {
+  position: fixed;
+  z-index: 3;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border: 2.5px solid var(--ink);
+  border-radius: 4px;
+  padding: 10px 14px;
+  box-shadow: 5px 6px 0 rgba(46, 42, 107, 0.15);
+}
+.prompt__n {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--hand);
+  font-weight: 700;
+}
+.prompt__name {
+  font-family: var(--hand);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.hint {
+  position: fixed;
+  z-index: 3;
+  left: 50%;
+  bottom: 36px;
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--pen);
+  font-size: 20px;
+  color: var(--faint);
+  pointer-events: none;
+}
+
+/* ── 본문 ────────────────────────────────────────── */
+
+.doc {
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.kicker {
+  font-family: var(--pen);
+  font-size: 19px;
+  color: var(--faint);
+  margin: 0 0 4px;
+}
+
+.cover h1 {
+  font-family: var(--hand);
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 1.1;
+  margin: 0 0 16px;
+}
+
+.lead {
+  color: var(--muted);
+  max-width: 62ch;
+  margin: 0 0 20px;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  margin: 0;
+}
+.metrics div {
+  background: var(--band);
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  padding: 12px 14px;
+}
+.metrics dt {
+  font-family: var(--hand);
+  font-size: 24px;
+  font-weight: 700;
+}
+.metrics dd {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.room h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--hand);
+  font-size: 36px;
+  margin: 0 0 10px;
+}
+.room .badge {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  background: var(--accent);
+  border: 2.5px solid var(--ink);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+}
+
+.callouts {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.callouts li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  padding: 10px 13px;
+}
+.callouts li.is-live {
+  background: var(--live-bg);
+  border-color: var(--live);
+}
+.callouts .n {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  background: #b4645a;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+.callouts h3 {
+  font-family: var(--hand);
+  font-size: 19px;
+  margin: 0 0 2px;
+}
+.callouts li.is-live h3 {
+  color: var(--live);
+}
+.callouts p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.facts li {
+  background: var(--band);
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  padding: 12px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.facts strong {
+  font-family: var(--hand);
+  font-size: 19px;
+  font-weight: 700;
+}
+.facts span {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.colophon ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+.sign {
+  font-family: var(--pen);
+  font-size: 19px;
+  color: var(--faint);
+  margin: 0;
+}
+
+/* ── 읽기 모드 ───────────────────────────────────── */
+
+.shell[data-mode='read'] .canvas {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.shell[data-mode='read'] .content {
+  position: static;
+}
+.shell[data-mode='read'] .doc {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 88px 24px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+
+/* ── 복도 모드 ───────────────────────────────────── */
+
+.shell[data-mode='world'] .content {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 복도에서는 어느 방도 안 펼쳐집니다. 글은 DOM에 그대로 있습니다. */
+.shell[data-mode='world'] .doc > * {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(520px, 42vw);
+  height: 100%;
+  overflow-y: auto;
+  padding: 84px 28px 40px;
+  background: color-mix(in oklab, var(--paper) 94%, transparent);
+  border-left: 2.5px solid var(--ink);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateX(18px);
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s;
+}
+
+.shell[data-mode='world'] .doc > [data-open] {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* 표지는 패널이 아니라 복도 바닥에 놓인 인사말처럼 둡니다. */
+.shell[data-mode='world'] .doc > .cover[data-open] {
+  inset: auto auto 0 0;
+  width: min(560px, 46vw);
+  height: auto;
+  max-height: 62vh;
+  padding: 28px;
+  border-left: 0;
+  background: transparent;
+}
+.shell[data-mode='world'] .doc > .cover .metrics {
+  display: none;
+}
+
+/* 복도 끝에 닿으면 연락처가 열립니다 — 걸어서만 가도 여기에 도착해야 합니다. */
+.shell[data-mode='world'] .doc > .colophon[data-open] {
+  inset: auto 0 0 auto;
+  width: min(520px, 42vw);
+  height: auto;
+  border-left: 2.5px solid var(--ink);
+  border-top: 2.5px solid var(--ink);
+}
+
+/* 카메라 이동·시선 전환·진입 비행은 lib/anim.ts의 prefersReducedMotion()이 따로 봅니다. */
+@media (prefers-reduced-motion: reduce) {
+  .shell[data-mode='world'] .doc > * {
+    transition: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .shell[data-mode='world'] .doc > * {
+    width: 100%;
+    border-left: 0;
+    border-top: 2.5px solid var(--ink);
+    top: auto;
+    bottom: 0;
+    height: 62%;
+  }
+  .shell[data-mode='world'] .doc > .cover[data-open] {
+    width: 100%;
+    max-height: 46vh;
+  }
+}

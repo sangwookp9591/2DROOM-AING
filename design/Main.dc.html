@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&family=Gowun+Dodum&family=Nanum+Pen+Script&display=swap">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #F4F1EA; font-family: 'Gowun Dodum', 'Apple SD Gothic Neo', sans-serif; }
+    a { color: #2E2A6B; } a:hover { color: #5A54B0; }
+    .hand { font-family: 'Gaegu', 'Apple SD Gothic Neo', sans-serif; }
+    .pen { font-family: 'Nanum Pen Script', 'Apple SD Gothic Neo', sans-serif; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 1020px; background: #F4F1EA; color: #2E2A6B; position: relative; overflow: hidden;">
+
+  <svg width="0" height="0" style="position: absolute;" aria-hidden="true">
+    <defs>
+      <filter id="wobble">
+        <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" seed="7" result="n"></feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+      </filter>
+      <filter id="grain">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3"></feTurbulence>
+        <feColorMatrix type="saturate" values="0"></feColorMatrix>
+      </filter>
+    </defs>
+  </svg>
+
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; padding: 40px 48px 0 48px; gap: 40px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div class="pen" style="font-size: 22px; color: #8A85B8; letter-spacing: 0.02em;">박상욱 · iron — 포트폴리오 세계 설계</div>
+      <div class="hand" style="font-size: 46px; font-weight: 700; line-height: 1.1;">복도 조감도</div>
+      <div style="font-size: 16px; line-height: 1.7; max-width: 620px; color: #575379;">
+        스크롤은 재생이 아니라 걸음입니다. 복도를 걷다 문을 열면, 기술 이름이 걸린 전시장이 아니라
+        누군가 어제까지 일한 흔적이 남은 작업 공간이 나옵니다.
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px; padding-bottom: 6px;">
+      <div class="pen" style="font-size: 19px; color: #8A85B8;">방 색 = 영역</div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 16px; font-size: 13px;">
+        <div style="display: flex; align-items: center; gap: 7px;"><span style="width: 13px; height: 13px; background: #A8DDF0; border: 1.5px solid #2E2A6B; border-radius: 3px;"></span>웹</div>
+        <div style="display: flex; align-items: center; gap: 7px;"><span style="width: 13px; height: 13px; background: #B8B0E8; border: 1.5px solid #2E2A6B; border-radius: 3px;"></span>어드민</div>
+        <div style="display: flex; align-items: center; gap: 7px;"><span style="width: 13px; height: 13px; background: #9DA6D8; border: 1.5px solid #2E2A6B; border-radius: 3px;"></span>백엔드</div>
+        <div style="display: flex; align-items: center; gap: 7px;"><span style="width: 13px; height: 13px; background: #F5C6D0; border: 1.5px solid #2E2A6B; border-radius: 3px;"></span>지난 작업</div>
+        <div style="display: flex; align-items: center; gap: 7px;"><span style="width: 13px; height: 13px; background: #EFE3C8; border: 1.5px solid #2E2A6B; border-radius: 3px;"></span>공방</div>
+        <div style="display: flex; align-items: center; gap: 7px;"><span style="width: 13px; height: 13px; background: #D9C4A9; border: 1.5px solid #2E2A6B; border-radius: 3px;"></span>공유</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="position: relative; width: 1440px; height: 700px; margin-top: 8px;">
+
+    <svg width="1440" height="700" style="position: absolute; inset: 0;"><title>복도 평면과 방 여섯 개의 배치</title>
+      <g filter="url(#wobble)">
+        <rect x="40" y="310" width="1360" height="80" fill="#EDE7DA" stroke="#2E2A6B" stroke-width="2.5"></rect>
+        <path d="M 40 350 L 1400 350" stroke="#B5AECB" stroke-width="1.5" stroke-dasharray="9 11"></path>
+        <rect x="40" y="310" width="104" height="80" fill="#E2DACA" stroke="#2E2A6B" stroke-width="2.5"></rect>
+        <path d="M 285 310 L 285 268 M 675 310 L 675 268 M 1065 310 L 1065 268" stroke="#2E2A6B" stroke-width="2" stroke-dasharray="5 6"></path>
+        <path d="M 475 390 L 475 432 M 865 390 L 865 432 M 1255 390 L 1255 432" stroke="#2E2A6B" stroke-width="2" stroke-dasharray="5 6"></path>
+        <g stroke="#2E2A6B" stroke-width="3" fill="none">
+          <path d="M 245 310 L 325 310"></path><path d="M 245 310 A 80 80 0 0 1 325 310" stroke-width="1.6" stroke-dasharray="4 5" opacity="0.5"></path>
+          <path d="M 635 310 L 715 310"></path><path d="M 635 310 A 80 80 0 0 1 715 310" stroke-width="1.6" stroke-dasharray="4 5" opacity="0.5"></path>
+          <path d="M 1025 310 L 1105 310"></path><path d="M 1025 310 A 80 80 0 0 1 1105 310" stroke-width="1.6" stroke-dasharray="4 5" opacity="0.5"></path>
+          <path d="M 435 390 L 515 390"></path><path d="M 435 390 A 80 80 0 0 0 515 390" stroke-width="1.6" stroke-dasharray="4 5" opacity="0.5"></path>
+          <path d="M 825 390 L 905 390"></path><path d="M 825 390 A 80 80 0 0 0 905 390" stroke-width="1.6" stroke-dasharray="4 5" opacity="0.5"></path>
+          <path d="M 1215 390 L 1295 390"></path><path d="M 1215 390 A 80 80 0 0 0 1295 390" stroke-width="1.6" stroke-dasharray="4 5" opacity="0.5"></path>
+        </g>
+        <path d="M 1400 310 L 1400 390" stroke="#2E2A6B" stroke-width="2.5" stroke-dasharray="7 8"></path>
+      </g>
+      <text x="92" y="356" text-anchor="middle" class="hand" style="font-size: 19px; font-weight: 700; fill: #2E2A6B;">현관</text>
+      <text x="1418" y="345" text-anchor="middle" class="pen" style="font-size: 17px; fill: #8A85B8;" transform="rotate(90 1418 345)">계속</text>
+    </svg>
+
+    <div style="position: absolute; left: 165px; top: 40px; width: 240px; height: 232px; background: #FBFAF6; border: 2.5px solid #2E2A6B; border-radius: 3px; box-shadow: 6px 7px 0 rgba(46,42,107,0.13); display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; transform: rotate(-0.5deg);">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="width: 26px; height: 26px; background: #A8DDF0; border: 2px solid #2E2A6B; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">1</span>
+        <span class="hand" style="font-size: 25px; font-weight: 700;">웹 작업실</span>
+      </div>
+      <div style="font-size: 13px; line-height: 1.6; color: #575379;">창가 책상에 모니터 세 대. 창틀은 세어 보면 열네 칸이고, 벽에는 실제로 찍히는 QR 스티커가 붙어 있습니다.</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto;">
+        <span style="font-size: 11px; background: #E6F4FB; border: 1.5px solid #7FBFDC; border-radius: 10px; padding: 2px 8px;">ZIVO_FRONT</span>
+        <span style="font-size: 11px; background: #E6F4FB; border: 1.5px solid #7FBFDC; border-radius: 10px; padding: 2px 8px;">1,947 커밋 · 98%</span>
+        <span style="font-size: 11px; background: #E6F4FB; border: 1.5px solid #7FBFDC; border-radius: 10px; padding: 2px 8px;">14개 언어</span>
+      </div>
+      <div class="pen" style="font-size: 16px; color: #3E7E9C; border-top: 1.5px dashed #B5AECB; padding-top: 6px;">동작 데모 — QR 주문·결제 실제 화면</div>
+    </div>
+
+    <div style="position: absolute; left: 555px; top: 40px; width: 240px; height: 232px; background: #FBFAF6; border: 2.5px solid #2E2A6B; border-radius: 3px; box-shadow: 6px 7px 0 rgba(46,42,107,0.13); display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; transform: rotate(0.6deg);">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="width: 26px; height: 26px; background: #9DA6D8; border: 2px solid #2E2A6B; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">3</span>
+        <span class="hand" style="font-size: 25px; font-weight: 700;">백엔드 구역</span>
+      </div>
+      <div style="font-size: 13px; line-height: 1.6; color: #575379;">배관과 케이블이 벽을 타고 옆방으로 건너갑니다. 두꺼비집 마흔셋, 부칠 봉투를 쌓아 둔 상자 하나.</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto;">
+        <span style="font-size: 11px; background: #EBEDF8; border: 1.5px solid #8F98CE; border-radius: 10px; padding: 2px 8px;">ZIVO_BACK</span>
+        <span style="font-size: 11px; background: #EBEDF8; border: 1.5px solid #8F98CE; border-radius: 10px; padding: 2px 8px;">1,512 커밋 · 1위</span>
+        <span style="font-size: 11px; background: #EBEDF8; border: 1.5px solid #8F98CE; border-radius: 10px; padding: 2px 8px;">테스트 101건</span>
+      </div>
+      <div class="pen" style="font-size: 16px; color: #5A54B0; border-top: 1.5px dashed #B5AECB; padding-top: 6px;">동작 데모 — 쿠폰 발급이 두 번 안 나가는 과정</div>
+    </div>
+
+    <div style="position: absolute; left: 945px; top: 40px; width: 240px; height: 232px; background: #FBFAF6; border: 2.5px solid #2E2A6B; border-radius: 3px; box-shadow: 6px 7px 0 rgba(46,42,107,0.13); display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; transform: rotate(-0.7deg);">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="width: 26px; height: 26px; background: #EFE3C8; border: 2px solid #2E2A6B; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">5</span>
+        <span class="hand" style="font-size: 25px; font-weight: 700;">아잉 공방</span>
+      </div>
+      <div style="font-size: 13px; line-height: 1.6; color: #575379;">작업대에 스프라이트 시트가 펼쳐져 있고, 표정 카드 열여섯 장이 빨래집게에 걸려 마릅니다.</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto;">
+        <span style="font-size: 11px; background: #F7F1DF; border: 1.5px solid #CFBC8E; border-radius: 10px; padding: 2px 8px;">표정 16 · 액션 16</span>
+        <span style="font-size: 11px; background: #F7F1DF; border: 1.5px solid #CFBC8E; border-radius: 10px; padding: 2px 8px;">모션 6</span>
+        <span style="font-size: 11px; background: #F7F1DF; border: 1.5px solid #CFBC8E; border-radius: 10px; padding: 2px 8px;">GLB 205kB</span>
+      </div>
+      <div class="pen" style="font-size: 16px; color: #9A8544; border-top: 1.5px dashed #B5AECB; padding-top: 6px;">동작 데모 — 표정·포즈를 직접 갈아 끼우기</div>
+    </div>
+
+    <div style="position: absolute; left: 355px; top: 428px; width: 240px; height: 232px; background: #FBFAF6; border: 2.5px solid #2E2A6B; border-radius: 3px; box-shadow: 6px 7px 0 rgba(46,42,107,0.13); display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; transform: rotate(0.5deg);">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="width: 26px; height: 26px; background: #B8B0E8; border: 2px solid #2E2A6B; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">2</span>
+        <span class="hand" style="font-size: 25px; font-weight: 700;">운영 데스크</span>
+      </div>
+      <div style="font-size: 13px; line-height: 1.6; color: #575379;">긴 공용 책상 하나에 의자 열다섯. 이름표 꽂이와, 누가 어느 서랍을 열 수 있는지 적힌 열쇠 보드.</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto;">
+        <span style="font-size: 11px; background: #F0EDFB; border: 1.5px solid #A79ED9; border-radius: 10px; padding: 2px 8px;">ZIVO_ADMIN</span>
+        <span style="font-size: 11px; background: #F0EDFB; border: 1.5px solid #A79ED9; border-radius: 10px; padding: 2px 8px;">1,781 커밋 · 68%</span>
+        <span style="font-size: 11px; background: #F0EDFB; border: 1.5px solid #A79ED9; border-radius: 10px; padding: 2px 8px;">공통 코어 713</span>
+      </div>
+      <div class="pen" style="font-size: 16px; color: #6D5FA8; border-top: 1.5px dashed #B5AECB; padding-top: 6px;">동작 데모 — 역할을 바꾸면 메뉴가 접히는 화면</div>
+    </div>
+
+    <div style="position: absolute; left: 745px; top: 428px; width: 240px; height: 232px; background: #FBFAF6; border: 2.5px solid #2E2A6B; border-radius: 3px; box-shadow: 6px 7px 0 rgba(46,42,107,0.13); display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; transform: rotate(-0.6deg);">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="width: 26px; height: 26px; background: #F5C6D0; border: 2px solid #2E2A6B; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">4</span>
+        <span class="hand" style="font-size: 25px; font-weight: 700;">지난 작업실</span>
+      </div>
+      <div style="font-size: 13px; line-height: 1.6; color: #575379;">천을 덮어 둔 편집기와 필름 릴, 접어 세운 삼각대. 버리지 않고 남겨 둔 사년치 장비.</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto;">
+        <span style="font-size: 11px; background: #FCEEF1; border: 1.5px solid #E3A2B1; border-radius: 10px; padding: 2px 8px;">여기가게 2022–23</span>
+        <span style="font-size: 11px; background: #FCEEF1; border: 1.5px solid #E3A2B1; border-radius: 10px; padding: 2px 8px;">AI 통역 2024–25</span>
+        <span style="font-size: 11px; background: #FCEEF1; border: 1.5px solid #E3A2B1; border-radius: 10px; padding: 2px 8px;">Lossless Cut</span>
+      </div>
+      <div class="pen" style="font-size: 16px; color: #B2617A; border-top: 1.5px dashed #B5AECB; padding-top: 6px;">동작 데모 — 영상이 올라가 변환되는 길</div>
+    </div>
+
+    <div style="position: absolute; left: 1135px; top: 428px; width: 240px; height: 232px; background: #FBFAF6; border: 2.5px solid #2E2A6B; border-radius: 3px; box-shadow: 6px 7px 0 rgba(46,42,107,0.13); display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; transform: rotate(0.7deg);">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="width: 26px; height: 26px; background: #D9C4A9; border: 2px solid #2E2A6B; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">6</span>
+        <span class="hand" style="font-size: 25px; font-weight: 700;">공유 책상</span>
+      </div>
+      <div style="font-size: 13px; line-height: 1.6; color: #575379;">큰 나무 테이블에 유인물이 쌓여 있습니다. 가져가라고 놓아 둔 더미와, 돌려 보는 회람판.</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto;">
+        <span style="font-size: 11px; background: #F5EEE4; border: 1.5px solid #C2A882; border-radius: 10px; padding: 2px 8px;">zivo-skills CLI</span>
+        <span style="font-size: 11px; background: #F5EEE4; border: 1.5px solid #C2A882; border-radius: 10px; padding: 2px 8px;">스킬 10종</span>
+        <span style="font-size: 11px; background: #F5EEE4; border: 1.5px solid #C2A882; border-radius: 10px; padding: 2px 8px;">PR 리뷰봇</span>
+      </div>
+      <div class="pen" style="font-size: 16px; color: #8A6D45; border-top: 1.5px dashed #B5AECB; padding-top: 6px;">동작 데모 — npx 한 줄이 도는 터미널</div>
+    </div>
+
+    <img src="./aing-point.webp" alt="복도 앞에 선 아잉" style="position: absolute; left: 150px; top: 286px; width: 92px; height: auto; pointer-events: none;">
+    <div class="pen" style="position: absolute; left: 250px; top: 296px; font-size: 18px; color: #6D5FA8; transform: rotate(-3deg);">여기서부터 걸어요</div>
+
+  </div>
+
+  <div style="display: flex; gap: 14px; padding: 0 48px; align-items: stretch;">
+    <div style="flex-grow: 1; background: #EDE7DA; border: 2px solid #2E2A6B; border-radius: 3px; padding: 14px 18px; display: flex; flex-direction: column; gap: 5px;">
+      <div class="hand" style="font-size: 20px; font-weight: 700;">걸음이 곧 스크롤</div>
+      <div style="font-size: 13px; line-height: 1.6; color: #575379;">복도 이동은 휠·터치·드래그를 하나로 받아 카메라를 밀어 줍니다. 문 앞에 다가가면 카메라가 저절로 그쪽을 봅니다.</div>
+    </div>
+    <div style="flex-grow: 1; background: #EDE7DA; border: 2px solid #2E2A6B; border-radius: 3px; padding: 14px 18px; display: flex; flex-direction: column; gap: 5px;">
+      <div class="hand" style="font-size: 20px; font-weight: 700;">글자는 3D에 넣지 않기</div>
+      <div style="font-size: 13px; line-height: 1.6; color: #575379;">공간·카메라·전환만 3D가 맡습니다. 읽는 글과 UI 데모는 HTML로 남겨 두어 검색·복사·확대가 그대로 됩니다.</div>
+    </div>
+    <div style="flex-grow: 1; background: #EDE7DA; border: 2px solid #2E2A6B; border-radius: 3px; padding: 14px 18px; display: flex; flex-direction: column; gap: 5px;">
+      <div class="hand" style="font-size: 20px; font-weight: 700;">모델도 조명도 쓰지 않기</div>
+      <div style="font-size: 13px; line-height: 1.6; color: #575379;">모든 사물은 손으로 그린 평면입니다. 그늘은 텍스처에 미리 칠해 두어, 낡은 노트북에서도 끊기지 않게 합니다.</div>
+    </div>
+  </div>
+
+  <svg width="1440" height="1020" style="position: absolute; inset: 0; z-index: 5; opacity: 0.05; pointer-events: none; mix-blend-mode: multiply;" aria-hidden="true">
+    <rect width="1440" height="1020" filter="url(#grain)"></rect>
+  </svg>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1440,"height":1020}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
