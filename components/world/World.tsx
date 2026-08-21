@@ -3,7 +3,7 @@
 import { Canvas } from '@react-three/fiber';
 import { useMemo } from 'react';
 import { CORRIDOR } from '@/lib/rooms';
-import Scene, { type SceneApi, type LiveRect } from './Scene';
+import Scene, { type SceneApi, type LiveRect, type PickInfo, type AingRect } from './Scene';
 
 /** 저사양 기기에서 픽셀 밀도를 낮춥니다. 나머지 티어링은 실기기 측정 후에. */
 function pickDpr(): [number, number] {
@@ -24,6 +24,8 @@ type Props = {
   onArrive: (id: string) => void;
   onLeave: () => void;
   onLiveRect: (rect: LiveRect | null) => void;
+  onThingPick: (info: PickInfo | null) => void;
+  onAing: (rect: AingRect | null) => void;
 };
 
 export default function World({ paused, ...rest }: Props) {

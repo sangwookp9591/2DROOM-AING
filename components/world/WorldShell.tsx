@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { roomById } from '@/lib/rooms';
 import { isInteractiveTarget } from '@/lib/anim';
-import type { SceneApi, LiveRect } from './Scene';
+import type { SceneApi, LiveRect, PickInfo, AingRect } from './Scene';
 
 // three와 R3F는 첫 페인트를 막지 않도록 나중에 실어 옵니다.
 const World = dynamic(() => import('./World'), { ssr: false });
@@ -17,12 +17,17 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
   const [reading, setReading] = useState(false);
   const [live, setLive] = useState<LiveRect | null>(null);
   const [zoomed, setZoomed] = useState(false);
+  const [pick, setPick] = useState<PickInfo | null>(null);
+  const [aing, setAing] = useState<AingRect | null>(null);
+  const [folded, setFolded] = useState(false);
 
   const near = nearId ? roomById(nearId) : null;
   const active = activeId ? roomById(activeId) : null;
   const leave = useCallback(() => {
     setActiveId(null);
     setZoomed(false);
+    setPick(null);
+    setAing(null);
   }, []);
 
   /** 복도 모드에서 지금 펼쳐진 한 곳. 방 > 복도 끝(콜로폰) > 표지 순. */
@@ -54,7 +59,7 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
   }, [activeId, nearId, zoomed]);
 
   return (
-    <div className="shell" data-mode={reading ? 'read' : 'world'}>
+    <div className="shell" data-mode={reading ? 'read' : 'world'} data-fold={!reading && folded ? '' : undefined}>
       <div className="canvas" aria-hidden="true">
         <World
           api={api}
@@ -65,6 +70,8 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
           onArrive={setActiveId}
           onLeave={leave}
           onLiveRect={setLive}
+          onThingPick={setPick}
+          onAing={setAing}
         />
       </div>
 
@@ -94,11 +101,47 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
         <LiveScreen rect={live} zoomed={zoomed} onZoom={setZoomed} />
       )}
 
+      {!reading && active && aing && (
+        <img
+          className="aing"
+          src={`/mascot/motion/${aing.motion}.webp`}
+          alt={aing.alt}
+          style={{ left: aing.left, top: aing.top, width: aing.width, height: aing.height }}
+        />
+      )}
+
+      {!reading && active && pick && <PickCard info={pick} onClose={() => setPick(null)} />}
+
+      {!reading && active && (
+        <button className="fold" onClick={() => setFolded((v) => !v)} aria-expanded={!folded}>
+          {folded ? '설명 펼치기' : '설명 접기'}
+        </button>
+      )}
+
       <div className="content">{children}</div>
 
       {!reading && !active && !near && !atEnd && (
         <p className="hint">스크롤하면 복도를 걷습니다. 문에 색이 칠해지면 들어갈 수 있습니다.</p>
       )}
+    </div>
+  );
+}
+
+/**
+ * 사물을 눌렀을 때 그 자리 옆에 붙는 설명.
+ * 화면 밖으로 나가지 않게 좌우를 잡아 줍니다.
+ */
+function PickCard({ info, onClose }: { info: PickInfo; onClose: () => void }) {
+  const W = 300;
+  const left = Math.max(12, Math.min(info.left + info.width / 2 - W / 2, window.innerWidth - W - 12));
+  const below = info.top + info.height + 12;
+  const top = below + 150 < window.innerHeight ? below : Math.max(12, info.top - 162);
+
+  return (
+    <div className="pick" style={{ left, top, width: W }} role="status">
+      <h3>{info.title}</h3>
+      <p>{info.body}</p>
+      <button onClick={onClose} aria-label="설명 닫기">닫기</button>
     </div>
   );
 }

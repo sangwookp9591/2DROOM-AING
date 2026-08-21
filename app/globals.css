@@ -457,3 +457,84 @@ a:hover {
   padding: 5px 12px;
   opacity: 1;
 }
+
+/* ── 아잉 ────────────────────────────────────────── */
+
+/* 3D가 자리만 잡고 그림은 여기서 그립니다.
+   알파가 완전 이진이라 텍스처로 쓰면 가장자리가 깎이고, 애니메이션도 멈춥니다. */
+.aing {
+  position: fixed;
+  z-index: 1;
+  pointer-events: none;
+  image-rendering: auto;
+}
+
+/* ── 사물 설명 ───────────────────────────────────── */
+
+.pick {
+  position: fixed;
+  z-index: 4;
+  background: var(--card);
+  border: 2.5px solid var(--ink);
+  border-radius: 3px;
+  padding: 12px 14px 10px;
+  box-shadow: 5px 6px 0 rgba(46, 42, 107, 0.16);
+  animation: pick-in 0.22s ease both;
+}
+@keyframes pick-in {
+  from { opacity: 0; transform: translateY(6px); }
+}
+.pick h3 {
+  font-family: var(--hand);
+  font-size: 20px;
+  margin: 0 0 4px;
+}
+.pick p {
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.pick button {
+  font-family: var(--pen);
+  font-size: 17px;
+  color: var(--faint);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.pick button:hover {
+  color: var(--ink);
+}
+
+/* ── 오른쪽 설명 패널 접기 ───────────────────────── */
+
+.fold {
+  position: fixed;
+  z-index: 3;
+  top: 20px;
+  right: 148px;
+  font-family: var(--hand);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  padding: 6px 12px;
+  cursor: pointer;
+  box-shadow: 3px 4px 0 rgba(46, 42, 107, 0.15);
+}
+.fold:hover {
+  background: var(--band);
+}
+
+.shell[data-fold] .doc > [data-open] {
+  transform: translateX(calc(100% - 14px));
+  opacity: 0.35;
+}
+.shell[data-fold] .doc > .cover[data-open] {
+  transform: none;
+  opacity: 1;
+}

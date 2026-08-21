@@ -5,7 +5,8 @@ import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { CORRIDOR, ROOMS, roomById, roomCenter, type Room } from '@/lib/rooms';
 import { damp } from '@/lib/anim';
-import { ROOM_LAYERS, toDataUri, type Layer } from '@/lib/props';
+import gsap from 'gsap';
+import { ROOM_LAYERS, ROOM_MASCOT, ROOM_THINGS, toDataUri, type Layer, type Thing } from '@/lib/props';
 import { useCorridorCamera, type CorridorCam } from './useCorridorCamera';
 
 const LENGTH = CORRIDOR.startZ - CORRIDOR.endZ;
@@ -40,6 +41,15 @@ export type LiveRect = {
   src: string; vw: number; vh: number; label: string;
 };
 
+/** 아잉의 화면 자리. DOM <img>가 여기에 앉습니다. */
+export type AingRect = { left: number; top: number; width: number; height: number; motion: string; alt: string };
+
+/** 눌린 사물의 화면 자리와 설명. DOM이 여기에 카드를 띄웁니다. */
+export type PickInfo = {
+  left: number; top: number; width: number; height: number;
+  title: string; body: string;
+};
+
 type Props = {
   api: { current: SceneApi | null };
   activeId: string | null;
@@ -48,9 +58,11 @@ type Props = {
   onArrive: (id: string) => void;
   onLeave: () => void;
   onLiveRect: (rect: LiveRect | null) => void;
+  onThingPick: (info: PickInfo | null) => void;
+  onAing: (rect: AingRect | null) => void;
 };
 
-export default function Scene({ api, activeId, onNear, onEnd, onArrive, onLeave, onLiveRect }: Props) {
+export default function Scene({ api, activeId, onNear, onEnd, onArrive, onLeave, onLiveRect, onThingPick, onAing }: Props) {
   const cam = useRef<CorridorCam | null>(null);
   const busy = useRef(false);
   const activeRef = useRef<Room | null>(null);
@@ -84,6 +96,7 @@ export default function Scene({ api, activeId, onNear, onEnd, onArrive, onLeave,
         if (!room || busy.current || !cam.current) return;
         busy.current = true;
         onLeave();
+        onThingPick(null);
         cam.current.exit(room, () => {
           busy.current = false;
           activeRef.current = null;
@@ -96,7 +109,7 @@ export default function Scene({ api, activeId, onNear, onEnd, onArrive, onLeave,
     return () => {
       api.current = null;
     };
-  }, [api, onArrive, onLeave, onNear]);
+  }, [api, onArrive, onLeave, onNear, onThingPick]);
 
   // 문 앞에 서면 DOM 쪽에 알려 줍니다. 라벨과 버튼은 HTML이 맡습니다. (세계 규칙 2)
   const { camera } = useThree();
@@ -175,7 +188,7 @@ export default function Scene({ api, activeId, onNear, onEnd, onArrive, onLeave,
       ))}
 
       {ROOMS.map((room) => (
-        <RoomBox key={room.id} room={room} active={activeId === room.id} onLiveRect={onLiveRect} />
+        <RoomBox key={room.id} room={room} active={activeId === room.id} onLiveRect={onLiveRect} onThingPick={onThingPick} onAing={onAing} />
       ))}
     </>
   );
@@ -247,7 +260,7 @@ function Door({
 }
 
 /** 방 안쪽. 지금은 빈 상자입니다 — 사물은 다음 단계에서 채웁니다. */
-function RoomBox({ room, active, onLiveRect }: { room: Room; active: boolean; onLiveRect: (r: LiveRect | null) => void }) {
+function RoomBox({ room, active, onLiveRect, onThingPick, onAing }: { room: Room; active: boolean; onLiveRect: (r: LiveRect | null) => void; onThingPick: (i: PickInfo | null) => void; onAing: (r: AingRect | null) => void }) {
   const group = useRef<THREE.Group>(null);
   const { camera } = useThree();
   const [cx, , cz] = roomCenter(room);
@@ -291,6 +304,13 @@ function RoomBox({ room, active, onLiveRect }: { room: Room; active: boolean; on
       {(ROOM_LAYERS[room.id] ?? []).map((layer, i) => (
         <PropLayer key={i} room={room} layer={layer} order={i} active={active} onLiveRect={onLiveRect} />
       ))}
+
+      {(ROOM_THINGS[room.id] ?? []).map((thing) => (
+        <ThingMesh key={thing.id} room={room} thing={thing} active={active} onPick={onThingPick} />
+      ))}
+
+      {ROOM_MASCOT[room.id] && <AingAnchor room={room} active={active} onAing={onAing} />}
+
     </group>
   );
 }
@@ -375,6 +395,205 @@ function PropLayer({
     >
       <planeGeometry args={[w, h]} />
       <meshBasicMaterial map={texture} transparent alphaTest={0.04} toneMapped={false} />
+    </mesh>
+  );
+}
+
+
+/** 층 깊이 이름 → ROOM_LAYERS의 인덱스 */
+const LAYER_INDEX = { back: 0, mid: 1, front: 2 } as const;
+
+/**
+ * 눌러지는 사물 하나.
+ *
+ * 층 텍스처에 구워 두면 개별로 못 움직이므로 제 평면을 가집니다.
+ * 회전이 제 중심에서 돌도록, 바깥 group이 층의 방향을 잡고
+ * 안쪽 mesh만 제자리에서 움직입니다.
+ */
+function ThingMesh({
+  room, thing, active, onPick,
+}: {
+  room: Room; thing: Thing; active: boolean; onPick: (i: PickInfo | null) => void;
+}) {
+  const dir = room.side === 'left' ? -1 : 1;
+  const { roomW: DEPTH, roomOffset } = CORRIDOR;
+  const inner = useRef<THREE.Mesh>(null);
+  const [hover, setHover] = useState(false);
+  const { camera, size } = useThree();
+
+  const texture = useMemo(() => {
+    const t = new THREE.TextureLoader().load(toDataUri(thing.svg));
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.anisotropy = 4;
+    return t;
+  }, [thing.svg]);
+  useEffect(() => () => texture.dispose(), [texture]);
+
+  const layer = ROOM_LAYERS[room.id][LAYER_INDEX[thing.layer]];
+  const lift = layer.lift ?? 0;
+  const camLocal = roomOffset * 0.55 - roomOffset;
+  const layerX = dir * (camLocal + (DEPTH / 2 - camLocal) * layer.depth);
+
+  // 층 평면의 크기 (7 x 2.5). 사물은 그 안의 제 자리만큼만 차지합니다.
+  const LH = LAYER_W * (400 / 1120);
+  const px = LAYER_W / 1120; // SVG 1픽셀당 월드 유닛
+  const w = thing.box.w * px;
+  const h = thing.box.h * px;
+  const cx = thing.box.x + thing.box.w / 2;
+  const cy = thing.box.y + thing.box.h / 2;
+  const u = (cx / 1120 - 0.5) * LAYER_W;
+  const v = (0.5 - cy / 400) * LH;
+
+  const play = () => {
+    const m = inner.current;
+    if (!m) return;
+    gsap.killTweensOf([m.rotation, m.position, m.scale]);
+    m.rotation.z = 0; m.position.set(0, 0, 0); m.scale.set(1, 1, 1);
+    const t = gsap.timeline();
+    switch (thing.motion) {
+      case 'flutter': // 종이가 펄럭임
+        t.to(m.rotation, { z: 0.05, duration: 0.12, ease: 'sine.out' })
+         .to(m.rotation, { z: -0.038, duration: 0.16, ease: 'sine.inOut' })
+         .to(m.rotation, { z: 0.022, duration: 0.16, ease: 'sine.inOut' })
+         .to(m.rotation, { z: 0, duration: 0.22, ease: 'sine.inOut' });
+        break;
+      case 'shake': // 상자가 덜컹
+        t.to(m.position, { x: w * 0.035, duration: 0.05 })
+         .to(m.position, { x: -w * 0.03, duration: 0.06 })
+         .to(m.position, { x: w * 0.018, duration: 0.06 })
+         .to(m.position, { x: 0, duration: 0.08 });
+        break;
+      case 'swing': // 매달린 것이 흔들림
+        t.to(m.rotation, { z: -0.16, duration: 0.18, ease: 'sine.out' })
+         .to(m.rotation, { z: 0.11, duration: 0.28, ease: 'sine.inOut' })
+         .to(m.rotation, { z: -0.06, duration: 0.28, ease: 'sine.inOut' })
+         .to(m.rotation, { z: 0, duration: 0.3, ease: 'sine.inOut' });
+        break;
+      case 'spin': // 릴·회전대가 돎
+        t.to(m.rotation, { z: -Math.PI * 2, duration: 0.9, ease: 'power2.inOut' });
+        break;
+      case 'press': // 눌리고 되돌아옴
+        t.to(m.scale, { x: 0.93, y: 0.9, duration: 0.09, ease: 'power2.in' })
+         .to(m.position, { y: -h * 0.05, duration: 0.09, ease: 'power2.in' }, 0)
+         .to(m.scale, { x: 1, y: 1, duration: 0.35, ease: 'elastic.out(1, 0.4)' })
+         .to(m.position, { y: 0, duration: 0.35, ease: 'elastic.out(1, 0.4)' }, '<');
+        break;
+      case 'tilt': // 저울처럼 기울었다 돌아옴
+        t.to(m.rotation, { z: 0.1, duration: 0.3, ease: 'power2.inOut' })
+         .to(m.rotation, { z: -0.05, duration: 0.35, ease: 'power2.inOut' })
+         .to(m.rotation, { z: 0, duration: 0.4, ease: 'power2.inOut' });
+        break;
+      case 'ripple': // 선을 타고 물결이 지나감
+        t.to(m.position, { y: h * 0.06, duration: 0.14, ease: 'sine.inOut' })
+         .to(m.position, { y: -h * 0.045, duration: 0.18, ease: 'sine.inOut' })
+         .to(m.position, { y: h * 0.02, duration: 0.18, ease: 'sine.inOut' })
+         .to(m.position, { y: 0, duration: 0.2, ease: 'sine.inOut' });
+        break;
+    }
+  };
+
+  // 방에 있을 때만, 눌린 사물의 자리를 DOM으로 넘깁니다.
+  const report = () => {
+    const m = inner.current;
+    if (!m) return;
+    const corner = (sx: number, sy: number) => {
+      const p = new THREE.Vector3(sx * w / 2, sy * h / 2, 0);
+      m.localToWorld(p);
+      p.project(camera);
+      return { x: (p.x * 0.5 + 0.5) * size.width, y: (-p.y * 0.5 + 0.5) * size.height };
+    };
+    const a = corner(-1, 1);
+    const b = corner(1, -1);
+    const c = thing.callout !== undefined ? room.callouts[thing.callout] : undefined;
+    onPick({
+      left: Math.min(a.x, b.x),
+      top: Math.min(a.y, b.y),
+      width: Math.abs(b.x - a.x),
+      height: Math.abs(b.y - a.y),
+      title: thing.title ?? c?.title ?? '',
+      body: thing.body ?? c?.body ?? '',
+    });
+  };
+
+  useEffect(() => {
+    if (!active) setHover(false);
+  }, [active]);
+
+  useEffect(() => {
+    if (!active || !hover) return;
+    document.body.style.cursor = 'pointer';
+    return () => { document.body.style.cursor = ''; };
+  }, [active, hover]);
+
+  return (
+    <group position={[layerX + dir * 0.004, LH / 2 + lift + v, dir * u]} rotation={[0, dir === -1 ? Math.PI / 2 : -Math.PI / 2, 0]}>
+      <mesh
+        ref={inner}
+        onPointerOver={(e) => { if (active) { e.stopPropagation(); setHover(true); } }}
+        onPointerOut={() => setHover(false)}
+        onClick={(e) => { if (!active) return; e.stopPropagation(); play(); report(); }}
+      >
+        <planeGeometry args={[w, h]} />
+        <meshBasicMaterial map={texture} transparent alphaTest={0.04} toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
+
+/**
+ * 아잉이 설 자리만 3D에서 잡고, 실제 그림은 DOM <img>가 그립니다.
+ * 알파가 이진이라 텍스처로 쓰면 가장자리가 깎이고, 애니메이션도 멈춥니다.
+ */
+function AingAnchor({ room, active, onAing }: { room: Room; active: boolean; onAing: (r: AingRect | null) => void }) {
+  const spec = ROOM_MASCOT[room.id];
+  const dir = room.side === 'left' ? -1 : 1;
+  const { roomW: DEPTH, roomOffset } = CORRIDOR;
+  const mesh = useRef<THREE.Mesh>(null);
+  const { camera, size } = useThree();
+  const last = useRef('');
+
+  const layer = ROOM_LAYERS[room.id][LAYER_INDEX[spec.layer]];
+  const lift = layer.lift ?? 0;
+  const camLocal = roomOffset * 0.55 - roomOffset;
+  const layerX = dir * (camLocal + (DEPTH / 2 - camLocal) * layer.depth);
+  const LH = LAYER_W * (400 / 1120);
+  const px = LAYER_W / 1120;
+  const w = spec.box.w * px;
+  const h = spec.box.h * px;
+  const u = ((spec.box.x + spec.box.w / 2) / 1120 - 0.5) * LAYER_W;
+  const v = (0.5 - (spec.box.y + spec.box.h / 2) / 400) * LH;
+
+  useFrame(() => {
+    if (!active || !mesh.current) {
+      if (last.current) { last.current = ''; onAing(null); }
+      return;
+    }
+    const corner = (sx: number, sy: number) => {
+      const p = new THREE.Vector3(sx * w / 2, sy * h / 2, 0);
+      mesh.current!.localToWorld(p);
+      p.project(camera);
+      return { x: (p.x * 0.5 + 0.5) * size.width, y: (-p.y * 0.5 + 0.5) * size.height };
+    };
+    const a = corner(-1, 1);
+    const b = corner(1, -1);
+    const rect: AingRect = {
+      left: Math.min(a.x, b.x), top: Math.min(a.y, b.y),
+      width: Math.abs(b.x - a.x), height: Math.abs(b.y - a.y),
+      motion: spec.motion, alt: spec.alt,
+    };
+    const key = `${rect.left | 0}|${rect.top | 0}|${rect.width | 0}`;
+    if (key !== last.current) { last.current = key; onAing(rect); }
+  });
+
+  return (
+    <mesh
+      ref={mesh}
+      visible={false}
+      position={[layerX + dir * 0.006, LH / 2 + lift + v, dir * u]}
+      rotation={[0, dir === -1 ? Math.PI / 2 : -Math.PI / 2, 0]}
+    >
+      <planeGeometry args={[w, h]} />
     </mesh>
   );
 }
