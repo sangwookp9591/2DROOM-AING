@@ -16,6 +16,16 @@ import { useCorridorCamera, type CorridorCam } from './useCorridorCamera';
 const LENGTH = CORRIDOR.startZ - CORRIDOR.endZ;
 const MID_Z = (CORRIDOR.startZ + CORRIDOR.endZ) / 2;
 const HALF_W = CORRIDOR.width / 2;
+
+/* 벽에 붙는 것들이 벽에서 얼마나 나와 있는가. 셋(문·액자·바깥 액자)이 모두 0.02를
+   각자 적어 두는 바람에 정확히 같은 평면에 놓였습니다. 겹치지만 않으면 티가 안 나는데,
+   'ponder' 액자(오른쪽 z=-56)가 'past' 문(오른쪽 z=-56)과 같은 자리라 깊이 버퍼가
+   어느 쪽이 앞인지 정하지 못하고 프레임 테두리가 줄무늬로 깜빡였습니다.
+   순서를 여기 한 번만 적습니다 — 액자는 언제나 문보다 앞입니다. */
+const WALL = {
+  door: 0.02,    // 문은 벽에 붙어 있습니다
+  frame: 0.05,   // 액자는 그 앞에 겁니다. 문 위에 걸어도 다투지 않습니다
+};
 /** 사물 층 한 겹의 실제 폭(유닛). 1120x400 SVG가 이 크기로 앉습니다. */
 const LAYER_W = 7;
 
@@ -247,7 +257,7 @@ function Door({
   const painted = useMemo(() => new THREE.Color(room.accent), [room.accent]);
 
   const dir = room.side === 'left' ? -1 : 1;
-  const x = dir * (HALF_W - 0.02);
+  const x = dir * (HALF_W - WALL.door);
   const rotY = room.side === 'left' ? Math.PI / 2 : -Math.PI / 2;
 
   useFrame((_, dt) => {
@@ -347,7 +357,7 @@ function WallFrame({
   return (
     <mesh
       ref={mesh}
-      position={[dir * (HALF_W - 0.02), frame.y, frame.z]}
+      position={[dir * (HALF_W - WALL.frame), frame.y, frame.z]}
       rotation={[0, dir === -1 ? Math.PI / 2 : -Math.PI / 2, frame.tilt]}
       onPointerOver={(e) => { if (!locked) { e.stopPropagation(); setHover(true); } }}
       onPointerOut={() => setHover(false)}
@@ -574,7 +584,7 @@ function LiveFrameMesh({
   return (
     <mesh
       ref={mesh}
-      position={[dir * (HALF_W - 0.02), spot.y, spot.z]}
+      position={[dir * (HALF_W - WALL.frame), spot.y, spot.z]}
       rotation={[0, dir === -1 ? Math.PI / 2 : -Math.PI / 2, spot.tilt]}
       onPointerOver={(e) => { if (!locked) { e.stopPropagation(); setHover(true); } }}
       onPointerOut={() => setHover(false)}
