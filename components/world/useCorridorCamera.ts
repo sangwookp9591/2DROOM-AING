@@ -158,7 +158,7 @@ export function useCorridorCamera(api: { current: CorridorCam | null }) {
           .to(camera.position, { x: wallX * 0.2, z: room.z, duration: 0.75 * d }, 0)
           .to(camera.rotation, { y: faceY, x: 0, duration: 0.75 * d }, 0)
           // 2. 문을 통과해 방 안으로
-          .to(camera.position, { x: rx * 0.55, z: rz, duration: 0.95 * d, ease: 'power2.out' }, 0.7 * d);
+          .to(camera.position, { x: rx * CORRIDOR.cameraStop, z: rz, duration: 0.95 * d, ease: 'power2.out' }, 0.7 * d);
       },
 
       exit(room, onDone) {

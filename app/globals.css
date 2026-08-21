@@ -8,9 +8,10 @@
   --line: #b5aecb;
   --live: #2a6a8c;
   --live-bg: #eaf4fa;
+  --display: 'Paperlogy', 'Apple SD Gothic Neo', sans-serif;
   --hand: 'Gaegu', 'Apple SD Gothic Neo', sans-serif;
   --pen: 'Nanum Pen Script', 'Apple SD Gothic Neo', sans-serif;
-  --body: 'Gowun Dodum', 'Apple SD Gothic Neo', sans-serif;
+  --body: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
 }
 
 *,
@@ -56,7 +57,7 @@ a:hover {
 .mode,
 .back,
 .prompt button {
-  font-family: var(--hand);
+  font-family: var(--body);
   font-size: 17px;
   font-weight: 700;
   color: var(--ink);
@@ -147,7 +148,7 @@ a:hover {
 }
 
 .cover h1 {
-  font-family: var(--hand);
+  font-family: var(--display);
   font-size: clamp(40px, 6vw, 64px);
   line-height: 1.1;
   margin: 0 0 16px;
@@ -157,6 +158,78 @@ a:hover {
   color: var(--muted);
   max-width: 62ch;
   margin: 0 0 20px;
+}
+
+.ai-cast {
+  margin: 0 0 20px;
+  padding: 12px;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+}
+.ai-cast img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ai-brands {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.ai-brands span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  padding: 5px 3px;
+  border: 1.5px solid var(--line);
+  border-radius: 3px;
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: 15px;
+  font-weight: 700;
+}
+.ai-brands img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+.tool-brands {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.tool-brands span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  padding: 5px 3px;
+  border: 1.5px solid var(--line);
+  border-radius: 3px;
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: 13px;
+  font-weight: 700;
+}
+.tool-brands img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+.ai-cast figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 12px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .metrics {
@@ -172,7 +245,7 @@ a:hover {
   padding: 12px 14px;
 }
 .metrics dt {
-  font-family: var(--hand);
+  font-family: var(--display);
   font-size: 24px;
   font-weight: 700;
 }
@@ -186,7 +259,7 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-family: var(--hand);
+  font-family: var(--display);
   font-size: 36px;
   margin: 0 0 10px;
 }
@@ -238,7 +311,7 @@ a:hover {
   font-weight: 700;
 }
 .callouts h3 {
-  font-family: var(--hand);
+  font-family: var(--display);
   font-size: 19px;
   margin: 0 0 2px;
 }
@@ -270,7 +343,7 @@ a:hover {
   gap: 4px;
 }
 .facts strong {
-  font-family: var(--hand);
+  font-family: var(--display);
   font-size: 19px;
   font-weight: 700;
 }
@@ -360,12 +433,23 @@ a:hover {
 .shell[data-mode='world'] .doc > .cover .metrics {
   display: none;
 }
+/* 커버 카피는 뷰포트가 아니라 이 패널(46vw) 안에서 접혀야 합니다. 본문 기준인 6vw를
+   그대로 두면 481px 상자에서 h1이 다섯 줄로 터져 62vh를 넘고, 복도 한가운데
+   스크롤바가 섭니다 — 읽기 모드의 780px 폭에서만 맞는 크기입니다. */
+.shell[data-mode='world'] .doc > .cover h1 {
+  font-size: clamp(26px, 3.4vw, 40px);
+}
+.shell[data-mode='world'] .doc > .cover .lead {
+  font-size: 14px;
+  margin-bottom: 0;
+}
 
 /* 복도 끝에 닿으면 연락처가 열립니다 — 걸어서만 가도 여기에 도착해야 합니다. */
 .shell[data-mode='world'] .doc > .colophon[data-open] {
   inset: auto 0 0 auto;
   width: min(520px, 42vw);
   height: auto;
+  max-height: 84vh;
   border-left: 2.5px solid var(--ink);
   border-top: 2.5px solid var(--ink);
 }
@@ -436,7 +520,7 @@ a:hover {
   z-index: 1;
   right: 4px;
   bottom: 4px;
-  font-family: var(--hand);
+  font-family: var(--body);
   font-size: 13px;
   font-weight: 700;
   color: var(--ink);
@@ -485,7 +569,7 @@ a:hover {
   from { opacity: 0; transform: translateY(6px); }
 }
 .pick h3 {
-  font-family: var(--hand);
+  font-family: var(--display);
   font-size: 20px;
   margin: 0 0 4px;
 }
@@ -496,7 +580,7 @@ a:hover {
   color: var(--muted);
 }
 .pick button {
-  font-family: var(--pen);
+  font-family: var(--body);
   font-size: 17px;
   color: var(--faint);
   background: none;
@@ -515,7 +599,7 @@ a:hover {
   z-index: 3;
   top: 20px;
   right: 148px;
-  font-family: var(--hand);
+  font-family: var(--body);
   font-size: 15px;
   font-weight: 700;
   color: var(--ink);
@@ -537,4 +621,486 @@ a:hover {
 .shell[data-fold] .doc > .cover[data-open] {
   transform: none;
   opacity: 1;
+}
+
+/* ── 아잉에게 물어보기 ───────────────────────────── */
+
+/* 오른쪽 아래에서 펼쳐지는 창. 뒤에 종이 한 겹을 깔아 손으로 겹쳐 둔 메모처럼 둡니다. */
+.aing {
+  position: fixed;
+  z-index: 6;
+  right: 24px;
+  bottom: 102px;
+  width: 372px;
+  max-width: calc(100vw - 32px);
+  height: min(520px, calc(100vh - 150px));
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  box-shadow: -7px 9px 0 0 #f1eff7, -7px 9px 0 1.5px var(--line);
+  animation: aing-in 0.2s ease both;
+}
+@keyframes aing-in {
+  from { opacity: 0; transform: translateY(10px); }
+}
+
+.aing__head {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 13px 12px 6px 18px;
+}
+.aing__title {
+  flex: 1;
+  margin: 0;
+  font-family: var(--hand);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.aing__icon {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+}
+.aing__icon svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.aing__icon:hover,
+.aing__icon.is-on {
+  color: var(--ink);
+}
+.aing__icon.is-on svg {
+  fill: color-mix(in oklab, var(--ink) 20%, #fff);
+}
+
+/* 모델을 받는 동안에만 나오는 줄. 다 받으면 줄째로 사라집니다. */
+.aing__note {
+  margin: 0 18px 2px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--faint);
+}
+.aing__bar {
+  display: block;
+  height: 2px;
+  margin-bottom: 5px;
+  background: var(--band);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.aing__bar::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: calc(var(--p) * 100%);
+  background: var(--faint);
+  transition: width 0.2s linear;
+}
+.aing__retry {
+  margin-left: 6px;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  cursor: pointer;
+}
+
+.aing__log {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 6px 16px 10px;
+}
+
+.aing__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.aing__row--you {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+.aing__face {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  margin-top: 2px;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 22%;
+}
+.aing__side {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.aing__bubble {
+  max-width: 252px;
+  margin: 0;
+  padding: 9px 12px;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.aing__bubble--hello {
+  white-space: pre-line;
+}
+.aing__bubble--you {
+  background: color-mix(in oklab, var(--ink) 15%, #fff);
+  border-color: color-mix(in oklab, var(--ink) 30%, #fff);
+}
+.aing__bubble p,
+.aing__bubble .aing__list,
+.aing__bubble .aing__pre {
+  margin: 0 0 6px;
+}
+.aing__bubble > :last-child {
+  margin-bottom: 0;
+}
+.aing__list {
+  padding-left: 18px;
+}
+.aing__pre {
+  padding: 8px 10px;
+  background: var(--band);
+  border-radius: 6px;
+  font-size: 12px;
+  overflow-x: auto;
+}
+.aing__bubble code {
+  padding: 1px 4px;
+  background: var(--band);
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.aing__at {
+  font-size: 10.5px;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.aing__dots {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px 0;
+}
+.aing__dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--faint);
+  animation: aing-dot 1s infinite;
+}
+.aing__dots i:nth-child(2) { animation-delay: 0.15s; }
+.aing__dots i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes aing-dot {
+  0%, 60%, 100% { opacity: 0.3; }
+  30% { opacity: 1; }
+}
+
+/* 다음에 물어볼 것. 마스코트 폭만큼 들여써서 답과 같은 줄에서 시작합니다. */
+.aing__tips {
+  list-style: none;
+  margin: 1px 0 0 38px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.aing__tip {
+  font-family: var(--body);
+  font-size: 12px;
+  color: var(--ink);
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 12px;
+  cursor: pointer;
+}
+.aing__tip:hover:not(:disabled) {
+  background: var(--band);
+}
+.aing__tip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.aing__form {
+  position: relative;
+  padding: 8px 16px 16px;
+}
+.aing__input {
+  width: 100%;
+  font-family: var(--body);
+  font-size: 13px;
+  color: var(--ink);
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 11px 46px 11px 14px;
+}
+.aing__input::placeholder {
+  color: var(--faint);
+}
+.aing__input:focus-visible {
+  outline: none;
+  border-color: var(--ink);
+}
+.aing__tip:focus-visible,
+.aing__send:focus-visible,
+.aing__icon:focus-visible,
+.aing-call__btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+/* 버튼은 입력칸 안 오른쪽에 앉습니다. 입력칸 높이가 고정이라 아래에서 재는 편이 정확합니다. */
+.aing__send {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--ink);
+  background: color-mix(in oklab, var(--ink) 14%, #fff);
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.aing__send svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.aing__send:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* 부르는 자리 — 마스코트와 손글씨 안내. */
+.aing-call {
+  position: fixed;
+  z-index: 6;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.aing-call__label {
+  position: relative;
+  font-family: var(--hand);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--faint);
+  text-align: right;
+  white-space: nowrap;
+}
+.aing-call__arrow {
+  position: absolute;
+  right: -22px;
+  top: -4px;
+  width: 30px;
+  height: 22px;
+  fill: none;
+  stroke: var(--faint);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.aing-call__btn {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 3px 4px 0 rgba(46, 42, 107, 0.12);
+}
+.aing-call__btn img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+}
+.aing-call__btn:hover {
+  background: var(--band);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aing { animation: none; }
+  .aing__dots i { animation: none; }
+}
+
+@media (max-width: 720px) {
+  .aing {
+    right: 16px;
+    bottom: 94px;
+    width: calc(100vw - 32px);
+    height: min(60vh, 460px);
+  }
+  .aing-call {
+    right: 16px;
+    bottom: 16px;
+  }
+  .aing-call__label {
+    display: none;
+  }
+}
+
+/* ── 복도 끝의 두 목록 ───────────────────────────── */
+
+/* 이 둘만 저장소 밖(YouTube·GitHub)에서 옵니다. 6시간마다 다시 옵니다(lib/feeds.ts). */
+.feeds {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 0 0 22px;
+}
+
+.feed__head {
+  margin: 0 0 8px;
+}
+.feed__brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--hand);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+}
+.feed__brand:hover {
+  color: #5a54b0;
+}
+.feed__logo {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  fill: currentColor;
+}
+.feed__at {
+  margin-left: auto;
+  font-family: var(--pen);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--faint);
+}
+
+.feed__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.feed__item {
+  display: grid;
+  gap: 2px;
+  padding: 9px 12px;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.feed__item:hover {
+  background: var(--band);
+}
+.feed__item--vid {
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 11px;
+  align-items: center;
+  padding: 8px 10px;
+}
+.feed__thumb {
+  width: 92px;
+  height: 52px;
+  object-fit: cover;
+  background: var(--band);
+  border: 1.5px solid var(--line);
+  border-radius: 2px;
+}
+.feed__text {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+/* 제목도 설명도 두 줄까지만. 세 줄짜리 제목 하나가 목록의 리듬을 깹니다. */
+.feed__name,
+.feed__desc {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.feed__name {
+  font-family: var(--hand);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.feed__desc {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.feed__meta {
+  font-size: 12px;
+  color: var(--faint);
+}
+
+/* 읽기 모드는 780px이 있으니 두 목록을 나란히 놓습니다. */
+.shell[data-mode='read'] .feeds {
+  flex-direction: row;
+  gap: 24px;
+}
+.shell[data-mode='read'] .feed {
+  flex: 1;
+  min-width: 0;
 }

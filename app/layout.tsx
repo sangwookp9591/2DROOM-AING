@@ -2,26 +2,30 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: '박상욱 (iron) — 복도를 걷는 포트폴리오',
+  title: '박상욱 (iron) — 문제를 끝까지 해결하는 풀스택 개발자',
   description:
-    '기술 이름을 간판으로 걸지 않고 장소와 사물로 말하는 포트폴리오. 복도를 걷다 문을 열면 웹·어드민·백엔드·지난 작업·공방·공유 여섯 개의 작업 공간이 나옵니다.',
+    '사용자가 막히는 지점과 팀의 반복 실수를 찾아 웹, 운영도구, 백엔드까지 해결해 온 박상욱의 포트폴리오입니다.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
       <head>
-        {/*
-          next/font는 이 한글 서체들의 korean 서브셋을 모릅니다 (latin만 노출).
-          그걸로 받으면 한글이 폴백으로 떨어져 손글씨 인상이 통째로 사라집니다.
-          그래서 link로 두되, CSS @import는 피합니다 — @import는 globals.css를
-          받아 파싱한 뒤에야 시작돼 폰트 요청이 두 홉 뒤로 밀립니다.
-        */}
+        {/* 제목·본문 폰트는 CSS 파일로, 손글씨 폰트는 Google Fonts로 불러옵니다. */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&family=Gowun+Dodum&family=Nanum+Pen+Script&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&family=Nanum+Pen+Script&display=swap"
+        />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/subsets/Paperlogy-dynamic-subset.css"
+        />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css"
         />
       </head>
       <body>{children}</body>

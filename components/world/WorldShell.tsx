@@ -8,6 +8,8 @@ import type { SceneApi, LiveRect, PickInfo, AingRect } from './Scene';
 
 // three와 R3F는 첫 페인트를 막지 않도록 나중에 실어 옵니다.
 const World = dynamic(() => import('./World'), { ssr: false });
+// 채팅창도 같습니다 — 물어볼 마음이 없는 방문자에게는 이 코드가 필요 없습니다.
+const AingChat = dynamic(() => import('@/components/aing/AingChat'), { ssr: false });
 
 export default function WorldShell({ children }: { children: React.ReactNode }) {
   const api = useRef<SceneApi | null>(null);
@@ -45,6 +47,17 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
       else el.setAttribute('aria-hidden', open ? 'false' : 'true');
     });
   }, [openId, reading, children]);
+
+  /* 카드는 눌린 그때의 화면 좌표에 고정돼 있습니다. 복도에서 한 걸음이라도 걸으면
+     액자는 지나갔는데 설명만 허공에 남으므로, 걸음이 시작되면 접습니다.
+     걸음은 페이지 스크롤이 아니라 휠·터치·방향키입니다(useCorridorCamera). */
+  useEffect(() => {
+    if (!pick || activeId) return;
+    const moves = ['wheel', 'keydown', 'touchmove'] as const;
+    const off = () => setPick(null);
+    moves.forEach((m) => window.addEventListener(m, off, { passive: true, once: true }));
+    return () => moves.forEach((m) => window.removeEventListener(m, off));
+  }, [pick, activeId]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -110,7 +123,8 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
         />
       )}
 
-      {!reading && active && pick && <PickCard info={pick} onClose={() => setPick(null)} />}
+      {/* 방 안의 사물에서도, 복도 벽의 액자에서도 같은 카드가 뜹니다. */}
+      {!reading && pick && <PickCard info={pick} onClose={() => setPick(null)} />}
 
       {!reading && active && (
         <button className="fold" onClick={() => setFolded((v) => !v)} aria-expanded={!folded}>
@@ -121,8 +135,11 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
       <div className="content">{children}</div>
 
       {!reading && !active && !near && !atEnd && (
-        <p className="hint">스크롤하면 복도를 걷습니다. 문에 색이 칠해지면 들어갈 수 있습니다.</p>
+        <p className="hint">스크롤하면 작업 사례를 차례로 봅니다. 가까워진 사례를 눌러 자세히 확인하세요.</p>
       )}
+
+      {/* 복도에서든 읽기 모드에서든 물어볼 수 있어야 합니다. 답은 브라우저 안에서 만들어집니다. */}
+      <AingChat />
     </div>
   );
 }

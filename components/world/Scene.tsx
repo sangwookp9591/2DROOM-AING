@@ -7,6 +7,10 @@ import { CORRIDOR, ROOMS, roomById, roomCenter, type Room } from '@/lib/rooms';
 import { damp } from '@/lib/anim';
 import gsap from 'gsap';
 import { ROOM_LAYERS, ROOM_MASCOT, ROOM_THINGS, toDataUri, type Layer, type Thing } from '@/lib/props';
+import {
+  FRAMES, REPO_SPOTS, VIDEO_SPOTS,
+  type Frame as FrameSpec, type LiveArt, type LiveSpot,
+} from '@/lib/frames';
 import { useCorridorCamera, type CorridorCam } from './useCorridorCamera';
 
 const LENGTH = CORRIDOR.startZ - CORRIDOR.endZ;
@@ -53,6 +57,8 @@ export type PickInfo = {
 type Props = {
   api: { current: SceneApi | null };
   activeId: string | null;
+  /** 복도 벽에 걸 밖의 것들. 서버에서 받아 여기까지 내려옵니다(lib/feeds.ts). */
+  live: LiveArt[];
   onNear: (id: string | null) => void;
   onEnd: (atEnd: boolean) => void;
   onArrive: (id: string) => void;
@@ -62,7 +68,7 @@ type Props = {
   onAing: (rect: AingRect | null) => void;
 };
 
-export default function Scene({ api, activeId, onNear, onEnd, onArrive, onLeave, onLiveRect, onThingPick, onAing }: Props) {
+export default function Scene({ api, activeId, live, onNear, onEnd, onArrive, onLeave, onLiveRect, onThingPick, onAing }: Props) {
   const cam = useRef<CorridorCam | null>(null);
   const busy = useRef(false);
   const activeRef = useRef<Room | null>(null);
@@ -174,6 +180,11 @@ export default function Scene({ api, activeId, onNear, onEnd, onArrive, onLeave,
         <meshBasicMaterial color={PAPER.wallRight} />
       </mesh>
 
+      {/* 문과 문 사이는 28유닛씩 비어 있습니다. 그 벽에 액자를 겁니다. */}
+      {FRAMES.map((frame) => (
+        <WallFrame key={frame.id} frame={frame} locked={locked} onPick={onThingPick} />
+      ))}
+
       {ROOMS.map((room) => (
         <Door
           key={room.id}
@@ -259,6 +270,75 @@ function Door({
   );
 }
 
+/**
+ * 복도 벽의 액자. 가까이 대면 조금 더 기울고, 누르면 무엇을 그린 것인지 말합니다.
+ * 방에 들어가 있는 동안에는 잠급니다 — 방 안에서는 복도 벽이 배경일 뿐입니다.
+ */
+function WallFrame({
+  frame, locked, onPick,
+}: {
+  frame: FrameSpec;
+  locked: boolean;
+  onPick: (info: PickInfo | null) => void;
+}) {
+  const texture = useSvgTexture(frame.svg);
+  const mesh = useRef<THREE.Mesh>(null);
+  const [hover, setHover] = useState(false);
+  const { camera, size } = useThree();
+
+  const dir = frame.side === 'left' ? -1 : 1;
+  const h = frame.w * frame.ratio;
+
+  useFrame((_, dt) => {
+    if (!mesh.current) return;
+    // 기울기만 만집니다. 벽에 걸린 것이 위치까지 움직이면 못이 빠진 것처럼 보입니다.
+    const target = hover && !locked ? frame.tilt * 2.6 : frame.tilt;
+    mesh.current.rotation.z += (target - mesh.current.rotation.z) * damp(dt, 8);
+  });
+
+  useEffect(() => {
+    if (!hover || locked) return;
+    document.body.style.cursor = 'pointer';
+    return () => { document.body.style.cursor = ''; };
+  }, [hover, locked]);
+
+  // 눌린 액자의 화면 자리. DOM이 그 옆에 설명 카드를 세웁니다.
+  const report = () => {
+    const m = mesh.current;
+    if (!m) return;
+    const corner = (sx: number, sy: number) => {
+      const p = new THREE.Vector3((sx * frame.w) / 2, (sy * h) / 2, 0);
+      m.localToWorld(p);
+      p.project(camera);
+      return { x: (p.x * 0.5 + 0.5) * size.width, y: (-p.y * 0.5 + 0.5) * size.height };
+    };
+    const a = corner(-1, 1);
+    const b = corner(1, -1);
+    onPick({
+      left: Math.min(a.x, b.x),
+      top: Math.min(a.y, b.y),
+      width: Math.abs(b.x - a.x),
+      height: Math.abs(b.y - a.y),
+      title: frame.title,
+      body: frame.body,
+    });
+  };
+
+  return (
+    <mesh
+      ref={mesh}
+      position={[dir * (HALF_W - 0.02), frame.y, frame.z]}
+      rotation={[0, dir === -1 ? Math.PI / 2 : -Math.PI / 2, frame.tilt]}
+      onPointerOver={(e) => { if (!locked) { e.stopPropagation(); setHover(true); } }}
+      onPointerOut={() => setHover(false)}
+      onClick={(e) => { if (locked) return; e.stopPropagation(); report(); }}
+    >
+      <planeGeometry args={[frame.w, h]} />
+      <meshBasicMaterial map={texture} transparent alphaTest={0.04} toneMapped={false} />
+    </mesh>
+  );
+}
+
 /** 방 안쪽. 지금은 빈 상자입니다 — 사물은 다음 단계에서 채웁니다. */
 function RoomBox({ room, active, onLiveRect, onThingPick, onAing }: { room: Room; active: boolean; onLiveRect: (r: LiveRect | null) => void; onThingPick: (i: PickInfo | null) => void; onAing: (r: AingRect | null) => void }) {
   const group = useRef<THREE.Group>(null);
@@ -336,17 +416,10 @@ function PropLayer({
   const { camera, size } = useThree();
   const last = useRef<string>('');
 
-  const texture = useMemo(() => {
-    const t = new THREE.TextureLoader().load(toDataUri(svg));
-    t.colorSpace = THREE.SRGBColorSpace;
-    t.anisotropy = 4;
-    return t;
-  }, [svg]);
+  const texture = useSvgTexture(svg);
 
-  useEffect(() => () => texture.dispose(), [texture]);
-
-  // 카메라가 멈추는 로컬 x. enter()가 방 중심의 0.55 지점까지 날아옵니다.
-  const camLocal = roomOffset * 0.55 - roomOffset;
+  // 카메라가 멈추는 로컬 x. enter()가 CORRIDOR.cameraStop 지점까지 날아옵니다.
+  const camLocal = roomOffset * CORRIDOR.cameraStop - roomOffset;
   const dist = (DEPTH / 2 - camLocal) * depth;
   const x = dir * (camLocal + dist);
 
@@ -403,6 +476,18 @@ function PropLayer({
 /** 층 깊이 이름 → ROOM_LAYERS의 인덱스 */
 const LAYER_INDEX = { back: 0, mid: 1, front: 2 } as const;
 
+/** SVG 문자열 하나를 텍스처로. 층과 사물이 같은 방식을 씁니다. */
+function useSvgTexture(svg: string) {
+  const texture = useMemo(() => {
+    const t = new THREE.TextureLoader().load(toDataUri(svg));
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.anisotropy = 4;
+    return t;
+  }, [svg]);
+  useEffect(() => () => texture.dispose(), [texture]);
+  return texture;
+}
+
 /**
  * 눌러지는 사물 하나.
  *
@@ -421,17 +506,11 @@ function ThingMesh({
   const [hover, setHover] = useState(false);
   const { camera, size } = useThree();
 
-  const texture = useMemo(() => {
-    const t = new THREE.TextureLoader().load(toDataUri(thing.svg));
-    t.colorSpace = THREE.SRGBColorSpace;
-    t.anisotropy = 4;
-    return t;
-  }, [thing.svg]);
-  useEffect(() => () => texture.dispose(), [texture]);
+  const texture = useSvgTexture(thing.svg);
 
   const layer = ROOM_LAYERS[room.id][LAYER_INDEX[thing.layer]];
   const lift = layer.lift ?? 0;
-  const camLocal = roomOffset * 0.55 - roomOffset;
+  const camLocal = roomOffset * CORRIDOR.cameraStop - roomOffset;
   const layerX = dir * (camLocal + (DEPTH / 2 - camLocal) * layer.depth);
 
   // 층 평면의 크기 (7 x 2.5). 사물은 그 안의 제 자리만큼만 차지합니다.
@@ -555,7 +634,7 @@ function AingAnchor({ room, active, onAing }: { room: Room; active: boolean; onA
 
   const layer = ROOM_LAYERS[room.id][LAYER_INDEX[spec.layer]];
   const lift = layer.lift ?? 0;
-  const camLocal = roomOffset * 0.55 - roomOffset;
+  const camLocal = roomOffset * CORRIDOR.cameraStop - roomOffset;
   const layerX = dir * (camLocal + (DEPTH / 2 - camLocal) * layer.depth);
   const LH = LAYER_W * (400 / 1120);
   const px = LAYER_W / 1120;

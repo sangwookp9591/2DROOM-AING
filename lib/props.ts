@@ -346,6 +346,36 @@ const PAST_WAVE =
   ` fill="none" stroke-width="2.6"/>` +
   `<rect x="948" y="94" width="66" height="86" fill="#F5C6D0" opacity="0.4" stroke="#B4645A" stroke-width="2.4" stroke-dasharray="6 5"/>` +
   `<path d="M 960 110 l 42 50 M 1002 110 l -42 50" stroke="#B4645A" stroke-width="4" fill="none"/>`;
+
+// 관제 화면 여섯 — 공공·기업 시스템 시절. 릴을 빌려 쓰지 않고 제 사물을 가집니다.
+const PAST_CONTROL = (() => {
+  // 화면마다 다른 것이 떠 있습니다 — 도로, 막대, 점 격자, 카메라, 파형, 표
+  const screens = [
+    `<path d="M 8 30 q 18 -14 36 0 q 18 14 36 0" fill="none" stroke="#7FBFDC" stroke-width="2.4"/>` +
+      `<path d="M 8 40 h 72" stroke="#B4645A" stroke-width="2" stroke-dasharray="5 4" fill="none"/>`,
+    `<g fill="#9DA6D8" stroke="none"><rect x="10" y="34" width="9" height="18"/><rect x="24" y="24" width="9" height="28"/>` +
+      `<rect x="38" y="30" width="9" height="22"/><rect x="52" y="16" width="9" height="36"/><rect x="66" y="28" width="9" height="24"/></g>`,
+    `<g fill="#B4645A" stroke="none" opacity="0.8"><circle cx="18" cy="22" r="3"/><circle cx="36" cy="34" r="3"/>` +
+      `<circle cx="54" cy="20" r="3"/><circle cx="70" cy="40" r="3"/><circle cx="28" cy="46" r="3"/><circle cx="60" cy="48" r="3"/></g>` +
+      `<path d="M 8 14 h 76 M 8 32 h 76 M 8 50 h 76" stroke="#B5AECB" stroke-width="1" fill="none"/>`,
+    `<rect x="12" y="14" width="68" height="44" fill="#2E2A6B" opacity="0.18" stroke="none"/>` +
+      `<circle cx="46" cy="34" r="11" fill="none" stroke="#2E2A6B" stroke-width="2"/>` +
+      `<path d="M 46 23 v 22 M 35 34 h 22" stroke="#2E2A6B" stroke-width="1.4" fill="none"/>`,
+    `<path d="M 8 36 l 10 -14 l 8 24 l 10 -30 l 9 26 l 10 -12 l 9 18 l 10 -20 l 10 14" fill="none" stroke="#7FBFDC" stroke-width="2.2"/>`,
+    `<g fill="#B5AECB" stroke="none"><rect x="10" y="16" width="70" height="6"/><rect x="10" y="28" width="52" height="6"/>` +
+      `<rect x="10" y="40" width="64" height="6"/><rect x="10" y="52" width="40" height="6"/></g>`,
+  ];
+  let out = cut(700, 238, 366, 150, '#E2DACA');
+  for (let i = 0; i < 6; i++) {
+    const x = 714 + (i % 3) * 118;
+    const y = 252 + Math.floor(i / 3) * 70;
+    out += plain(x, y, 100, 60, '#F7F8FA', 2) +
+      `<g transform="translate(${x + 20},${y}) scale(1)">${screens[i]}</g>`;
+  }
+  out += `<path d="M 700 318 H 1066" stroke-width="2" opacity="0.4" fill="none"/>`;
+  return out;
+})();
+
 const PAST_BACK = '';
 
 const PAST_MID =
@@ -610,44 +640,45 @@ const T = (
 
 export const ROOM_THINGS: Record<string, Thing[]> = {
   web: [
-    T('window', 'back', [78, 52, 394, 186], WEB_WINDOW, 'flutter', 0, 101),
-    T('qr', 'back', [512, 100, 100, 100], WEB_QR, 'press', 1, 102),
-    T('shelf', 'back', [640, 70, 418, 192], WEB_SHELF, 'shake', 2, 103),
-    T('cable', 'back', [938, 160, 190, 80], WEB_CABLE, 'ripple', 3, 104),
-    T('mug', 'mid', [732, 262, 66, 42], WEB_MUG, 'tilt', 4, 105),
+    T('window', 'back', [76, 50, 399, 192], WEB_WINDOW, 'flutter', 0, 101),
+    T('qr', 'back', [510, 98, 105, 106], WEB_QR, 'press', 1, 102),
+    T('shelf', 'back', [638, 68, 423, 198], WEB_SHELF, 'shake', 2, 103),
+    T('cable', 'back', [940, 157, 180, 71], WEB_CABLE, 'ripple', 3, 104),
+    T('mug', 'mid', [734, 264, 62, 38], WEB_MUG, 'tilt', 4, 105),
   ],
   admin: [
-    T('keys', 'back', [68, 54, 316, 216], ADMIN_KEYS, 'swing', 0, 201),
-    T('tags', 'back', [406, 62, 316, 148], ADMIN_TAGS, 'flutter', 1, 202),
-    T('board', 'back', [748, 54, 308, 216], ADMIN_BOARD, 'flutter', 2, 203),
-    T('bell', 'mid', [766, 246, 82, 62], ADMIN_BELL, 'shake', 3, 204),
+    T('keys', 'back', [66, 52, 321, 222], ADMIN_KEYS, 'swing', 0, 201),
+    T('tags', 'back', [404, 60, 321, 154], ADMIN_TAGS, 'flutter', 1, 202),
+    T('board', 'back', [746, 52, 313, 222], ADMIN_BOARD, 'flutter', 2, 203),
+    T('bell', 'mid', [766, 242, 80, 66], ADMIN_BELL, 'shake', 3, 204),
   ],
   backend: [
-    T('breaker', 'back', [62, 46, 322, 284], BACK_BREAKER, 'press', 0, 301),
-    T('outbox', 'front', [206, 218, 248, 190], BACK_OUTBOX, 'shake', 1, 302),
-    T('shelf', 'back', [594, 50, 402, 264], BACK_SHELF, 'shake', 2, 303),
-    T('socket', 'back', [412, 176, 178, 172], BACK_SOCKET, 'ripple', 3, 304),
-    T('crate', 'front', [692, 270, 216, 138], BACK_CRATE, 'shake', 4, 305),
+    T('breaker', 'back', [60, 44, 327, 290], BACK_BREAKER, 'press', 0, 301),
+    T('outbox', 'front', [204, 220, 253, 180], BACK_OUTBOX, 'shake', 1, 302),
+    T('shelf', 'back', [592, 48, 407, 270], BACK_SHELF, 'shake', 2, 303),
+    T('socket', 'back', [412, 170, 170, 178], BACK_SOCKET, 'ripple', 3, 304),
+    T('crate', 'front', [690, 272, 221, 128], BACK_CRATE, 'shake', 4, 305),
   ],
   past: [
-    T('reels', 'back', [36, 56, 268, 158], PAST_REELS, 'spin', 0, 401),
-    T('strip', 'back', [270, 84, 316, 76], PAST_STRIP, 'flutter', 2, 402),
-    T('wave', 'back', [740, 62, 316, 164], PAST_WAVE, 'ripple', 3, 403),
-    T('tripod', 'front', [228, 186, 92, 222], PAST_TRIPOD, 'swing', 4, 404),
-    T('scale', 'front', [612, 240, 396, 170], PAST_SCALE, 'tilt', 1, 405),
+    T('reels', 'back', [60, 52, 321, 194], PAST_REELS, 'spin', 0, 401),
+    T('strip', 'back', [340, 86, 373, 78], PAST_STRIP, 'flutter', 2, 402),
+    T('wave', 'back', [738, 60, 321, 170], PAST_WAVE, 'ripple', 3, 403),
+    T('tripod', 'front', [232, 188, 82, 212], PAST_TRIPOD, 'swing', 4, 404),
+    T('control', 'back', [690, 228, 387, 172], PAST_CONTROL, 'ripple', 1, 406),
+    T('scale', 'front', [724, 248, 266, 152], PAST_SCALE, 'tilt', 5, 405),
   ],
   workshop: [
-    T('line', 'back', [20, 52, 1080, 148], WORK_LINE, 'flutter', 0, 501),
-    T('sheet', 'back', [192, 146, 224, 164], WORK_SHEET, 'flutter', 1, 502),
-    T('paints', 'mid', [544, 246, 300, 72], WORK_PAINTS, 'tilt', 2, 503),
-    T('turn', 'mid', [830, 236, 220, 130], WORK_TURN, 'spin', 3, 504),
-    T('sieve', 'back', [44, 142, 168, 216], WORK_SIEVE, 'spin', 4, 505),
+    T('line', 'back', [24, 64, 1072, 104], WORK_LINE, 'flutter', 0, 501),
+    T('sheet', 'back', [222, 166, 289, 212], WORK_SHEET, 'flutter', 1, 502),
+    T('paints', 'mid', [550, 252, 289, 62], WORK_PAINTS, 'tilt', 2, 503),
+    T('turn', 'mid', [834, 234, 204, 146], WORK_TURN, 'spin', 3, 504),
+    T('sieve', 'back', [48, 188, 155, 167], WORK_SIEVE, 'spin', 4, 505),
   ],
   shared: [
-    T('stack', 'mid', [200, 232, 232, 136], SHARE_STACK, 'flutter', 0, 601),
-    T('boxes', 'back', [676, 52, 336, 206], SHARE_BOXES, 'shake', 1, 602),
-    T('stamp', 'mid', [546, 246, 74, 66], SHARE_STAMP, 'press', 2, 603),
-    T('clip', 'back', [52, 38, 240, 272], SHARE_CLIP, 'flutter', 3, 604),
-    T('sign', 'mid', [432, 208, 116, 104], SHARE_SIGN, 'swing', 4, 605),
+    T('stack', 'mid', [208, 240, 228, 80], SHARE_STACK, 'flutter', 0, 601),
+    T('boxes', 'back', [674, 50, 341, 212], SHARE_BOXES, 'shake', 1, 602),
+    T('stamp', 'mid', [552, 252, 62, 58], SHARE_STAMP, 'press', 2, 603),
+    T('clip', 'back', [60, 48, 229, 264], SHARE_CLIP, 'flutter', 3, 604),
+    T('sign', 'mid', [438, 214, 104, 94], SHARE_SIGN, 'swing', 4, 605),
   ],
 };
