@@ -17,14 +17,15 @@ export default function Page() {
             박상욱입니다.
           </h1>
           <p className="lead">
-            해외 환자와 병원을 잇는 의료관광 플랫폼 ZIVO에서 아홉 달 동안 일했습니다. 손님이 보는 화면부터 그 뒤의
-            서버까지 만들었고, 장애가 난 뒤에 수습하기보다 막힐 자리를 먼저 찾아 지우는 편입니다.
+            2019년부터 개발자로 일했습니다. 손님이 보는 화면부터 눈에 안 보이는 서버까지 만들고,
+            문제가 터진 뒤에 수습하기보다 막힐 자리를 먼저 찾아 지우는 편입니다.
+            최근에는 의료관광 서비스를 만드는 회사에서 아홉 달 동안 일했습니다.
           </p>
           <dl className="metrics">
-            <div><dt>5,240+</dt><dd>9개월간의 커밋</dd></div>
-            <div><dt>3개 전 영역</dt><dd>웹 · 어드민 · 백엔드 리드</dd></div>
-            <div><dt>98%</dt><dd>글로벌 웹 단독 구축</dd></div>
-            <div><dt>440건</dt><dd>안정적으로 머지된 PR</dd></div>
+            <div><dt>7년</dt><dd>개발한 기간 (2019 – 2026)</dd></div>
+            <div><dt>화면 · 운영도구 · 서버</dt><dd>혼자 만들 수 있는 범위</dd></div>
+            <div><dt>14개 언어</dt><dd>만든 웹이 서비스하는 언어 수</dd></div>
+            <div><dt>5,240</dt><dd>최근 아홉 달에 남긴 변경 기록</dd></div>
           </dl>
         </header>
 
@@ -73,7 +74,7 @@ export default function Page() {
             <li><a href="https://github.com/sangwookp9591">GitHub @sangwookp9591</a></li>
             <li><a href="https://www.youtube.com/@ai-ng-tech">YouTube @ai-ng-tech</a></li>
           </ul>
-          <p className="sign">박상욱 (iron) · ZIVO Medical Tourism Platform · 2025.10 – 2026.07</p>
+          <p className="sign">박상욱 (iron) · 풀스택 개발자 · 2019 – 2026</p>
         </footer>
       </article>
     </WorldShell>
