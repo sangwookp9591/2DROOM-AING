@@ -64,6 +64,28 @@ function inline(text: string): ReactNode[] {
   return out;
 }
 
+/** 목록 한 줄. indent는 중첩 단계라 마커와 함께 지우면 안 됩니다. */
+type Row = { indent: number; ordered: boolean; text: string };
+
+/** rows[at]부터 같은 깊이가 이어지는 동안을 목록 하나로 묶습니다. 더 깊은 줄은 바로 앞
+    항목의 자식 목록으로 들어가고, 깊이가 다시 얕아지면 그 자리에서 멈춰 남은 위치를
+    돌려줍니다 — 부르는 쪽이 그다음을 이어서 담습니다. */
+function listAt(rows: Row[], at: number, key: number): [ReactNode, number] {
+  const { indent, ordered } = rows[at];
+  const items: ReactNode[] = [];
+  let i = at;
+  while (i < rows.length && rows[i].indent >= indent) {
+    // 같은 깊이인데 마커가 바뀌었으면 여기부터는 다른 목록입니다.
+    if (rows[i].indent === indent && rows[i].ordered !== ordered) break;
+    const { text } = rows[i++];
+    let child: ReactNode = null;
+    if (i < rows.length && rows[i].indent > indent) [child, i] = listAt(rows, i, 0);
+    items.push(<li key={items.length}>{inline(text)}{child}</li>);
+  }
+  const List = ordered ? 'ol' : 'ul';
+  return [<List className="aing__list" key={key}>{items}</List>, i];
+}
+
 /* memo: 답이 흐르는 동안 로그는 토큰마다 다시 그려집니다. 이미 끝난 말풍선까지 매번
    다시 파싱하고 React가 그 엘리먼트를 다시 맞춰 볼 이유가 없습니다 — 같은 문자열이면
    지나갑니다. 그 사이 메인 스레드는 파티클 장을 60fps로 돌리고 있습니다. */
@@ -86,16 +108,25 @@ function Markdown({ text }: { text: string }) {
     }
 
     if (UL.test(lines[i]) || OL.test(lines[i])) {   // FENCE는 바로 위에서 걸렀습니다
-      const ordered = OL.test(lines[i]);
-      const mark = ordered ? OL : UL;
-      const items: string[] = [];
-      while (i < lines.length && mark.test(lines[i])) items.push(lines[i++].replace(mark, ''));
-      const List = ordered ? 'ol' : 'ul';
-      nodes.push(
-        <List className="aing__list" key={key++}>
-          {items.map((t, n) => <li key={n}>{inline(t)}</li>)}
-        </List>,
-      );
+      /* 마커만 떼고 들여쓰기는 남깁니다. 마커와 함께 지우던 시절에는 '- 위 / ␣␣- 아래'가
+         같은 층의 형제 둘로 그려졌습니다 — answer.ts가 polish와 trimDangling 두 곳에서
+         이 들여쓰기를 굳이 지켜 보내는 이유가 화면 직전에 사라진 셈이었습니다. */
+      const rows: Row[] = [];
+      while (i < lines.length && (UL.test(lines[i]) || OL.test(lines[i]))) {
+        const line = lines[i++];
+        const ordered = OL.test(line);
+        rows.push({
+          indent: /^\s*/.exec(line)![0].length,
+          ordered,
+          text: line.replace(ordered ? OL : UL, ''),
+        });
+      }
+      // 얕아졌다 다시 시작하는 목록이 있으면 그만큼 나눠 담습니다. 남기면 그 줄들이 사라집니다.
+      for (let at = 0; at < rows.length;) {
+        const [node, next] = listAt(rows, at, key++);
+        nodes.push(node);
+        at = next;
+      }
       continue;
     }
 

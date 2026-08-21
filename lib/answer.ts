@@ -162,6 +162,13 @@ const nudgeFor = (chunk: Chunk) => {
 export function compose(query: string, hits: Chunk[]): string {
   if (!hits.length) return NO_MATCH;
 
+  /* 이미 답의 꼴인 조각은 고르지 않고 그대로 냅니다. 여기를 지나가면 아래 choose가
+     문장 셋·340자로 추리는데, 나열형 조각에서 그건 뒷줄을 버리는 것과 같습니다 —
+     스택 조각 483자가 294자로 나가면서 운영 줄(EB·ALB·nginx·Actions·Prometheus)과
+     그 외 줄이 통째로 사라졌습니다. 판단이 여기 있어야 위키 폴백과 모델 우회
+     (brain.ask)가 같은 규칙을 쓰고, 하네스도 실제로 나가는 답을 봅니다. */
+  if (hits[0].verbatim) return hits[0].text;
+
   const picked = choose(query, hits[0].text);
   if (!picked.length) return NO_MATCH;
 
@@ -206,7 +213,8 @@ export function suggest(query: string, asked: string[] = [], n = 3): string[] {
 
 /** 모델이 없을 때의 답. 근거는 모델이 받는 것과 같은 위키입니다. */
 export function wikiAnswer(query: string): string {
-  return compose(query, retrieve(query, 2));
+  // k는 brain.ask와 같아야 합니다 — 다르면 하네스가 출시되는 코드가 아니라 그 형제를 봅니다.
+  return compose(query, retrieve(query, 3));
 }
 
 /* ── 모델이 뱉은 것 다듬기 ──────────────────────────────────────── */

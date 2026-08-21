@@ -11,7 +11,6 @@ import { compose, polish, trimDangling, NO_MATCH } from '@/lib/answer';
 import { DEFAULT_MODEL, byId } from './models';
 import type { WorkerRequest, WorkerResponse } from './llm.worker';
 
-type Engine = 'wiki' | 'ollama' | 'local';
 type Status = 'idle' | 'loading' | 'ready' | 'error';
 
 /** 답을 기다리는 질문 하나. 워커 메시지가 오면 여기로 흘러갑니다. */
@@ -92,11 +91,14 @@ async function askOllama(
   let capped = false;
   for (;;) {
     const { done, value } = await reader.read();
-    if (done) break;
-    buf += dec.decode(value, { stream: true });
+    // 끝났으면 디코더를 비웁니다 — 한글 한 글자가 청크 경계에 걸려 있으면 여기서 나옵니다.
+    buf += done ? dec.decode() : dec.decode(value, { stream: true });
     // NDJSON — 줄 하나가 곧 토큰 한 덩어리입니다. 마지막 조각은 다음 청크에 이어 붙입니다.
     const lines = buf.split('\n');
-    buf = lines.pop()!;
+    /* 스트림이 끝났으면 남은 조각도 마지막 줄입니다. 그냥 버리면 done_reason을 실은 그
+       줄을 놓치고, capped가 false로 남아 잘린 답이 trimDangling 없이 나갑니다 —
+       "…ArchUnit 강제로 세웠고,"로 끝나는 답이 그렇게 나갔습니다. */
+    buf = done ? '' : lines.pop()!;
     for (const line of lines) {
       if (!line.trim()) continue;
       const ev = JSON.parse(line) as { message?: { content?: string }; done_reason?: string };
@@ -105,6 +107,7 @@ async function askOllama(
       // 마지막 줄에만 실려 옵니다. 'length'는 num_predict가 끊었다는 뜻입니다.
       if (ev.done_reason === 'length') capped = true;
     }
+    if (done) break;
   }
   return { text: out, capped };
 }
@@ -124,7 +127,6 @@ function mayDownload() {
 }
 
 export default function useOracleBrain() {
-  const [engine, setEngine] = useState<Engine>('wiki');   // wiki | ollama | local
   const [status, setStatus] = useState<Status>('idle');   // idle | loading | ready | error
   const [progress, setProgress] = useState(0);
   const [model, setModel] = useState(DEFAULT_MODEL);
@@ -132,6 +134,13 @@ export default function useOracleBrain() {
   const probe = useRef<Promise<void> | null>(null);   // Ollama 탐지가 끝났는지
   const workerRef = useRef<Worker | null>(null);
   const pending = useRef(new Map<string, PendingAsk>());
+
+  /* 워커를 버리는 자리는 둘(onerror·retryModel)인데, 기다리던 질문을 깨우는 건 한쪽만
+     하고 있었습니다. clear()는 항목만 지우고 fail()을 안 부르므로 그 프라미스는 120초
+     타임아웃까지 안 풀리고, AingChat의 finally가 못 돌아 입력창이 그동안 잠깁니다. */
+  const abandon = useCallback((why: string) => {
+    for (const [id, p] of pending.current) { p.fail(why); pending.current.delete(id); }
+  }, []);
 
   const spawn = useCallback(() => {
     if (workerRef.current) return workerRef.current;
@@ -144,7 +153,7 @@ export default function useOracleBrain() {
         if (data.status === 'error') console.error('[아잉] 모델', data.message);
         setStatus(data.status);
         if (data.model) setModel(byId(data.model));
-        if (data.status === 'ready') { setEngine('local'); setProgress(1); }
+        if (data.status === 'ready') setProgress(1);
       } else if (data.type === 'token') pending.current.get(data.id)?.token(data.text);
       else if (data.type === 'done') { pending.current.get(data.id)?.done(data.capped); pending.current.delete(data.id); }
       // load가 실패하면 id 없는 error가 옵니다 — 그땐 get(undefined)이 빈손으로 돌아오고
@@ -157,11 +166,11 @@ export default function useOracleBrain() {
     w.onerror = (e) => {
       console.error('[아잉] 워커', e.message || e);
       setStatus('error');
-      for (const [id, p] of pending.current) { p.fail('워커가 죽었습니다'); pending.current.delete(id); }
+      abandon('워커가 죽었습니다');
     };
     workerRef.current = w;
     return w;
-  }, []);
+  }, [abandon]);
 
   const enableModel = useCallback((id: string) => {
     const spec = byId(id);
@@ -179,7 +188,6 @@ export default function useOracleBrain() {
     probe.current = findOllama().then((m) => {
       if (dead || !m) return;
       ollamaRef.current = m;
-      setEngine('ollama');
       setStatus('ready');
     }).catch((err) => console.warn('[아잉] 엔진 탐지 실패:', err));
     return () => { dead = true; };
@@ -206,9 +214,9 @@ export default function useOracleBrain() {
   const retryModel = useCallback(() => {
     workerRef.current?.terminate();
     workerRef.current = null;
-    pending.current.clear();
+    abandon('모델을 다시 띄웁니다');
     enableModel(model.id);
-  }, [enableModel, model]);
+  }, [abandon, enableModel, model]);
 
   useEffect(() => () => workerRef.current?.terminate(), []);
 
@@ -232,7 +240,10 @@ export default function useOracleBrain() {
     const fromWiki = () => compose(question, hits);
     /* 이미 답의 꼴인 조각은 모델을 거치지 않습니다. 나열을 문장으로 바꿔 봐야 좋아지지
        않고, 0.6B는 목록의 앞 몇 개만 옮기고 나머지를 버립니다 — "어떤 스택 쓰나요"에
-       Spring Boot도 Java도 빠진 답이 나갔습니다. */
+       Spring Boot도 Java도 빠진 답이 나갔습니다.
+
+       여기서는 모델만 건너뜁니다. 조각을 그대로 낼지 골라 엮을지는 compose가 정합니다 —
+       그래야 위키 폴백과 이 우회로가 같은 규칙을 쓰고, wiki.check.ts도 그 규칙을 봅니다. */
     if (hits[0].verbatim) return fromWiki();
     /* 모델은 제목·라벨·되풀이를 습관처럼 답니다. 화면에 닿기 전에 여기서 한 번 걷어냅니다.
        예산이 끊은 답은 그 위에 마지막 반 문장까지 뗍니다 — 스트리밍 중에는 못 하는 일입니다.
@@ -279,7 +290,6 @@ export default function useOracleBrain() {
   }, [status]);
 
   return {
-    engine,
     status,
     progress,
     model,

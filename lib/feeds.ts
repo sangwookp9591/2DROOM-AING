@@ -25,8 +25,18 @@ function fell(what: string, err: unknown): [] {
   return [];
 }
 
+/* 연결만 열어 두고 아무것도 안 보내는 상대가 있습니다(캡티브 포털, DNS 블랙홀, 응답을
+   매달아 두는 레이트리밋). Node의 fetch에는 기본 타임아웃이 없어서, 그러면 아래 두
+   함수의 catch가 영영 안 돌고 `next build`가 정적 생성 단계에서 그대로 멈춥니다.
+   빈 목록으로 넘어가는 길은 거절당했을 때만 열립니다 — 매달린 요청에는 안 열립니다. */
+const DEADLINE = 10_000;
+
 async function grab(url: string, headers?: Record<string, string>) {
-  const res = await fetch(url, { headers, next: { revalidate: REVALIDATE } });
+  const res = await fetch(url, {
+    headers,
+    signal: AbortSignal.timeout(DEADLINE),
+    next: { revalidate: REVALIDATE },
+  });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText} ← ${url}`);
   return res;
 }
@@ -144,7 +154,8 @@ export async function recentVideos(limit = 4): Promise<Video[]> {
 
 type Repo = {
   name: string; html_url: string; description: string | null;
-  language: string | null; pushed_at: string; fork: boolean; archived: boolean;
+  // 만들기만 하고 한 번도 push하지 않은 저장소는 pushed_at이 null로 옵니다.
+  language: string | null; pushed_at: string | null; fork: boolean; archived: boolean;
 };
 
 /** 최근에 손댄 순. 포크와 보관된 것은 "지금 하는 일"이 아니라 뺍니다. */
@@ -162,7 +173,9 @@ export async function recentProjects(limit = 4): Promise<Project[]> {
         name: r.name,
         url: r.html_url,
         lang: r.language,
-        pushed: r.pushed_at.slice(0, 10),
+        /* null이면 날짜 없이 겁니다. 여기서 던지면 바깥 catch가 저장소 하나 때문에
+           목록 전체를 비웁니다 — 콜로폰과 복도 액자 네 칸이 함께 빕니다. */
+        pushed: r.pushed_at?.slice(0, 10) ?? '',
         desc: r.description ?? '',
       }));
     // 위와 같은 이유입니다 — 받아 왔는데 0개인 것은 성공이 아니라 조용한 실패입니다.

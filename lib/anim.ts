@@ -15,3 +15,11 @@ export function isInteractiveTarget(e: Event): boolean {
   const t = e.target;
   return t instanceof HTMLElement && !!t.closest('button, a, input, textarea, select, [contenteditable]');
 }
+
+/** 글자를 받는 자리인지. '/'처럼 글자 하나로 도는 단축키만 이쪽을 봅니다 — 버튼과 링크는
+    '/'를 먹지 않으므로 위 목록에서 그 둘을 뺀 것입니다. 두 가드를 나란히 두는 이유는,
+    떨어뜨려 두었더니 한쪽만 select와 [contenteditable]을 챙기고 다른 쪽은 놓쳤기 때문입니다. */
+export function isTypingTarget(e: Event): boolean {
+  const t = e.target;
+  return t instanceof HTMLElement && !!t.closest('input, textarea, select, [contenteditable]');
+}

@@ -226,7 +226,7 @@ pnpm dev
 | `pnpm build` | 프로덕션 정적 빌드와 타입 검사 |
 | `pnpm start` | 프로덕션 서버 실행 |
 | `pnpm typecheck` | TypeScript 검사 |
-| `pnpm check` | 위키 검색·답변 151개 회귀 검사 |
+| `pnpm check` | 위키 검색·답변 회귀 검사 (통과 수는 실행할 때 직접 셉니다) |
 
 ## 브라우저 권장 사항
 

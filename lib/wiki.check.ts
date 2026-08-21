@@ -1,5 +1,6 @@
 // node --experimental-strip-types lib/wiki.check.ts — 검색이 엉뚱한 조각을 1순위로 올리면 실패합니다.
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { WIKI, STOP, retrieve } from './wiki.ts';
 import { wikiAnswer, polish, sentences, trimDangling } from './answer.ts';
 
@@ -135,9 +136,17 @@ const flat = (s: string) => s.replace(/\s+/g, '');
 const SHAPE = ['쿠폰 왜 새로 만들었어', '권한 시스템 어떻게 설계했나요', '기술 스택', '연락처', '검색 성능 개선'];
 for (const q of SHAPE) {
   const a = wikiAnswer(q);
-  const src = retrieve(q, 1)[0].text;
+  const top = retrieve(q, 1)[0];
+  const src = top.text;
   noMatch(a, /[【】]/, `"${q}"의 답에 문서 제목표가 남아 있습니다`);
   noMatch(a, /^#{1,6}\s/m, `"${q}"의 답에 마크다운 제목이 있습니다`);
+  /* verbatim은 정반대 방향입니다 — 줄어들면 안 됩니다. 여기를 아래 "짧아져야 한다"에
+     같이 걸어 두었더니, 스택 조각이 483자에서 294자로 잘려 나가는 것이 정상 동작으로
+     굳어 있었습니다(운영 줄과 그 외 줄이 통째로 빠진 답). */
+  if (top.verbatim) {
+    eq(a, src, `"${q}"는 원문 그대로 나가야 하는 조각인데 답이 다릅니다`);
+    continue;
+  }
   // 조각을 통째로 옮기지 않았는지. 문장이 넷을 넘는 조각이면 실제로 줄어들어야 합니다
   // (연락처처럼 두 문장짜리 조각은 고를 것이 없으므로 그대로 나가는 게 맞습니다).
   const total = sentences(src).length;
@@ -148,6 +157,36 @@ for (const q of SHAPE) {
     ok(flat(src).includes(flat(sent)), `"${q}"의 답에 원문에 없는 문장이 있습니다: ${sent}`);
   }
 }
+
+/* ── 화면에 실려 나가는 추천 칩 ─────────────────────────────────
+   CASES와 따로 두는 이유는 이 문자열들이 UI에서 그대로 버튼이 되기 때문입니다. 비슷한
+   변형('결제는 어떻게 처리했어')을 검사하는 동안, 정작 눌리는 문구는 엉뚱한 조각을
+   물어 오고 있었습니다 — '앱 없이 주문하게 했나요?'는 장바구니 병합 규칙을,
+   '어떤 걸로 개발해요?'는 종합 프로필을 답했습니다. 답이 오기는 하니 안 보였습니다. */
+const CHIPS: [string, string][] = [
+  ['어떤 서비스를 만들었어요?', 'who'],
+  ['프론트엔드는 어디까지 했어요?', 'front'],
+  ['백엔드에서 뭘 했어요?', 'back'],
+  ['결제는 어떻게 처리했어요?', 'payment'],
+  ['권한 시스템은 어떻게 설계했어요?', 'perm'],
+  ['외부 서비스가 멈추면 어떻게 되나요?', 'ai'],
+  ['팀에 남긴 게 뭐예요?', 'team'],
+  ['기술 스택이 뭐예요?', 'stack'],
+];
+for (const [q, want] of CHIPS) {
+  eq(retrieve(q, 3)[0]?.id, want, `칩 "${q}"가 ${want} 대신 다른 조각을 물어 옵니다`);
+}
+
+/* 위 목록을 손으로 옮겨 적으면 그것도 또 하나의 사본입니다. 화면 파일에서 직접 읽어
+   양쪽이 같은 집합인지 봅니다 — 한쪽만 고치면 여기서 먼저 터집니다. */
+const ui = readFileSync(new URL('../components/aing/AingChat.tsx', import.meta.url), 'utf8');
+const shipped = new Set(
+  [...ui.matchAll(/const (?:OPENERS|PROMPTS)[^=]*=\s*\[([^\]]*)\]/g)]
+    .flatMap(([, arr]) => [...arr.matchAll(/'([^']+)'/g)].map((m) => m[1])),
+);
+ok(shipped.size > 0, 'AingChat에서 OPENERS·PROMPTS를 못 읽었습니다 — 정규식이 낡았습니다');
+for (const [q] of CHIPS) ok(shipped.has(q), `칩 "${q}"가 AingChat에 없습니다`);
+for (const q of shipped) ok(CHIPS.some(([c]) => c === q), `AingChat의 "${q}"가 검사에 없습니다`);
 
 /* polish는 모델의 습관을 걷어냅니다. 스트리밍 도중에도 매 토큰마다 불리므로
    같은 글을 두 번 통과시켜도 결과가 변하지 않아야 합니다. */

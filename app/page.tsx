@@ -217,7 +217,15 @@ export default async function Page() {
                   <span><img src="/brands/orca.svg" alt="Orca 로고" />Orca</span>
                   <span><img src="/brands/buzz-preview.png" alt="Buzz 서비스 이미지" />Buzz</span>
                 </div>
-                <img src="/brands/ai-agents-character-lineup-branded.svg" alt="Claude, Codex, Gemini, Kimi, Grok의 실제 로고가 들어간 다섯 캐릭터" />
+                {/* 예전에는 이 PNG 위에 브랜드 로고를 배지로 얹은 SVG를 걸었습니다. <img>로 부른 SVG는
+                    secure static mode라 안의 <image href>를 하나도 못 받아서 흰 원 다섯 개만 나왔습니다.
+                    로고는 바로 위 .ai-brands 줄이 이미 이름과 함께 보여 주므로 배지 없이 그림만 겁니다. */}
+                <img
+                  src="/brands/ai-agents-character-lineup.webp"
+                  alt="Claude, Codex, Gemini, Kimi, Grok을 맡은 다섯 캐릭터"
+                  width={1080}
+                  height={464}
+                />
                 <figcaption>
                   <span>Claude · 차분하게 정리하는 조언자</span>
                   <span>Codex · 정확하게 만드는 작업자</span>

@@ -9,6 +9,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import useAingBrain from './brain';
 import Markdown from './Markdown';
 import { polish, suggest } from '@/lib/answer';
+import { isTypingTarget } from '@/lib/anim';
 
 type Brain = ReturnType<typeof useAingBrain>;
 
@@ -18,18 +19,20 @@ type Turn = { role: 'you' | 'aing'; text: string; id: string; at: string; pendin
 
 const HELLO = '안녕하세요.\n프로젝트, 기술스택, 경력에 대해\n편하게 물어보세요.';
 
-/* 첫 화면에 놓는 질문. 위키가 실제로 답할 수 있는 것만 골랐습니다 —
-   눌렀는데 "여기 안 적혀 있네요"가 돌아오면 안 물어본 것만 못합니다. */
-const OPENERS = ['어떤 서비스를 만들었어요?', '앱 없이 주문하게 했나요?', '서버도 했나요?'];
+/* 첫 화면에 놓는 질문. NO_MATCH만 피하면 되는 게 아니라, 누른 그 화제가 나와야 합니다 —
+   '앱 없이 주문하게 했나요?'는 장바구니 병합 규칙을, '어떤 걸로 개발해요?'는 프로필을
+   물어 왔습니다. 답이 오기는 하니 눈에 안 띄었습니다. 아래 문구는 전부 wiki.check.ts의
+   CHIPS가 1순위 조각까지 검사합니다 — 위키가 바뀌면 여기가 아니라 거기서 먼저 터집니다. */
+const OPENERS = ['어떤 서비스를 만들었어요?', '프론트엔드는 어디까지 했어요?', '백엔드에서 뭘 했어요?'];
 
 /** 답 아래에 권할 화제를 위키가 못 내줄 때 쓰는 예비 질문. */
 const PROMPTS = [
   '어떤 서비스를 만들었어요?',
   '결제는 어떻게 처리했어요?',
-  '운영자 권한은 어떻게 나눴어요?',
+  '권한 시스템은 어떻게 설계했어요?',
   '외부 서비스가 멈추면 어떻게 되나요?',
-  '팀에 어떤 도구를 공유했어요?',
-  '어떤 걸로 개발해요?',
+  '팀에 남긴 게 뭐예요?',
+  '기술 스택이 뭐예요?',
 ];
 
 /** 말풍선 옆에 붙는 시각. 서버에는 이 시각이 없으므로 창은 마운트 뒤에만 그립니다. */
@@ -51,14 +54,11 @@ export default function AingChat() {
   const [q, setQ] = useState('');
   const [turns, setTurns] = useState<Turn[]>([]);
   const [busy, setBusy] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const brain = useAingBrain();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
   const launchRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => setMounted(true), []);
 
   /* 모델은 방문자가 물어볼 뜻을 보인 다음에 받습니다(brain.warm). 창을 여는 것과
      입력칸에 손을 대는 것이 그 신호입니다 — 복도만 걷다 나가는 사람은 아무것도 안 받습니다. */
@@ -70,16 +70,19 @@ export default function AingChat() {
      복도 쪽 단축키(Enter로 방 진입)는 입력칸 위에서 스스로 비켜섭니다(lib/anim.isInteractiveTarget). */
   useEffect(() => {
     const on = (e: KeyboardEvent) => {
-      const typing = /^(INPUT|TEXTAREA)$/.test((e.target as HTMLElement).tagName);
-      if (!open && !typing && (e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey)))) {
+      if (!open && !isTypingTarget(e) && (e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey)))) {
         e.preventDefault();
         grow();
       } else if (open && e.key === 'Escape' && !pinned) {
+        /* 이 Esc는 창을 접는 데 씁니다. 그냥 두면 같은 window에 걸린 복도 핸들러가
+           (WorldShell) 같은 키로 방까지 나가서, 한 번 눌렀는데 두 가지가 일어납니다.
+           캡처 단계에서 먼저 받아 여기서 끊습니다 — 복도 쪽은 버블이라 이 뒤에 옵니다. */
+        e.stopPropagation();
         shrink();
       }
     };
-    addEventListener('keydown', on);
-    return () => removeEventListener('keydown', on);
+    addEventListener('keydown', on, { capture: true });
+    return () => removeEventListener('keydown', on, { capture: true });
   }, [open, pinned, grow, shrink]);
 
   useEffect(() => { if (open) inputRef.current?.focus(); }, [open]);
@@ -151,9 +154,8 @@ export default function AingChat() {
     </ul>
   );
 
-  // 시각은 서버에 없고 창 안에는 크롤러가 읽어야 할 글도 없습니다. 마운트 뒤에 붙입니다.
-  if (!mounted) return null;
-
+  // 시각(clock)은 서버에 없지만, 이 컴포넌트는 WorldShell이 ssr:false로 싣습니다 —
+  // 서버에서 그려지는 일이 없으므로 하이드레이션이 어긋날 자리도 없습니다.
   const note = engineNote(brain);
 
   return (

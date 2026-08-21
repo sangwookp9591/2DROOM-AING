@@ -140,7 +140,7 @@ export default function WorldShell({
 
       {!reading && active && aing && (
         <img
-          className="aing"
+          className="mascot"
           src={`/mascot/motion/${aing.motion}.webp`}
           alt={aing.alt}
           style={{ left: aing.left, top: aing.top, width: aing.width, height: aing.height }}
