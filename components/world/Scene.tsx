@@ -8,7 +8,7 @@ import { damp } from '@/lib/anim';
 import gsap from 'gsap';
 import { ROOM_LAYERS, ROOM_MASCOT, ROOM_THINGS, toDataUri, type Layer, type Thing } from '@/lib/props';
 import {
-  FRAMES, REPO_SPOTS, VIDEO_SPOTS,
+  FRAMES, MARK, REPO_SPOTS, VIDEO_SPOTS,
   type Frame as FrameSpec, type LiveArt, type LiveSpot,
 } from '@/lib/frames';
 import { useCorridorCamera, type CorridorCam } from './useCorridorCamera';
@@ -32,6 +32,10 @@ const PAPER = {
   sketch: '#CFC8B6',
   jamb: '#9E9683',
   bg: '#F4F1EA',
+  // 캔버스로 그리는 액자가 쓰는 색. globals.css의 --card·--faint와 같은 값입니다.
+  wood: '#D9C4A9',
+  card: '#FBFAF6',
+  faint: '#8A85B8',
 };
 
 export type SceneApi = {
@@ -58,7 +62,7 @@ type Props = {
   api: { current: SceneApi | null };
   activeId: string | null;
   /** 복도 벽에 걸 밖의 것들. 서버에서 받아 여기까지 내려옵니다(lib/feeds.ts). */
-  live: LiveArt[];
+  wall: LiveArt[];
   onNear: (id: string | null) => void;
   onEnd: (atEnd: boolean) => void;
   onArrive: (id: string) => void;
@@ -68,13 +72,24 @@ type Props = {
   onAing: (rect: AingRect | null) => void;
 };
 
-export default function Scene({ api, activeId, live, onNear, onEnd, onArrive, onLeave, onLiveRect, onThingPick, onAing }: Props) {
+export default function Scene({ api, activeId, wall, onNear, onEnd, onArrive, onLeave, onLiveRect, onThingPick, onAing }: Props) {
   const cam = useRef<CorridorCam | null>(null);
   const busy = useRef(false);
   const activeRef = useRef<Room | null>(null);
   const near = useRef<string | null>(null);
   const atEnd = useRef(false);
   const [hovered, setHovered] = useState<string | null>(null);
+
+  /* 받아 온 것을 미리 잡아 둔 자리에 순서대로 겁니다. 자리보다 많이 오면 남는 것은
+     안 걸립니다 — 자리를 늘리는 것이 복도 배치를 다시 보는 일이라서입니다. */
+  const hung = useMemo(() => {
+    const used = { video: 0, repo: 0 };
+    return wall.flatMap((art) => {
+      const spots = art.kind === 'video' ? VIDEO_SPOTS : REPO_SPOTS;
+      const spot = spots[used[art.kind]++];
+      return spot ? [{ art, spot }] : [];
+    });
+  }, [wall]);
 
   useCorridorCamera(cam);
 
@@ -183,6 +198,11 @@ export default function Scene({ api, activeId, live, onNear, onEnd, onArrive, on
       {/* 문과 문 사이는 28유닛씩 비어 있습니다. 그 벽에 액자를 겁니다. */}
       {FRAMES.map((frame) => (
         <WallFrame key={frame.id} frame={frame} locked={locked} onPick={onThingPick} />
+      ))}
+
+      {/* 밖에서 온 것들. 자리는 미리 잡혀 있고 받아 온 개수만큼만 걸립니다. */}
+      {hung.map(({ art, spot }) => (
+        <LiveFrameMesh key={art.id} art={art} spot={spot} locked={locked} />
       ))}
 
       {ROOMS.map((room) => (
@@ -335,6 +355,237 @@ function WallFrame({
     >
       <planeGeometry args={[frame.w, h]} />
       <meshBasicMaterial map={texture} transparent alphaTest={0.04} toneMapped={false} />
+    </mesh>
+  );
+}
+
+/* ── 밖에서 온 액자 ──────────────────────────────────────────────────
+   유튜브 영상과 깃 저장소. 이 액자만 캔버스로 그립니다 — SVG data URI 안에서는
+   웹폰트가 안 걸려서 손글씨가 시스템 고딕으로 주저앉기 때문입니다. */
+
+const ART_W = 420;      // 캔버스 폭(px). 높이는 내용이 정합니다.
+const ART_PAD = 21;     // 나무틀 두께. 얇으면 멀리서 흰 종이 한 장으로만 보입니다.
+const ART_MAT = 17;     // 흰 매트 여백
+
+/** 살짝 떨리는 사각형. 자로 잰 선은 이 세계의 물건으로 안 읽힙니다. */
+function wobble(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, seed: number) {
+  const j = (n: number) => {
+    const v = Math.sin(seed * 12.9898 + n * 78.233) * 43758.5453;
+    return (v - Math.floor(v)) * 1.8 - 0.9;
+  };
+  ctx.beginPath();
+  ctx.moveTo(x + j(0), y + j(1));
+  ctx.lineTo(x + w + j(2), y + j(3));
+  ctx.lineTo(x + w + j(4), y + h + j(5));
+  ctx.lineTo(x + j(6), y + h + j(7));
+  ctx.closePath();
+}
+
+/** 폭에 맞춰 줄을 나눕니다. 넘치면 마지막 줄을 줄이고 말줄임표를 답니다. */
+function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxW: number, maxLines: number) {
+  const lines: string[] = [];
+  let line = '';
+  let cut = false;
+  for (const ch of text) {
+    if (ctx.measureText(line + ch).width <= maxW) { line += ch; continue; }
+    if (lines.length + 1 === maxLines) { cut = true; break; }
+    lines.push(line);
+    line = ch;
+  }
+  lines.push(line);
+  if (cut) {
+    let last = lines[lines.length - 1];
+    while (last.length > 1 && ctx.measureText(`${last}…`).width > maxW) last = last.slice(0, -1);
+    lines[lines.length - 1] = `${last}…`;
+  }
+  return lines;
+}
+
+/* 캔버스가 오염되면 WebGL이 텍스처로 안 받습니다. i.ytimg.com은 CORS를 열어 두었습니다. */
+const loadImage = (src: string) =>
+  new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`이미지를 못 받았습니다: ${src}`));
+    img.src = src;
+  });
+
+/** 액자 한 장을 그려 텍스처로 돌려줍니다. 높이는 내용이 정하므로 비율도 같이 냅니다. */
+async function paintArt(art: LiveArt): Promise<{ texture: THREE.CanvasTexture; ratio: number }> {
+  /* 웹폰트가 올라오기 전에 그리면 손글씨가 폴백으로 굳은 채 텍스처에 구워집니다.
+     fonts.ready만으로는 아직 안 쓰인 얼굴을 기다려 주지 않아 직접 부릅니다. */
+  await Promise.all([
+    document.fonts.load('700 26px Gaegu'),
+    document.fonts.load('400 19px "Nanum Pen Script"'),
+  ]).catch(() => {});
+
+  const inner = ART_W - 2 * (ART_PAD + ART_MAT);
+  const left = ART_PAD + ART_MAT;
+
+  // 재는 데만 쓰는 컨텍스트. 높이를 알아야 캔버스를 만들 수 있습니다.
+  const probe = document.createElement('canvas').getContext('2d')!;
+  probe.font = '700 26px Gaegu, sans-serif';
+  const titleLines = wrapLines(probe, art.title, inner, 2);
+  probe.font = '400 16px Pretendard, sans-serif';
+  const descLines = art.desc ? wrapLines(probe, art.desc, inner, 1) : [];
+
+  const thumbH = art.kind === 'video' ? Math.round((inner * 9) / 16) : 0;
+  const logoH = art.kind === 'repo' ? 30 : 0;
+  const LINE = 34;          // Gaegu 26px이 실제로 차지하는 높이
+  const bodyTop = ART_PAD + ART_MAT + (thumbH ? thumbH + 14 : 0) + (logoH ? logoH + 8 : 0);
+  const height =
+    bodyTop + titleLines.length * LINE + 8 + 26 +
+    (descLines.length ? 4 + 22 : 0) + ART_MAT + ART_PAD;
+
+  const dpr = 2;
+  const cv = document.createElement('canvas');
+  cv.width = ART_W * dpr;
+  cv.height = height * dpr;
+  const ctx = cv.getContext('2d')!;
+  ctx.scale(dpr, dpr);
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.textBaseline = 'top';
+
+  // 나무틀 → 흰 매트
+  ctx.fillStyle = PAPER.wood;
+  ctx.strokeStyle = PAPER.ink;
+  ctx.lineWidth = 3.6;
+  wobble(ctx, 4, 4, ART_W - 8, height - 8, 1);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = PAPER.card;
+  ctx.lineWidth = 2.6;
+  wobble(ctx, ART_PAD, ART_PAD, ART_W - 2 * ART_PAD, height - 2 * ART_PAD, 2);
+  ctx.fill();
+  ctx.stroke();
+
+  const top = ART_PAD + ART_MAT;
+
+  if (art.thumb) {
+    const img = await loadImage(art.thumb);
+    ctx.save();
+    wobble(ctx, left, top, inner, thumbH, 3);
+    ctx.clip();
+    const scale = Math.max(inner / img.width, thumbH / img.height);
+    const dw = img.width * scale;
+    const dh = img.height * scale;
+    ctx.drawImage(img, left + (inner - dw) / 2, top + (thumbH - dh) / 2, dw, dh);
+    ctx.restore();
+    ctx.strokeStyle = PAPER.ink;
+    ctx.lineWidth = 2.2;
+    wobble(ctx, left, top, inner, thumbH, 3);
+    ctx.stroke();
+
+    // 재생 단추. 이게 없으면 그냥 사진이 걸린 것으로 보입니다.
+    const cx = left + inner / 2;
+    const cy = top + thumbH / 2;
+    ctx.fillStyle = 'rgba(206,54,44,0.92)';
+    ctx.beginPath();
+    ctx.roundRect(cx - 28, cy - 19, 56, 38, 9);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.moveTo(cx - 8, cy - 11);
+    ctx.lineTo(cx + 13, cy);
+    ctx.lineTo(cx - 8, cy + 11);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  if (art.kind === 'repo') {
+    ctx.save();
+    ctx.translate(left, top);
+    ctx.scale(logoH / 16, logoH / 16);
+    ctx.fillStyle = PAPER.ink;
+    ctx.fill(new Path2D(MARK.github));
+    ctx.restore();
+  }
+
+  let y = bodyTop;
+  ctx.fillStyle = PAPER.ink;
+  ctx.font = '700 26px Gaegu, sans-serif';
+  titleLines.forEach((line, i) => ctx.fillText(line, left, y + i * LINE));
+  y += titleLines.length * LINE + 8;
+
+  ctx.fillStyle = PAPER.faint;
+  ctx.font = '400 19px "Nanum Pen Script", sans-serif';
+  ctx.fillText(art.meta, left, y);
+  y += 26;
+
+  if (descLines.length) {
+    ctx.fillStyle = PAPER.jamb;
+    ctx.font = '400 16px Pretendard, sans-serif';
+    ctx.fillText(descLines[0], left, y + 4);
+  }
+
+  const texture = new THREE.CanvasTexture(cv);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 4;
+  return { texture, ratio: height / ART_W };
+}
+
+/**
+ * 밖에서 온 액자 한 장. 누르면 그 유튜브 영상이나 저장소로 갑니다 —
+ * 설명 카드를 띄우지 않는 건 제목과 날짜가 이미 액자 안에 그려져 있어서입니다.
+ */
+function LiveFrameMesh({
+  art, spot, locked,
+}: {
+  art: LiveArt;
+  spot: LiveSpot;
+  locked: boolean;
+}) {
+  const [drawn, setDrawn] = useState<{ texture: THREE.CanvasTexture; ratio: number } | null>(null);
+  const mesh = useRef<THREE.Mesh>(null);
+  const [hover, setHover] = useState(false);
+  const dir = spot.side === 'left' ? -1 : 1;
+
+  useEffect(() => {
+    let dead = false;
+    let made: THREE.CanvasTexture | null = null;
+    paintArt(art)
+      .then((result) => {
+        made = result.texture;
+        if (dead) { result.texture.dispose(); return; }
+        setDrawn(result);
+      })
+      // 썸네일이 안 오거나 캔버스가 막히면 그 액자만 안 걸립니다. 벽은 그대로입니다.
+      .catch((err) => console.warn('[액자] 못 그렸습니다:', art.id, err));
+    return () => { dead = true; made?.dispose(); };
+  }, [art]);
+
+  useFrame((_, dt) => {
+    if (!mesh.current) return;
+    const target = hover && !locked ? spot.tilt * 2.6 : spot.tilt;
+    mesh.current.rotation.z += (target - mesh.current.rotation.z) * damp(dt, 8);
+  });
+
+  useEffect(() => {
+    if (!hover || locked) return;
+    document.body.style.cursor = 'pointer';
+    return () => { document.body.style.cursor = ''; };
+  }, [hover, locked]);
+
+  if (!drawn) return null;
+  const h = spot.w * drawn.ratio;
+
+  return (
+    <mesh
+      ref={mesh}
+      position={[dir * (HALF_W - 0.02), spot.y, spot.z]}
+      rotation={[0, dir === -1 ? Math.PI / 2 : -Math.PI / 2, spot.tilt]}
+      onPointerOver={(e) => { if (!locked) { e.stopPropagation(); setHover(true); } }}
+      onPointerOut={() => setHover(false)}
+      onClick={(e) => {
+        if (locked) return;
+        e.stopPropagation();
+        window.open(art.url, '_blank', 'noopener,noreferrer');
+      }}
+    >
+      <planeGeometry args={[spot.w, h]} />
+      <meshBasicMaterial map={drawn.texture} transparent alphaTest={0.04} toneMapped={false} />
     </mesh>
   );
 }

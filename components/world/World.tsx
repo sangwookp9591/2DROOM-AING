@@ -4,6 +4,7 @@ import { Canvas } from '@react-three/fiber';
 import { useMemo } from 'react';
 import { CORRIDOR } from '@/lib/rooms';
 import Scene, { type SceneApi, type LiveRect, type PickInfo, type AingRect } from './Scene';
+import type { LiveArt } from '@/lib/frames';
 
 /** 저사양 기기에서 픽셀 밀도를 낮춥니다. 나머지 티어링은 실기기 측정 후에. */
 function pickDpr(): [number, number] {
@@ -19,6 +20,7 @@ type Props = {
   api: { current: SceneApi | null };
   activeId: string | null;
   paused: boolean;
+  wall: LiveArt[];
   onNear: (id: string | null) => void;
   onEnd: (atEnd: boolean) => void;
   onArrive: (id: string) => void;

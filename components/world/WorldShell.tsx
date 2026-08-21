@@ -2,21 +2,30 @@
 
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { roomById } from '@/lib/rooms';
+import { ROOMS, roomById } from '@/lib/rooms';
 import { isInteractiveTarget } from '@/lib/anim';
 import type { SceneApi, LiveRect, PickInfo, AingRect } from './Scene';
+import type { LiveArt } from '@/lib/frames';
 
 // three와 R3F는 첫 페인트를 막지 않도록 나중에 실어 옵니다.
 const World = dynamic(() => import('./World'), { ssr: false });
 // 채팅창도 같습니다 — 물어볼 마음이 없는 방문자에게는 이 코드가 필요 없습니다.
 const AingChat = dynamic(() => import('@/components/aing/AingChat'), { ssr: false });
 
-export default function WorldShell({ children }: { children: React.ReactNode }) {
+export default function WorldShell({
+  children,
+  wall = [],
+}: {
+  children: React.ReactNode;
+  /** 복도 벽에 걸 밖의 것들 — 영상과 저장소. 서버에서 받아 옵니다(app/page.tsx). */
+  wall?: LiveArt[];
+}) {
   const api = useRef<SceneApi | null>(null);
   const [nearId, setNearId] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [atEnd, setAtEnd] = useState(false);
-  const [reading, setReading] = useState(false);
+  // 채용 담당자는 먼저 내용을 훑고, 원할 때 3D 복도를 선택합니다.
+  const [reading, setReading] = useState(true);
   const [live, setLive] = useState<LiveRect | null>(null);
   const [zoomed, setZoomed] = useState(false);
   const [pick, setPick] = useState<PickInfo | null>(null);
@@ -77,6 +86,7 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
         <World
           api={api}
           activeId={activeId}
+          wall={wall}
           paused={reading}
           onNear={setNearId}
           onEnd={setAtEnd}
@@ -89,8 +99,22 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
       </div>
 
       <button className="mode" onClick={() => setReading((v) => !v)}>
-        {reading ? '복도로 돌아가기' : '전부 읽기'}
+        {reading ? '3D 복도 둘러보기' : '한눈에 보기'}
       </button>
+
+      {!reading && !active && (
+        <nav className="route" aria-label="복도에 있는 사례 순서">
+          <span>6개 사례</span>
+          <ol>
+            {ROOMS.map((room) => (
+              <li key={room.id} data-current={near?.id === room.id || undefined}>
+                <b>{room.n}</b>{room.name}
+              </li>
+            ))}
+          </ol>
+          <small>스크롤해 문에 다가가세요.</small>
+        </nav>
+      )}
 
       {!reading && near && !active && (
         <div className="prompt">

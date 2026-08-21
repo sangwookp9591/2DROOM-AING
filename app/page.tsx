@@ -1,14 +1,49 @@
 import WorldShell from '@/components/world/WorldShell';
 import { ROOMS } from '@/lib/rooms';
 import { ME, dotted, recentProjects, recentVideos } from '@/lib/feeds';
+// 로고는 파일이 아니라 path입니다. img로 두면 요청이 늘고 색을 currentColor로 못 물려받습니다.
+import { MARK, type LiveArt } from '@/lib/frames';
 
-/* 로고는 파일이 아니라 path입니다. img로 두면 요청이 둘 늘고, 색을 currentColor로
-   물려받지 못해 hover에서 글자만 움직입니다. 각각 GitHub(옥티콘)와 simple-icons의 형태입니다. */
-const MARK = {
-  github:
-    'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z',
-  youtube:
-    'M15.665 4.124a2.01 2.01 0 0 0-1.415-1.424C13.003 2.363 8 2.363 8 2.363s-5.003 0-6.25.337A2.01 2.01 0 0 0 .335 4.124C0 5.38 0 8 0 8s0 2.62.335 3.876a2.01 2.01 0 0 0 1.415 1.424C2.997 13.637 8 13.637 8 13.637s5.003 0 6.25-.337a2.01 2.01 0 0 0 1.415-1.424C16 10.62 16 8 16 8s0-2.62-.335-3.876zM6.364 10.379V5.621L10.545 8l-4.181 2.379z',
+const CORE_CASES = [
+  {
+    id: 'web',
+    label: '환자용 웹',
+    title: '앱 설치 없이 검색부터 결제까지',
+    problem: '외국인 환자에게 앱 설치는 첫 번째 이탈 지점이었습니다.',
+    result: '14개 언어 · 9개월 운영 · 웹 0→1 단독 구축',
+  },
+  {
+    id: 'admin',
+    label: '운영자 화면',
+    title: '15명이 같은 권한과 화면을 사용하도록',
+    problem: '협업 인원이 늘면서 권한 누락과 공통 UI 파편화가 생겼습니다.',
+    result: '15명 협업 · 권한·공통 UI 기준 일원화',
+  },
+  {
+    id: 'backend',
+    label: '백엔드',
+    title: '외부 장애와 중복 지급이 번지지 않도록',
+    problem: '느린 외부 요청과 재시도가 전체 장애와 쿠폰 중복으로 이어질 수 있었습니다.',
+    result: '외부 연동 43곳 격리 · 쿠폰 검증 101건',
+  },
+] as const;
+
+const CASE_BRIEFS: Record<string, { problem: string; role: string; result: string }> = {
+  web: {
+    problem: '외국인 환자가 서비스를 쓰기 전에 앱 설치 단계에서 이탈했습니다.',
+    role: 'Next.js 웹을 0에서 시작해 검색·QR 주문·결제까지 혼자 구축했습니다.',
+    result: '앱 설치 단계를 없애고 14개 언어로 9개월 동안 운영했습니다.',
+  },
+  admin: {
+    problem: '15명이 함께 만들면서 권한 확인이 빠지고 공통 화면이 서로 달라졌습니다.',
+    role: '공통 UI, 권한 훅, 전역 오류 처리의 기준을 만들고 적용을 이끌었습니다.',
+    result: '화면과 서버가 같은 권한 기준을 사용하도록 한 곳에서 관리했습니다.',
+  },
+  backend: {
+    problem: '외부 번역·AI 지연과 재시도가 전체 장애나 쿠폰 중복 지급으로 번질 수 있었습니다.',
+    role: '검색·AI·쿠폰 도메인을 주도하고 실패·재시도 경계를 먼저 설계했습니다.',
+    result: '외부 연동 43곳을 격리하고 쿠폰 중복·유실을 101건의 검증으로 확인했습니다.',
+  },
 };
 
 function Mark({ of }: { of: keyof typeof MARK }) {
@@ -28,46 +63,110 @@ function Mark({ of }: { of: keyof typeof MARK }) {
  * 없어서입니다 — 이어 붙이면 느린 쪽 뒤에 빠른 쪽이 줄을 섭니다.
  */
 export default async function Page() {
-  const [videos, projects] = await Promise.all([recentVideos(3), recentProjects(4)]);
+  const [videos, projects] = await Promise.all([recentVideos(4), recentProjects(4)]);
+
+  /* 같은 것이 복도 벽에도 걸립니다. 3D는 자리만 알고 있고 무엇이 걸릴지는 여기서 정합니다 —
+     Scene은 클라이언트 컴포넌트라 스스로 밖에서 받아 올 수 없습니다. */
+  const wall: LiveArt[] = [
+    ...videos.map((v) => ({
+      id: `video-${v.id}`,
+      kind: 'video' as const,
+      url: `https://www.youtube.com/watch?v=${v.id}`,
+      title: v.title,
+      meta: v.when,
+      thumb: `https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`,
+    })),
+    ...projects.map((p) => ({
+      id: `repo-${p.name}`,
+      kind: 'repo' as const,
+      url: p.url,
+      title: p.name,
+      meta: [p.lang, dotted(p.pushed)].filter(Boolean).join(' · '),
+      desc: p.desc && p.desc !== p.name ? p.desc : undefined,
+    })),
+  ];
 
   return (
-    <WorldShell>
+    <WorldShell wall={wall}>
       <article className="doc">
         <header className="cover" data-room="cover">
-          <p className="kicker">풀스택 개발자 · 박상욱 (iron)</p>
+          <p className="kicker">7년차 풀스택 개발자 · 박상욱 (iron)</p>
           <h1>
-            사용자가 막히지 않는 서비스를 만들고,
+            14개 언어 의료관광 웹과,
             <br />
-            팀의 반복 실수를 줄입니다.
+            운영 화면·서버를 만들었습니다.
           </h1>
           <p className="lead">
-            외국인 환자가 앱을 설치하지 않아도 병원과 상품을 찾고 결제할 수 있는 웹부터,
-            운영자가 매일 쓰는 관리 화면과 그 뒤의 서버까지 만들었습니다. 화면만 만들거나 서버만 고치는 데서 끝내지 않고,
-            사용자가 막히는 순간과 팀이 같은 실수를 반복하는 자리까지 찾아서 고칩니다.
-            최근에는 의료관광 서비스 ZIVO에서 9개월 동안 이 일을 맡았습니다.
+            의료관광 서비스 ZIVO에서 환자가 쓰는 웹, 운영자가 매일 쓰는 관리 화면,
+            그 뒤의 Spring Boot 서버를 한 흐름으로 맡았습니다. 결제 이탈과 외부 장애처럼
+            정상 화면 밖에서 생기는 문제를 찾고, 같은 실수가 반복되지 않게 고칩니다.
           </p>
+          <div className="cover__actions">
+            <a className="action action--primary" href="#core-cases">핵심 사례 3개 보기</a>
+            <a className="action" href="mailto:sangwookp9591@gmail.com">메일 보내기</a>
+          </div>
           <dl className="metrics">
             <div><dt>7년</dt><dd>공공 시스템부터 서비스까지 만든 기간</dd></div>
-            <div><dt>웹 · 운영도구 · 서버</dt><dd>문제의 시작부터 끝까지 맡은 범위</dd></div>
             <div><dt>14개 언어</dt><dd>앱 설치 없이 이용하는 글로벌 웹</dd></div>
-            <div><dt>5,240+</dt><dd>최근 9개월 동안 확인 가능한 변경 기록</dd></div>
+            <div><dt>15명</dt><dd>같은 권한과 공통 화면으로 협업한 규모</dd></div>
+            <div><dt>3개 영역</dt><dd>환자용 웹·운영 화면·서버를 맡은 범위</dd></div>
           </dl>
         </header>
+
+        <section className="overview" id="core-cases" aria-labelledby="core-cases-title">
+          <p className="kicker">먼저 볼 세 가지</p>
+          <h2 id="core-cases-title">최근 9개월, 한 제품의 세 경계를 연결했습니다.</h2>
+          <p className="lead">
+            기술 목록 대신 사용자가 겪은 문제, 제가 맡은 범위, 확인된 결과 순서로 정리했습니다.
+            각 사례를 누르면 해결 과정과 실제 운영 범위를 바로 볼 수 있습니다.
+          </p>
+          <ol className="overview__grid">
+            {CORE_CASES.map((item, index) => (
+              <li key={item.id}>
+                <a href={`#case-${item.id}`}>
+                  <span className="overview__number">0{index + 1}</span>
+                  <span className="overview__label">{item.label}</span>
+                  <strong>{item.title}</strong>
+                  <span>{item.problem}</span>
+                  <em>{item.result}</em>
+                </a>
+              </li>
+            ))}
+          </ol>
+          <p className="overview__aside">이전 경력, 캐릭터 제작, 팀 도구 공유는 핵심 사례 뒤에 별도로 정리했습니다.</p>
+        </section>
 
         {ROOMS.map((room) => (
           <section
             key={room.id}
             className="room"
             data-room={room.id}
+            data-track={room.n <= 3 ? 'core' : 'more'}
+            id={`case-${room.id}`}
             style={{ ['--accent' as string]: room.accent }}
             aria-labelledby={`room-${room.id}`}
           >
-            <p className="kicker">사례 {room.n} · {room.kicker}</p>
+            <p className="kicker">{room.n <= 3 ? '핵심 사례' : '추가 경력과 만들기'} {room.n} · {room.kicker}</p>
             <h2 id={`room-${room.id}`}>
               <span className="badge">{room.n}</span>
               {room.name}
             </h2>
             <p className="lead">{room.lead}</p>
+
+            {CASE_BRIEFS[room.id] && (
+              <dl className="case-brief">
+                <div><dt>문제</dt><dd>{CASE_BRIEFS[room.id].problem}</dd></div>
+                <div><dt>내 역할</dt><dd>{CASE_BRIEFS[room.id].role}</dd></div>
+                <div><dt>확인된 결과</dt><dd>{CASE_BRIEFS[room.id].result}</dd></div>
+              </dl>
+            )}
+
+            {room.id === 'web' && (
+              <a className="case-live" href="/zivo/app/" target="_blank" rel="noreferrer">실제 환자용 화면 열기 ↗</a>
+            )}
+            {room.id === 'admin' && (
+              <a className="case-live" href="/zivo/admin/" target="_blank" rel="noreferrer">실제 운영자 화면 열기 ↗</a>
+            )}
 
             {room.id === 'shared' && (
               <figure className="ai-cast">
@@ -130,7 +229,7 @@ export default async function Page() {
           {/* 바깥이 죽어 목록이 비어도 위 연락처는 남습니다. */}
           <div className="feeds">
             {videos.length > 0 && (
-              <section className="feed">
+              <section className="feed feed--videos">
                 <h3 className="feed__head">
                   <a className="feed__brand" href={ME.youtube} target="_blank" rel="me noreferrer">
                     <Mark of="youtube" />
@@ -147,16 +246,19 @@ export default async function Page() {
                         target="_blank"
                         rel="noreferrer"
                       >
-                        {/* 제목이 바로 옆에 글자로 있으므로 썸네일은 장식입니다(alt=""). */}
-                        <img
-                          className="feed__thumb"
-                          src={`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`}
-                          alt=""
-                          width={320}
-                          height={180}
-                          loading="lazy"
-                          decoding="async"
-                        />
+                        {/* 제목이 바로 아래 글자로 있으므로 썸네일은 장식입니다(alt="").
+                            감싸는 span은 재생 단추를 그 중앙에 얹기 위한 자리입니다. */}
+                        <span className="feed__shot">
+                          <img
+                            className="feed__thumb"
+                            src={`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`}
+                            alt=""
+                            width={320}
+                            height={180}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        </span>
                         <span className="feed__text">
                           <span className="feed__name">{v.title}</span>
                           {/* 피드로 온 것만 ISO 날짜가 있습니다. 채널 페이지로 오면 "1개월 전"입니다. */}
@@ -172,7 +274,7 @@ export default async function Page() {
             )}
 
             {projects.length > 0 && (
-              <section className="feed">
+              <section className="feed feed--repos">
                 <h3 className="feed__head">
                   <a className="feed__brand" href={ME.github} target="_blank" rel="me noreferrer">
                     <Mark of="github" />

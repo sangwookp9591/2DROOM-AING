@@ -41,6 +41,10 @@ a {
 a:hover {
   color: #5a54b0;
 }
+:where(a, button, input):focus-visible {
+  outline: 3px solid #6f68c8;
+  outline-offset: 3px;
+}
 
 .shell {
   min-height: 100svh;
@@ -57,6 +61,7 @@ a:hover {
 .mode,
 .back,
 .prompt button {
+  min-height: 44px;
   font-family: var(--body);
   font-size: 17px;
   font-weight: 700;
@@ -158,6 +163,119 @@ a:hover {
   color: var(--muted);
   max-width: 62ch;
   margin: 0 0 20px;
+}
+
+.cover__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 26px;
+}
+.action {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 15px;
+  color: var(--ink);
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  box-shadow: 3px 4px 0 rgba(46, 42, 107, 0.14);
+  font-weight: 700;
+  text-decoration: none;
+}
+.action:hover {
+  color: var(--ink);
+  background: var(--band);
+  transform: translateY(-1px);
+}
+.action--primary {
+  color: var(--card);
+  background: var(--ink);
+}
+.action--primary:hover {
+  color: var(--card);
+  background: #48428f;
+}
+
+/* 첫 30초에 읽을 요약. 복도를 몰라도 이 세 장으로 역할과 결과가 남아야 합니다. */
+.overview {
+  scroll-margin-top: 32px;
+}
+.overview h2 {
+  max-width: 15ch;
+  margin: 0 0 12px;
+  font-family: var(--display);
+  font-size: clamp(34px, 5vw, 50px);
+  line-height: 1.12;
+  text-wrap: balance;
+}
+.overview__grid {
+  list-style: none;
+  margin: 28px 0 14px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.overview__grid li {
+  min-width: 0;
+}
+.overview__grid a {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  color: var(--ink);
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  box-shadow: 4px 5px 0 var(--band);
+  text-decoration: none;
+}
+.overview__grid a:hover {
+  color: var(--ink);
+  background: var(--band);
+  transform: translateY(-2px);
+}
+.overview__number {
+  font-family: var(--pen);
+  font-size: 22px;
+  color: var(--faint);
+}
+.overview__label {
+  width: fit-content;
+  padding: 2px 7px;
+  color: var(--muted);
+  background: var(--band);
+  font-size: 12px;
+  font-weight: 700;
+}
+.overview__grid strong {
+  font-family: var(--display);
+  font-size: 20px;
+  line-height: 1.35;
+}
+.overview__grid a > span:not(.overview__number, .overview__label) {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.overview__grid em {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1.5px solid var(--line);
+  color: var(--ink);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+}
+.overview__aside {
+  margin: 0;
+  color: var(--faint);
+  font-family: var(--pen);
+  font-size: 18px;
 }
 
 .ai-cast {
@@ -263,6 +381,54 @@ a:hover {
   font-size: 36px;
   margin: 0 0 10px;
 }
+.room {
+  scroll-margin-top: 32px;
+}
+.room#case-past {
+  padding-top: 64px;
+  border-top: 2px dashed var(--line);
+}
+
+.case-brief {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 14px;
+}
+.case-brief div {
+  padding: 11px 12px;
+  background: color-mix(in oklab, var(--accent) 32%, var(--card));
+  border-top: 3px solid var(--accent);
+}
+.case-brief dt {
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.case-brief dd {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.case-live {
+  min-height: 44px;
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 16px;
+  padding: 6px 11px;
+  color: var(--live);
+  background: var(--live-bg);
+  border: 1.5px solid var(--live);
+  font-weight: 700;
+  text-decoration: none;
+}
+.case-live:hover {
+  color: var(--ink);
+  background: var(--card);
+}
 .room .badge {
   width: 34px;
   height: 34px;
@@ -361,6 +527,11 @@ a:hover {
   flex-wrap: wrap;
   gap: 8px 20px;
 }
+.colophon > ul a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
 .sign {
   font-family: var(--pen);
   font-size: 19px;
@@ -385,6 +556,78 @@ a:hover {
   display: flex;
   flex-direction: column;
   gap: 64px;
+}
+.shell[data-mode='read'] .cover h1 {
+  font-size: clamp(42px, 5vw, 58px);
+  text-wrap: balance;
+}
+
+/* ── 복도 차례표 ─────────────────────────────────── */
+
+.route {
+  position: fixed;
+  z-index: 3;
+  top: 20px;
+  left: 20px;
+  width: min(270px, calc(100vw - 40px));
+  padding: 12px 14px;
+  color: var(--ink);
+  background: color-mix(in oklab, var(--card) 94%, transparent);
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  box-shadow: 4px 5px 0 rgba(46, 42, 107, 0.12);
+}
+.route > span {
+  display: block;
+  margin-bottom: 7px;
+  font-family: var(--hand);
+  font-size: 19px;
+  font-weight: 700;
+}
+.route ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.route li {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 6px;
+  align-items: start;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+.route li b {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  background: var(--band);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-size: 10px;
+}
+.route li[data-current] {
+  color: var(--ink);
+  font-weight: 800;
+}
+.route li[data-current] b {
+  color: var(--card);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+.route small {
+  display: block;
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid var(--line);
+  color: var(--faint);
+  font-family: var(--pen);
+  font-size: 15px;
 }
 
 /* ── 복도 모드 ───────────────────────────────────── */
@@ -433,6 +676,12 @@ a:hover {
 .shell[data-mode='world'] .doc > .cover .metrics {
   display: none;
 }
+.shell[data-mode='world'] .doc > .cover .cover__actions {
+  display: none;
+}
+.shell[data-mode='world'] .case-brief {
+  grid-template-columns: 1fr;
+}
 /* 커버 카피는 뷰포트가 아니라 이 패널(46vw) 안에서 접혀야 합니다. 본문 기준인 6vw를
    그대로 두면 481px 상자에서 h1이 다섯 줄로 터져 62vh를 넘고, 복도 한가운데
    스크롤바가 섭니다 — 읽기 모드의 780px 폭에서만 맞는 크기입니다. */
@@ -462,6 +711,29 @@ a:hover {
 }
 
 @media (max-width: 720px) {
+  .overview__grid,
+  .case-brief {
+    grid-template-columns: 1fr;
+  }
+  .overview h2 {
+    font-size: 34px;
+  }
+  .route {
+    top: 72px;
+    left: 16px;
+    width: calc(100vw - 32px);
+    padding: 9px 11px;
+  }
+  .route > span {
+    margin-bottom: 5px;
+    font-size: 16px;
+  }
+  .route ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .route li {
+    font-size: 10px;
+  }
   .shell[data-mode='world'] .doc > * {
     width: 100%;
     border-left: 0;
@@ -473,6 +745,7 @@ a:hover {
   .shell[data-mode='world'] .doc > .cover[data-open] {
     width: 100%;
     max-height: 46vh;
+    padding-bottom: 96px;
   }
 }
 
@@ -1005,6 +1278,7 @@ a:hover {
   margin: 0 0 8px;
 }
 .feed__brand {
+  min-height: 44px;
   display: flex;
   align-items: center;
   gap: 7px;
@@ -1052,24 +1326,59 @@ a:hover {
 .feed__item:hover {
   background: var(--band);
 }
+/* 영상은 유튜브에서 보던 대로 — 썸네일이 크고, 제목은 그 아래에 붙습니다. */
+.feed--videos .feed__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
 .feed__item--vid {
-  grid-template-columns: 92px minmax(0, 1fr);
-  gap: 11px;
-  align-items: center;
-  padding: 8px 10px;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.feed__shot {
+  position: relative;
+  display: block;
+  border-bottom: 2px solid var(--ink);
 }
 .feed__thumb {
-  width: 92px;
-  height: 52px;
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   background: var(--band);
-  border: 1.5px solid var(--line);
-  border-radius: 2px;
+}
+/* 재생 단추. 이게 없으면 그냥 사진이 붙은 카드로 보입니다. */
+.feed__shot::before,
+.feed__shot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+.feed__shot::before {
+  width: 46px;
+  height: 32px;
+  margin: -16px 0 0 -23px;
+  background: rgba(206, 54, 44, 0.9);
+  border-radius: 8px;
+}
+.feed__shot::after {
+  margin: -8px 0 0 -5px;
+  border-left: 13px solid #fff;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+.feed__item--vid:hover .feed__shot::before {
+  background: rgb(206, 54, 44);
 }
 .feed__text {
   display: grid;
   gap: 3px;
   min-width: 0;
+  padding: 8px 11px 10px;
 }
 /* 제목도 설명도 두 줄까지만. 세 줄짜리 제목 하나가 목록의 리듬을 깹니다. */
 .feed__name,
@@ -1085,6 +1394,9 @@ a:hover {
   font-weight: 700;
   line-height: 1.35;
 }
+.feed__item--vid .feed__name {
+  font-size: 16px;
+}
 .feed__desc {
   font-size: 12px;
   line-height: 1.55;
@@ -1095,12 +1407,9 @@ a:hover {
   color: var(--faint);
 }
 
-/* 읽기 모드는 780px이 있으니 두 목록을 나란히 놓습니다. */
-.shell[data-mode='read'] .feeds {
-  flex-direction: row;
-  gap: 24px;
-}
-.shell[data-mode='read'] .feed {
-  flex: 1;
-  min-width: 0;
+/* 읽기 모드는 780px이 있으니 저장소도 여러 열로 폅니다. 영상 쪽은 auto-fill이 알아서 늘립니다. */
+.shell[data-mode='read'] .feed--repos .feed__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(238px, 1fr));
+  gap: 8px;
 }
