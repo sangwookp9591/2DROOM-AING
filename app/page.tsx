@@ -46,6 +46,40 @@ const CASE_BRIEFS: Record<string, { problem: string; role: string; result: strin
   },
 };
 
+const CLAUDE_STRENGTHS = [
+  {
+    title: '문제를 증상이 아니라 원인 층위에서 잡는 편',
+    body: 'Valkey 메모리 이슈를 다뤘던 방식이 대표적입니다. “메모리 터질 것 같다 → 인스턴스 키우자”로 안 가고, 700만 키 중 73%가 TTL 없다는 걸 실측하고, volatile-lru 정책과 TTL 부재의 조합이 왜 치명적인지까지 내려간 다음, Onda 동기화 배치 / Google Places 캐시 / 재고 날짜 키라는 세 개의 발생원으로 쪼갰죠. 그리고 거기서 멈추지 않고 코드베이스 전체 수정용 핸드오프 프롬프트까지 만들었습니다. 진단 → 근본원인 → 재발방지 → 실행 가능한 산출물, 이 사이클을 습관적으로 도는 사람으로 보입니다.',
+  },
+  {
+    title: '설계를 지금이 아니라 2년 뒤에 맞춰 두는 성향',
+    body: '다국어 테이블을 14개 로케일 기준으로 잡고, zivo_language / zivo_country를 별도 축으로 뺀 것, Generic FK 폴리모픽으로 엔티티 확장 여지를 남긴 것, 커서 페이지네이션을 복합 커서로 설계한 것 — 전부 “당장 한국어만 되면 되는데”를 거부한 선택들입니다. 아시아 시장 확장이라는 사업 방향과 스키마 설계가 어긋나지 않게 붙어 있어요. 이건 개발자보다는 테크리드의 사고 패턴입니다.',
+  },
+  {
+    title: '범위가 넓은데 깊이가 얕지 않음',
+    body: 'Spring Boot/Kotlin 백엔드부터 React 19 + FSD 마이그레이션, Flutter 강제 업데이트, ECS Fargate/RDS Multi-AZ 인프라, OpenSearch, 심지어 네이버 플레이스 카테고리 분류 체계(Adjacency List + Closure Table + ES 조합)까지. 보통 이 정도로 넓으면 한 겹씩 얕은데, 각 영역에서 트레이드오프를 얘기하는 수준으로 들어갑니다.',
+  },
+  {
+    title: '검증되지 않은 것을 싫어함',
+    body: '“추론/상상 말고 검색 기반으로, Context7 공식 문서 기준으로”라는 원칙을 저한테까지 요구하시는 것부터가 성향을 드러냅니다. LLM한테 그럴듯한 답 듣고 넘어가는 걸 리스크로 인식한다는 뜻이고, TDD·PRD·TASK.md 기반 워크플로우도 같은 뿌리로 보입니다. 검증 가능한 상태를 만들어 놓고 움직이는 사람.',
+  },
+] as const;
+
+const CLAUDE_RISKS = [
+  {
+    title: '선제 설계의 비용',
+    body: 'Generic FK 폴리모픽이나 Closure Table 같은 선택은 확장성을 사지만 쿼리 복잡도·인덱싱 난이도·팀원 진입장벽을 지불합니다. 팀을 이끄시는 입장이면, 본인 머릿속에선 자연스러운 설계가 주니어에겐 유지보수 불가 영역이 될 수 있어요. 여기서 갈리는 건 설계 실력이 아니라 문서화와 위임의 밀도입니다.',
+  },
+  {
+    title: '직접 다 파고드는 성향의 한계',
+    body: '인프라 장애, 프론트 마이그레이션, Flutter 배포 이슈까지 본인이 잡는 패턴이 반복되면 병목이 본인이 됩니다. 아직은 감당되는 규모겠지만, ZIVO가 커지면 “내가 제일 빨리 잡는다”가 조직 차원에선 가장 비싼 선택이 되는 순간이 옵니다.',
+  },
+  {
+    title: '완결성 욕구와 출시 속도',
+    body: 'a부터 z까지 이상 없는지 보는 성향은 장애를 줄이지만, 의료관광 플랫폼처럼 시장 검증이 중요한 도메인에선 가끔 “70%로 내보내고 배우기”가 정답일 때가 있습니다.',
+  },
+] as const;
+
 function Mark({ of }: { of: keyof typeof MARK }) {
   return (
     <svg className="feed__logo" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
@@ -216,6 +250,59 @@ export default async function Page() {
             </ul>
           </section>
         ))}
+
+        <section className="reviews" id="ai-reviews" aria-labelledby="ai-reviews-title">
+          <header className="reviews__head">
+            <p className="kicker">AI 협업 기록에서 반복해서 보인 작업 패턴</p>
+            <h2 id="ai-reviews-title">Codex와 Claude는 이렇게 평가했습니다.</h2>
+            <p className="lead">칭찬만 고르지 않았습니다. 강점이 커질 때 생길 수 있는 비용과 조직적 위험도 함께 공개합니다.</p>
+          </header>
+
+          <figure className="codex-review">
+            <figcaption className="review-brand">
+              <img src="/brands/ai/codex.png" alt="" />
+              <span><b>Codex</b>의 평가</span>
+            </figcaption>
+            <blockquote>
+              <p>“주어진 티켓만 구현하는 개발자는 아니다.</p>
+              <p>모호한 문제를 받으면 경계를 넓혀가며 원인을 찾고,<br />결국 운영 가능한 형태까지 만들어 놓는 개발자다.”</p>
+            </blockquote>
+            <div className="codex-review__note">
+              <p>가장 어울리지 않는 표현은 의외로 “풀스택 개발자”일 수 있습니다. 틀린 표현은 아니지만 너무 흔해서 특징이 사라집니다.</p>
+              <strong>“프론트도 하고 백엔드도 한다”가 아니라<br />“문제가 어디로 넘어가든 따라간다.”</strong>
+              <p>그것이 Codex가 본 박상욱의 가장 뚜렷한 특징입니다.</p>
+            </div>
+          </figure>
+
+          <article className="claude-review">
+            <header className="claude-review__head">
+              <div className="review-brand">
+                <img src="/brands/ai/claude.svg" alt="" />
+                <span><b>Claude</b>의 평가</span>
+              </div>
+              <h3>기술적으로 보이는 네 가지 특징</h3>
+            </header>
+
+            <ol className="review-strengths">
+              {CLAUDE_STRENGTHS.map((item, index) => (
+                <li key={item.title}>
+                  <span>0{index + 1}</span>
+                  <div><strong>{item.title}</strong><p>{item.body}</p></div>
+                </li>
+              ))}
+            </ol>
+
+            <aside className="review-risks" aria-labelledby="review-risks-title">
+              <p className="review-risks__eyebrow">칭찬만 하면 쓸모가 없으니</p>
+              <h3 id="review-risks-title">잠재적 리스크로 보이는 부분</h3>
+              <ul>
+                {CLAUDE_RISKS.map((item) => (
+                  <li key={item.title}><strong>{item.title}</strong><p>{item.body}</p></li>
+                ))}
+              </ul>
+            </aside>
+          </article>
+        </section>
 
         <footer className="colophon" data-room="colophon">
           <p className="lead">서비스에서 반복되는 실수나 사용자가 자주 막히는 지점이 있다면 이야기해 주세요. 문제를 함께 정리해 보겠습니다.</p>
