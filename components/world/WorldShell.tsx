@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { roomById } from '@/lib/rooms';
 import { isInteractiveTarget } from '@/lib/anim';
-import type { SceneApi } from './Scene';
+import type { SceneApi, LiveRect } from './Scene';
 
 // three와 R3F는 첫 페인트를 막지 않도록 나중에 실어 옵니다.
 const World = dynamic(() => import('./World'), { ssr: false });
@@ -15,10 +15,15 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [atEnd, setAtEnd] = useState(false);
   const [reading, setReading] = useState(false);
+  const [live, setLive] = useState<LiveRect | null>(null);
+  const [zoomed, setZoomed] = useState(false);
 
   const near = nearId ? roomById(nearId) : null;
   const active = activeId ? roomById(activeId) : null;
-  const leave = useCallback(() => setActiveId(null), []);
+  const leave = useCallback(() => {
+    setActiveId(null);
+    setZoomed(false);
+  }, []);
 
   /** 복도 모드에서 지금 펼쳐진 한 곳. 방 > 복도 끝(콜로폰) > 표지 순. */
   const openId = activeId ?? (atEnd ? 'colophon' : 'cover');
@@ -40,12 +45,13 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
     const onKey = (e: KeyboardEvent) => {
       // 포커스된 버튼·링크 위의 Enter는 그 컨트롤의 것입니다. 겹쳐 쏘면 두 가지가 동시에 일어납니다.
       if (isInteractiveTarget(e)) return;
+      if (e.key === 'Escape' && zoomed) { setZoomed(false); return; }
       if (e.key === 'Escape' && activeId) api.current?.exit();
       if (e.key === 'Enter' && nearId && !activeId) api.current?.enter(nearId);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [activeId, nearId]);
+  }, [activeId, nearId, zoomed]);
 
   return (
     <div className="shell" data-mode={reading ? 'read' : 'world'}>
@@ -58,6 +64,7 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
           onEnd={setAtEnd}
           onArrive={setActiveId}
           onLeave={leave}
+          onLiveRect={setLive}
         />
       </div>
 
@@ -79,11 +86,64 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
         </button>
       )}
 
+      {/*
+        방마다 하나 있는 살아 있는 화면. 3D 모니터 자리에 실제 페이지를 앉힙니다.
+        그림이 아니라 진짜라서 눌러 보고 스크롤할 수 있습니다.
+      */}
+      {!reading && active && live && (
+        <LiveScreen rect={live} zoomed={zoomed} onZoom={setZoomed} />
+      )}
+
       <div className="content">{children}</div>
 
       {!reading && !active && !near && !atEnd && (
         <p className="hint">스크롤하면 복도를 걷습니다. 문에 색이 칠해지면 들어갈 수 있습니다.</p>
       )}
     </div>
+  );
+}
+
+/**
+ * 모니터 안에 앉는 진짜 화면.
+ * 그 페이지가 상정한 크기(vw x vh)로 렌더한 뒤 모니터 자리에 맞춰 줄입니다.
+ * 자리 크기에 맞춰 늘리면 원래 설계한 배치가 무너집니다.
+ */
+function LiveScreen({
+  rect, zoomed, onZoom,
+}: {
+  rect: LiveRect; zoomed: boolean; onZoom: (v: boolean) => void;
+}) {
+  // 확대하면 화면의 90%를 씁니다. 모니터 안 크기로는 글씨를 못 읽어서,
+  // 만든 것을 보여 주는 화면이 정작 증거 노릇을 못 합니다.
+  const box = zoomed
+    ? { width: Math.round(window.innerWidth * 0.9), height: Math.round(window.innerHeight * 0.86) }
+    : { width: rect.width, height: rect.height };
+  const scale = Math.min(box.width / rect.vw, box.height / rect.vh);
+  const offsetX = (box.width - rect.vw * scale) / 2;
+  const offsetY = (box.height - rect.vh * scale) / 2;
+
+  const place = zoomed
+    ? { left: '50%', top: '50%', width: box.width, height: box.height, transform: 'translate(-50%, -50%)' }
+    : { left: rect.left, top: rect.top, width: box.width, height: box.height };
+
+  return (
+    <>
+      {zoomed && <button className="live__veil" aria-label="닫기" onClick={() => onZoom(false)} />}
+      <div className="live" data-zoomed={zoomed || undefined} style={place}>
+        <iframe
+          src={rect.src}
+          title={rect.label}
+          loading="lazy"
+          style={{
+            width: rect.vw,
+            height: rect.vh,
+            transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale})`,
+          }}
+        />
+        <button className="live__zoom" onClick={() => onZoom(!zoomed)}>
+          {zoomed ? '닫기' : '크게 보기'}
+        </button>
+      </div>
+    </>
   );
 }

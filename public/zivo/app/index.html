@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1A5DF7" />
+  <title>ZIVO — Home</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="stylesheet" href="./_concept-assets/design-system.css" />
+  <link rel="stylesheet" href="./_concept-assets/components.css" />
+  <style>
+
+
+/* ===== extracted from 00-main.html inline <style> (편집은 여기서) ===== */
+
+/* Remix Icon normalize (전 페이지 통일) */
+    [class^="ri-"], [class*=" ri-"] { font-style: normal; line-height: 1; vertical-align: middle; }
+    /* ===== Concept theme — HOME key color = BLACK (category pages swap --key-color) ===== */
+    :root {
+      --key-color: #14171A;       /* 메인/홈 키컬러 (near-black) */
+      --beauty-key: #FF4B6E;      /* 시술·뷰티 카테고리 (mauve plum) */
+      --hotel-key: #1A5DF7;       /* 호텔·숙소 카테고리 (brand blue) */
+      /* 홈 문서 한정: 파란 액센트(primary)를 블랙 키컬러로 오버라이드 */
+      --primary-color: var(--key-color);
+      --primary-dark: #000000;
+      --primary-50: #F2F3F4;
+    }
+    body { background: var(--white); }
+
+    /* Promo banner carousel — dark editorial, in-frame crossfade (concept 2) */
+    .promo-banners { position: relative; z-index: 3; margin: -64px 16px 24px; height: 176px; border-radius: 12px; overflow: hidden; }
+    .promo-banners-track { position: absolute; inset: 0; }
+    .promo-banner { position: absolute; inset: 0; display: flex; align-items: center; text-decoration: none; opacity: 0; pointer-events: none; transition: opacity 500ms ease; background: linear-gradient(135deg, #262932 0%, #15171c 100%); }
+    .promo-banner.is-active { opacity: 1; pointer-events: auto; }
+    .promo-banner__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+    .promo-banner__scrim { position: absolute; inset: 0; z-index: 1; }
+    .promo-banner--s1 .promo-banner__scrim { background: linear-gradient(90deg, rgba(251,236,223,.90) 0%, rgba(251,236,223,.48) 52%, rgba(251,236,223,0) 100%); }
+    .promo-banner--s2 .promo-banner__scrim { background: linear-gradient(90deg, rgba(238,228,250,.90) 0%, rgba(238,228,250,.48) 52%, rgba(238,228,250,0) 100%); }
+    .promo-banner--s3 .promo-banner__scrim { background: linear-gradient(90deg, rgba(222,237,252,.90) 0%, rgba(222,237,252,.48) 52%, rgba(222,237,252,0) 100%); }
+    .promo-banner--s1 { background: linear-gradient(135deg, #3a2a44 0%, #1c1622 100%); }
+    .promo-banner--s2 { background: linear-gradient(135deg, #262932 0%, #14161b 100%); }
+    .promo-banner--s3 { background: linear-gradient(135deg, #173049 0%, #0f1d2e 100%); }
+    .promo-banner__copy { position: relative; z-index: 2; padding: 0 22px; color: #fff; }
+    .promo-banner__eyebrow { display: inline-flex; align-items: center; gap: var(--gap-tight); font-size: var(--font-size-caption-md); font-weight: var(--font-weight-semibold); letter-spacing: 0.06em; text-transform: uppercase; color: rgba(28,30,36,.66); margin-bottom: 8px; }
+    .promo-banner__title { font-size: 23px; font-weight: var(--font-weight-bold); color: #16181d; margin: 0 0 12px; line-height: 1.18; letter-spacing: -0.01em; }
+    .promo-banner__cta { display: inline-flex; align-items: center; gap: 5px; font-size: var(--font-size-body-sm); font-weight: var(--font-weight-semibold); color: #16181d; }
+    .promo-banner__cta i[class^="ri-"] { font-size: 16px; }
+    .promo-banners-dots { position: absolute; bottom: 14px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 5px; z-index: 3; }
+    .promo-dot { width: 6px; height: 6px; border-radius: var(--radius-full); background: rgba(20,22,28,.28); transition: width 240ms ease, background 240ms ease; }
+    .promo-dot.is-active { width: 18px; background: #16181D; }
+
+    /* Service categories — 4×2 grid (row 우선) */
+    .zv-cats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 var(--space-md);
+      margin: 0 0 var(--space-xl);
+    }
+    .zv-cat {
+      display: flex; align-items: center; gap: 4px;
+      min-width: 0;
+      padding: 12px 8px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
+      text-decoration: none; color: inherit;
+    }
+    .zv-cat__icon {
+      width: 50px; height: 50px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+    .zv-cat__icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .zv-cat__text { display: flex; flex-direction: column; min-width: 0; }
+    .zv-cat__label {
+      font-size: var(--font-size-title-md);
+      color: var(--gray-900);
+      font-weight: var(--font-weight-semibold);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .zv-cat__sub {
+      font-size: var(--font-size-body-sm);
+      color: var(--gray-600);
+      font-weight: var(--font-weight-medium);
+      margin-top: -2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    /* ── LEGACY 1×4 quick menu (숨김 보관 — 복원 시 이 블록 주석 해제하고 위 2×2 블록 주석 처리)
+    .zv-cats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-md) var(--space-sm); padding: 4px var(--space-md) 0; margin: 0 0 var(--space-xl); }
+    .zv-cat { display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; color: inherit; padding: 0; background: none; border: 0; }
+    .zv-cat__icon { width: 80px; height: 80px; background: var(--gray-50); border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--gray-100); }
+    .zv-cat__label { font-size: var(--font-size-body-sm); color: var(--gray-900); font-weight: var(--font-weight-medium); text-align: center; white-space: nowrap; }
+    ── */
+
+    /* Aspect 변형 — 짧은 사진(1:1)·세로 긴 사진(3:4)·가로 사진(4:3) */
+    /* Text-only card (사진 없음) — 컬러 배경 + 큰 인용 */
+    /* 좋아요 버튼 — 우상단 원형 (검정 원 + 흰 아이콘) */
+    /* Quote 카드의 좋아요 — 검정 반투명 통일 */
+    /* 사진 리뷰 카드 본문은 14px(보조 본문) — 좁은 카드에 16px은 과함 */
+    /* Filter chips (기획서: 시술/숙소 필터) */
+    .zv-review-filters {
+      display: flex; gap: 8px; padding: 0 var(--space-md);
+      margin-bottom: var(--space-md); flex-wrap: wrap;
+    }
+    .zv-review-chip {
+      height: 38px; padding: 0 var(--gutter); border-radius: var(--radius-full);
+      border: 1px solid var(--gray-200); background: var(--white);
+      font-size: var(--font-size-body-md); font-weight: var(--font-weight-medium);
+      color: var(--gray-900); cursor: pointer;
+    }
+    .zv-review-chip--active {
+      background: var(--gray-900); border-color: var(--gray-900);
+      color: var(--white); font-weight: var(--font-weight-semibold);
+    }
+    /* ===== Honest Reviews — uniform 2-col grid (기획서 8-3) ===== */
+    .zv-rv-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: var(--space-sm-md);
+      padding: 0 var(--space-md);
+    }
+    .zv-rv-card {
+      display: flex; flex-direction: column; gap: 8px;
+      min-width: 0;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 12px;
+      overflow: hidden;
+    }
+    .zv-rv-card__product { min-width: 0; }
+    /* filter toggle */
+    .zv-rv-grid[data-active="procedures"] .zv-rv-card[data-cat="stays"] { display: none; }
+    .zv-rv-grid[data-active="stays"] .zv-rv-card[data-cat="procedures"] { display: none; }
+    .zv-rv-card__stars { display: flex; gap: 2px; }
+    .zv-rv-star { font-size: 14px; color: var(--star-empty); }
+    .zv-rv-star--on { color: var(--secondary-color); }
+    /* 리뷰 포토 (기획서 8-3: 최대 3장, 미존재 시 미노출) */
+    .zv-rv-card__photos { display: flex; gap: 4px; }
+    .zv-rv-card__photo { flex: 0 0 calc((100% - 8px) / 3); aspect-ratio: 1 / 1; border-radius: 6px; overflow: hidden; background: var(--gray-100); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06); }
+    .zv-rv-card__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .zv-rv-card__text {
+      font-size: var(--font-size-body-md);
+      color: var(--text-primary);
+      line-height: var(--line-height-normal);
+      margin: 0;
+      display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .zv-rv-card__author {
+      display: flex; flex-direction: column; gap: 1px; margin-top: auto;
+    }
+    .zv-rv-card__nick { font-size: var(--font-size-body-sm); font-weight: var(--font-weight-semibold); color: var(--text-primary); }
+    .zv-rv-card__date { font-size: var(--font-size-caption-lg); color: var(--gray-600); }
+    .zv-rv-card__product {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 8px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      text-decoration: none; color: inherit;
+      cursor: pointer;
+    }
+    .zv-rv-card__product:active { background: var(--gray-100); }
+    .zv-rv-card__thumb {
+      width: 36px; height: 36px; border-radius: 6px; overflow: hidden;
+      background: var(--gray-100); flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+    }
+    .zv-rv-card__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .zv-rv-card__pmeta { display: flex; flex-direction: column; min-width: 0; }
+    .zv-rv-card__pname { font-size: var(--font-size-body-sm); font-weight: var(--font-weight-semibold); color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .zv-rv-card__pprov { font-size: var(--font-size-caption-lg); color: var(--gray-600); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* Product link block (기획서: 썸네일 + 시술명 + 병원명) — filled module */
+
+    /* Section block spacing */
+    .zv-block { margin-bottom: var(--space-xl); }
+    .zv-block--recent { background: var(--white); padding: 20px 0; }
+    .zv-block--recent .zv-sec-head { margin-top: 0; padding-top: 0; }
+
+    /* Hotel box — 호텔 1개 박스 (사진 헤더 + 객실 vertical 리스트) — 가로 스크롤 */
+    .hotel-box-list {
+      display: flex;
+      flex-direction: row;
+      gap: var(--space-sm-md);
+      padding: 0 var(--space-md) 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .hotel-box-list::-webkit-scrollbar { display: none; }
+    /* flex+overflow 마지막 padding 안전망 */
+    .hotel-box-list::after {
+      content: '';
+      flex: 0 0 1px;
+    }
+    .hotel-box {
+      display: block;
+      flex: 0 0 var(--card-lg);
+      background: var(--white);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: var(--shadow-xs);
+    }
+    .hotel-box__hero {
+      position: relative;
+      aspect-ratio: 16 / 7;
+      background: var(--gray-100);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+    }
+    .hotel-box__hero-fav {
+      position: absolute;
+      top: 10px; right: 10px;
+      width: 32px; height: 32px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-900);
+      cursor: pointer;
+      z-index: 2;
+    }
+    .hotel-box__hero-fav i[class^="ri-"] { font-size: 18px; }
+    .hotel-box__hero-fav.active { color: var(--error); }
+    .hotel-box__hero-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .hotel-box__hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 100%);
+    }
+    .hotel-box__hero-body {
+      position: absolute;
+      left: 14px; right: 14px; bottom: 12px;
+      color: var(--white);
+    }
+    .hotel-box__hotel-name {
+      font-size: var(--font-size-title-md);
+      font-weight: var(--font-weight-bold);
+      margin: 0 0 2px;
+      line-height: var(--line-height-tight);
+    }
+    .hotel-box__hero-sub {
+      font-size: var(--font-size-body-sm);
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      opacity: 0.95;
+    }
+    .hotel-box__hero-sub i[class^="ri-"] {
+      font-size: var(--font-size-body-md);
+      color: var(--white);
+      font-variation-settings: 'FILL' 1;
+    }
+    .hotel-box__hero-sub strong { font-weight: var(--font-weight-semibold); }
+
+    /* Room list inside box (vertical) */
+    .hotel-box__rooms {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .hotel-box__room {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--border-primary);
+      text-decoration: none;
+      color: inherit;
+    }
+    .hotel-box__rooms li { margin-top: 10px; }
+    .hotel-box__rooms li:first-child { margin-top: 12px; }
+    .hotel-box__rooms li:last-child { padding-bottom: 12px; }
+    .hotel-box__rooms .hotel-box__room:last-child { border-bottom: 0; }
+    .hotel-box__room-thumb {
+      width: 64px; height: 64px;
+      flex-shrink: 0;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--gray-100);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+    }
+    .hotel-box__room-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .hotel-box__room-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    /* 간격 소유권 정리 (2026-07-11): gap2+price margin4 겹침 제거 — margin 한 수단 (기본 2, price 앞 6 = 기존 실효값) */
+    .hotel-box .hotel-box__room-info > * + * { margin-top: 2px; } /* 자식들의 자체 margin:0 선언보다 우선하도록 스코프 강화 */
+    .hotel-box .hotel-box__room-info > .hotel-box__room-price { margin-top: 6px; } /* 가격 앞 6px = 기존 실효값 (owl보다 뒤·동급 스코프) */
+    .hotel-box__room-name {
+      font-size: var(--font-size-body-md);
+      font-weight: var(--font-weight-medium);
+      color: var(--text-primary);
+      margin: 0;
+      line-height: var(--line-height-tight);
+    }
+    .hotel-box__room-spec {
+      font-size: var(--font-size-caption-lg);
+      color: var(--gray-700);
+      margin: 0;
+      line-height: var(--line-height-tight);
+    }
+    .hotel-box__room-price {
+      margin: 6px 0 0; /* 간격 소유권: 기존 gap2+margin4 실효값 유지 */
+      font-size: var(--font-size-body-md);
+      line-height: var(--line-height-tight);
+      display: flex;
+      align-items: baseline;
+      gap: 2px var(--gap-tight);
+      flex-wrap: wrap;
+    }
+    .hotel-box__room-price-discount {
+      font-size: var(--font-size-body-md);
+      font-weight: var(--font-weight-bold);
+      color: var(--sale);
+    }
+    .hotel-box__room-price-final {
+      font-weight: var(--font-weight-bold);
+      color: var(--text-primary);
+    }
+    .hotel-box__room-price-was { order: -1; flex-basis: 100%; font-weight: var(--font-weight-regular); color: var(--text-placeholder); text-decoration: line-through; font-size: var(--font-size-caption-lg); line-height: var(--line-height-tight); }
+    .hotel-box__room-price-unit {
+      color: var(--text-body);
+      font-weight: var(--font-weight-regular);
+      font-size: var(--font-size-caption-lg);
+      margin-left: 2px;
+    }
+    .hotel-box__footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px;
+      font-size: var(--font-size-body-sm);
+      font-weight: var(--font-weight-semibold);
+      color: var(--primary-color);
+      background: var(--white);
+      border-top: 1px solid var(--gray-100);
+      cursor: pointer;
+    }
+    .hotel-box__footer i[class^="ri-"] { font-size: var(--font-size-body-md); }
+    /* Reviews 섹션 — 아래로 갈수록 회색 그라디언트 BG */
+    .zv-block--gradient-down {
+      margin-bottom: 0;
+      padding: 20px 0;
+      background: var(--white);
+    }
+    .zv-block--gradient-down .zv-sec-head { margin-bottom: var(--space-md); }
+
+    /* Rolling search placeholder */
+    .zv-roll { display: block; height: 20px; line-height: 20px; overflow: hidden; }
+    .zv-roll__track {
+      display: flex;
+      flex-direction: column;
+      animation: zvRoll 9s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    }
+    .zv-roll__item { height: 20px; line-height: 20px; font-weight: 400; color: var(--gray-500); }
+    @keyframes zvRoll {
+      0%, 28%   { transform: translateY(0); }
+      33%, 61%  { transform: translateY(-20px); }
+      66%, 94%  { transform: translateY(-40px); }
+      100%      { transform: translateY(-60px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .zv-roll__track { animation: none; }
+    }
+
+.ri-svg{width:1em;height:1em;fill:currentColor;display:inline-block;vertical-align:-0.125em;flex:0 0 auto}
+
+.zv-hero__icon-btn i[class^="ri-"]{font-size:24px;line-height:1;}
+  .zv-glass-search__icon i[class^="ri-"]{font-size:22px;line-height:1;color:var(--gray-500);}
+  /* === Concept 2 — blue top (new-zivo): 딥→브랜드→라이트 수직 그라데이션
+     헤더(sticky 형제)는 시작색 솔리드, hero가 같은 색에서 이어받아 이음새 없음 === */
+  .zv-hero{background:linear-gradient(180deg,#1652E8 0%,#1A5DF7 55%,#2367FA 100%);}
+  .zv-hero__header{background:#1652E8;}
+  .zv-hero__icon-btn{color:#fff;}
+  .zv-hero__search-section{padding:6px var(--space-md) 88px;}
+  .zv-glass-search{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.30);height:36px;}
+  .zv-glass-search__text,.zv-roll__item{color:rgba(255,255,255,.92);}
+  .zv-glass-search__icon i[class^="ri-"]{color:#fff;}
+  .zv-content{margin-top:-12px;padding-top:18px;padding-bottom:72px;position:relative;z-index:2;}
+
+  /* === Live app bottom nav (common.js .bottom-nav) === */
+  .bottom-nav{display:flex;justify-content:space-around;align-items:center;height:calc(56px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);background:var(--white);border-top:1px solid var(--gray-200);position:fixed;bottom:0;left:0;right:0;margin:0 auto;width:100%;max-width:768px;z-index:1000;}
+  .bottom-nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 8px;color:var(--gray-500);text-decoration:none;transition:color .2s ease;flex:1;}
+  .bottom-nav-item.active{color:var(--gray-900);font-weight:700;}
+  .bottom-nav-icon{width:24px;height:24px;opacity:.55;transition:opacity .2s ease;}
+  .bottom-nav-item.active .bottom-nav-icon{opacity:1;}
+  .bottom-nav-label{font-size:12px;font-weight:700;line-height:1;}
+  .bottom-nav-item.active .bottom-nav-label{color:var(--gray-900);}
+
+/* 검색박스 pill -> 네모 라운드 */
+.zv-glass-search{border-radius:12px;}
+
+/* recent 썸네일 이미지 꽉차게 */
+.zv-recent-mini__thumb{overflow:hidden;}
+.zv-recent-mini__thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+
+/* recent 카드: 이미지가 박스 꽉 차게 (회색 패딩 제거) */
+.zv-recent-mini{padding:0;gap:0;overflow:hidden;align-items:stretch;}
+.zv-recent-mini__thumb{width:84px;height:auto;border-radius:0;align-self:stretch;box-shadow:none;background:var(--gray-100);}
+.zv-recent-mini__info{padding:10px 12px;justify-content:center;}
+
+/* 평점 별 — 브랜드 골드 (secondary-color) */
+.zv-recent-mini__rating .ri-star-fill,.zv-card__rating-star,.hotel-box__hero-sub .ri-star-fill,.zv-rv-star--on{color:var(--secondary-color);}
+
+/* 배너 전환: 크로스페이드 → 슬라이드 */
+.promo-banners-track{display:flex;will-change:transform;transition:transform .5s cubic-bezier(.4,0,.2,1);}
+.promo-banner{position:relative;inset:auto;min-width:100%;flex:0 0 100%;opacity:1;pointer-events:auto;transition:none;}
+.promo-banner.is-active{opacity:1;}
+
+/* recent 카드: 박스 회색 + 썸네일 축소 */
+.zv-recent-mini{background:var(--gray-100);}
+.zv-recent-mini__thumb{width:68px;}
+
+.zv-block--recent .zv-seeall{display:none;}
+
+/* 섹션 내부 패딩 0으로 통일 (블록 간격 32 균일) */
+.zv-block--recent{padding:0;}
+.zv-block--gradient-down{padding:0;}
+
+/* 섹션 헤더 화살표 — 터치박스 24px 유지, 글리프만 축소 */
+.zv-sec-head__chevron .ri-svg{width:18px;height:18px;}
+
+/* 플로팅 내비 하단 여백 spacer */
+.zv-bottom-spacer{height:var(--space-lg);}
+
+/* 검색 롤링 텍스트 14 */
+.zv-glass-search__text,.zv-roll__item{font-size:var(--font-size-base);}
+
+/* 검색바 라운드 pill + 배너 쉐도우 약하게 */
+.zv-glass-search{border-radius:999px;}
+.promo-banners{box-shadow:0 6px 16px rgba(20,22,28,0.12);}
+
+/* 파랑→흰색 경계: 흰색 콘텐츠 시트가 블루 위로 떠오르며 상단 라운드 */
+.zv-content{border-top-left-radius:16px;border-top-right-radius:16px;margin-top:-20px;}
+
+/* recent 카드 테두리 제거 */
+.zv-recent-mini{border:none;}
+
+/* 최근 본 미니카드: 가격만 노출 (rating 숨김) */
+.zv-recent-mini__rating{display:none;}
+
+/* 배너 히어로 오버랩 해제 — 흰 콘텐츠 시트 안에 정상 배치 (겹침 제거) */
+.zv-hero__search-section{padding-bottom:36px;}
+.promo-banners{margin:0 16px 24px;}
+.zv-content{padding-top:16px;}
+  </style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true" id="ri-sprite">
+<symbol viewBox="0 0 24 24" id="ri-add-line"><path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-arrow-right-line"><path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-arrow-right-s-line"><path d="M13.1717 12.0007L8.22192 7.05093L9.63614 5.63672L16.0001 12.0007L9.63614 18.3646L8.22192 16.9504L13.1717 12.0007Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-chat-3-line"><path d="M7.29117 20.8242L2 22L3.17581 16.7088C2.42544 15.3056 2 13.7025 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C10.2975 22 8.6944 21.5746 7.29117 20.8242ZM7.58075 18.711L8.23428 19.0605C9.38248 19.6745 10.6655 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 13.3345 4.32549 14.6175 4.93949 15.7657L5.28896 16.4192L4.63416 19.3658L7.58075 18.711Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-compass-3-line"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM16.5 7.5L14 14L7.5 16.5L10 10L16.5 7.5ZM12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-heart-3-fill"><path d="M16.5 3C19.5376 3 22 5.5 22 9C22 16 14.5 20 12 21.5C9.5 20 2 16 2 9C2 5.5 4.5 3 7.5 3C9.35997 3 11 4 12 5C13 4 14.64 3 16.5 3Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-heart-3-line"><path d="M16.5 3C19.5376 3 22 5.5 22 9C22 16 14.5 20 12 21.5C9.5 20 2 16 2 9C2 5.5 4.5 3 7.5 3C9.35997 3 11 4 12 5C13 4 14.64 3 16.5 3ZM12.9339 18.6038C13.8155 18.0485 14.61 17.4955 15.3549 16.9029C18.3337 14.533 20 11.9435 20 9C20 6.64076 18.463 5 16.5 5C15.4241 5 14.2593 5.56911 13.4142 6.41421L12 7.82843L10.5858 6.41421C9.74068 5.56911 8.5759 5 7.5 5C5.55906 5 4 6.6565 4 9C4 11.9435 5.66627 14.533 8.64514 16.9029C9.39 17.4955 10.1845 18.0485 11.0661 18.6038C11.3646 18.7919 11.6611 18.9729 12 19.1752C12.3389 18.9729 12.6354 18.7919 12.9339 18.6038Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-history-line"><path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12H4C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C9.25022 4 6.82447 5.38734 5.38451 7.50024L8 7.5V9.5H2V3.5H4L3.99989 5.99918C5.82434 3.57075 8.72873 2 12 2ZM13 7L12.9998 11.585L16.2426 14.8284L14.8284 16.2426L10.9998 12.413L11 7H13Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-home-5-fill"><path d="M21 20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V9.48907C3 9.18048 3.14247 8.88917 3.38606 8.69972L11.3861 2.47749C11.7472 2.19663 12.2528 2.19663 12.6139 2.47749L20.6139 8.69972C20.8575 8.88917 21 9.18048 21 9.48907V20ZM11 13V19H13V13H11Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-hotel-line"><path d="M22 21H2V19H3V4C3 3.44772 3.44772 3 4 3H18C18.5523 3 19 3.44772 19 4V9H21V19H22V21ZM17 19H19V11H13V19H15V13H17V19ZM17 9V5H5V19H11V9H17ZM7 11H9V13H7V11ZM7 15H9V17H7V15ZM7 7H9V9H7V7Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-map-2-line"><path d="M2 5L9 2L15 5L21.303 2.2987C21.5569 2.18992 21.8508 2.30749 21.9596 2.56131C21.9862 2.62355 22 2.69056 22 2.75827V19L15 22L9 19L2.69696 21.7013C2.44314 21.8101 2.14921 21.6925 2.04043 21.4387C2.01375 21.3765 2 21.3094 2 21.2417V5ZM16 19.3955L20 17.6812V5.03308L16 6.74736V19.3955ZM14 19.2639V6.73607L10 4.73607V17.2639L14 19.2639ZM8 17.2526V4.60451L4 6.31879V18.9669L8 17.2526Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-map-pin-2-line"><path d="M12 23.7279L5.63604 17.364C2.12132 13.8492 2.12132 8.15076 5.63604 4.63604C9.15076 1.12132 14.8492 1.12132 18.364 4.63604C21.8787 8.15076 21.8787 13.8492 18.364 17.364L12 23.7279ZM16.9497 15.9497C19.6834 13.2161 19.6834 8.78392 16.9497 6.05025C14.2161 3.31658 9.78392 3.31658 7.05025 6.05025C4.31658 8.78392 4.31658 13.2161 7.05025 15.9497L12 20.8995L16.9497 15.9497ZM12 13C10.8954 13 10 12.1046 10 11C10 9.89543 10.8954 9 12 9C13.1046 9 14 9.89543 14 11C14 12.1046 13.1046 13 12 13Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-notification-line"><path d="M5 18H19V11.0314C19 7.14806 15.866 4 12 4C8.13401 4 5 7.14806 5 11.0314V18ZM12 2C16.9706 2 21 6.04348 21 11.0314V20H3V11.0314C3 6.04348 7.02944 2 12 2ZM9.5 21H14.5C14.5 22.3807 13.3807 23.5 12 23.5C10.6193 23.5 9.5 22.3807 9.5 21Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-pause-line"><path d="M6 5H8V19H6V5ZM16 5H18V19H16V5Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-play-fill"><path d="M19.376 12.4161L8.77735 19.4818C8.54759 19.635 8.23715 19.5729 8.08397 19.3432C8.02922 19.261 8 19.1645 8 19.0658V4.93433C8 4.65818 8.22386 4.43433 8.5 4.43433C8.59871 4.43433 8.69522 4.46355 8.77735 4.5183L19.376 11.584C19.6057 11.7372 19.6678 12.0477 19.5146 12.2774C19.478 12.3323 19.4309 12.3795 19.376 12.4161Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-search-line"><path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247L16.0247 15.8748Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-sparkling-line"><path d="M14 4.4375C15.3462 4.4375 16.4375 3.34619 16.4375 2H17.5625C17.5625 3.34619 18.6538 4.4375 20 4.4375V5.5625C18.6538 5.5625 17.5625 6.65381 17.5625 8H16.4375C16.4375 6.65381 15.3462 5.5625 14 5.5625V4.4375ZM1 11C4.31371 11 7 8.31371 7 5H9C9 8.31371 11.6863 11 15 11V13C11.6863 13 9 15.6863 9 19H7C7 15.6863 4.31371 13 1 13V11ZM4.87601 12C6.18717 12.7276 7.27243 13.8128 8 15.124 8.72757 13.8128 9.81283 12.7276 11.124 12 9.81283 11.2724 8.72757 10.1872 8 8.87601 7.27243 10.1872 6.18717 11.2724 4.87601 12ZM17.25 14C17.25 15.7949 15.7949 17.25 14 17.25V18.75C15.7949 18.75 17.25 20.2051 17.25 22H18.75C18.75 20.2051 20.2051 18.75 22 18.75V17.25C20.2051 17.25 18.75 15.7949 18.75 14H17.25Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-star-fill"><path d="M12.0006 18.26L4.94715 22.2082L6.52248 14.2799L0.587891 8.7918L8.61493 7.84006L12.0006 0.5L15.3862 7.84006L23.4132 8.7918L17.4787 14.2799L19.054 22.2082L12.0006 18.26Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-suitcase-line"><path d="M15 3C15.5523 3 16 3.44772 16 4V6H21C21.5523 6 22 6.44772 22 7V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V7C2 6.44772 2.44772 6 3 6H8V4C8 3.44772 8.44772 3 9 3H15ZM16 8H8V19H16V8ZM4 8V19H6V8H4ZM14 5H10V6H14V5ZM18 8V19H20V8H18Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-taxi-line"><path d="M22 11V21C22 21.5523 21.5523 22 21 22H20C19.4477 22 19 21.5523 19 21V20H5V21C5 21.5523 4.55228 22 4 22H3C2.44772 22 2 21.5523 2 21V11L4.44721 6.10557C4.786 5.428 5.47852 5 6.23607 5H9V3H15V5H17.7639C18.5215 5 19.214 5.428 19.5528 6.10557L22 11ZM20 13H4V18H20V13ZM4.23607 11H19.7639L17.7639 7H6.23607L4.23607 11ZM6.5 17C5.67157 17 5 16.3284 5 15.5C5 14.6716 5.67157 14 6.5 14C7.32843 14 8 14.6716 8 15.5C8 16.3284 7.32843 17 6.5 17ZM17.5 17C16.6716 17 16 16.3284 16 15.5C16 14.6716 16.6716 14 17.5 14C18.3284 14 19 14.6716 19 15.5C19 16.3284 18.3284 17 17.5 17Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-time-line"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM13 12H17V14H11V7H13V12Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-user-3-line"><path d="M20 22H18V20C18 18.3431 16.6569 17 15 17H9C7.34315 17 6 18.3431 6 20V22H4V20C4 17.2386 6.23858 15 9 15H15C17.7614 15 20 17.2386 20 20V22ZM12 13C8.68629 13 6 10.3137 6 7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7C18 10.3137 15.3137 13 12 13ZM12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"></path></symbol>
+<symbol viewBox="0 0 24 24" id="ri-user-line"><path d="M4 22C4 17.5817 7.58172 14 12 14C16.4183 14 20 17.5817 20 22H18C18 18.6863 15.3137 16 12 16C8.68629 16 6 18.6863 6 22H4ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11Z"></path></symbol>
+</svg>
+  <main class="zv-screen">
+
+    <!-- Header (sticky, .zv-screen 직접 자식 — 페이지 전체 동안 고정) -->
+    <header class="zv-hero__header">
+      <span class="zv-hero__logo">
+        <img src="./_concept-assets/images/zivo-logo-main.png" alt="ZIVO"/>
+      </span>
+      <div class="zv-hero__icons">
+        <button class="zv-hero__icon-btn zv-hero__search-btn" aria-label="Search" onclick="location.href='03-search.html'"><i class="ri-search-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-search-line"></use></svg></i></button>
+        <button class="zv-hero__icon-btn" aria-label="Chat"><i class="ri-chat-3-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-chat-3-line"></use></svg></i></button>
+        <button class="zv-hero__icon-btn" aria-label="Notifications"><i class="ri-notification-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-notification-line"></use></svg></i></button>
+      </div>
+    </header>
+
+    <!-- Hero search area (블루 풀블리드) -->
+    <section class="zv-hero">
+      <div class="zv-hero__search-section">
+        <button class="zv-glass-search" type="button" onclick="location.href='03-search.html'">
+          <span class="zv-glass-search__icon"><i class="ri-search-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-search-line"></use></svg></i></span>
+          <span class="zv-glass-search__text zv-roll">
+            <span class="zv-roll__track">
+              <span class="zv-roll__item">Search clinics, hotels &amp; more</span>
+              <span class="zv-roll__item">Find K-beauty procedures</span>
+              <span class="zv-roll__item">Search hotels &amp; stays</span>
+              <span class="zv-roll__item">Search clinics, hotels &amp; more</span>
+            </span>
+          </span>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- Content overlay (블루 위 흰 라운드 톱) -->
+    <div class="zv-content">
+
+      <!-- Promo banners (dark editorial carousel) -->
+      <div class="promo-banners" id="promoBanners" data-mode="contained">
+        <div class="promo-banners-track" id="promoBannerTrack">
+          <a class="promo-banner promo-banner--s1 is-active">
+            <img class="promo-banner__img" src="./_concept-assets/images/contents/banner-c2-1.jpg" alt="" />
+            <div class="promo-banner__scrim"></div>
+            <div class="promo-banner__copy">
+              <span class="promo-banner__eyebrow">First Visit</span>
+              <p class="promo-banner__title">Get 30% OFF<br/>Your First Procedure</p>
+              <span class="promo-banner__cta">Book now <i class="ri-arrow-right-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-arrow-right-line"></use></svg></i></span>
+            </div>
+          </a>
+          <a class="promo-banner promo-banner--s2">
+            <img class="promo-banner__img" src="./_concept-assets/images/contents/banner-c2-2.jpg" alt="" />
+            <div class="promo-banner__scrim"></div>
+            <div class="promo-banner__copy">
+              <span class="promo-banner__eyebrow">Spring 2026</span>
+              <p class="promo-banner__title">Seoul Beauty<br/>Festival</p>
+              <span class="promo-banner__cta">Explore deals <i class="ri-arrow-right-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-arrow-right-line"></use></svg></i></span>
+            </div>
+          </a>
+          <a class="promo-banner promo-banner--s3">
+            <img class="promo-banner__img" src="./_concept-assets/images/contents/banner-c2-3.jpg" alt="" />
+            <div class="promo-banner__scrim"></div>
+            <div class="promo-banner__copy">
+              <span class="promo-banner__eyebrow">Stay Connected</span>
+              <p class="promo-banner__title">eSIM from<br/>9,900 KRW</p>
+              <span class="promo-banner__cta">Get yours <i class="ri-arrow-right-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-arrow-right-line"></use></svg></i></span>
+            </div>
+          </a>
+        </div>
+        <div class="promo-banners-dots" id="promoBannerDots" aria-hidden="true">
+          <span class="promo-dot is-active"></span>
+          <span class="promo-dot"></span>
+          <span class="promo-dot"></span>
+        </div>
+      </div>
+
+      <!-- Service categories — 4×2 grid (사용자 일러스트 아이콘) -->
+      <!-- 퀵메뉴 4개 (기획 스펙: 병원/시술 · 숙소 · eSIM · 택시) -->
+      <nav class="zv-cats" aria-label="Services">
+        <a class="zv-cat" href="#"><span class="zv-cat__icon"><img src="./_concept-assets/images/category-icons/norm/cat-01.png" alt=""/></span><span class="zv-cat__text"><span class="zv-cat__label">Medical</span><span class="zv-cat__sub">Clinics &amp; care</span></span></a>
+        <a class="zv-cat" href="#"><span class="zv-cat__icon"><img src="./_concept-assets/images/category-icons/norm/cat-03.png" alt=""/></span><span class="zv-cat__text"><span class="zv-cat__label">Stays</span><span class="zv-cat__sub">Hotels &amp; more</span></span></a>
+        <a class="zv-cat" href="#"><span class="zv-cat__icon"><img src="./_concept-assets/images/category-icons/norm/cat-07.png" alt=""/></span><span class="zv-cat__text"><span class="zv-cat__label">SIM &amp; eSIM</span><span class="zv-cat__sub">Instant data</span></span></a>
+        <a class="zv-cat" href="#"><span class="zv-cat__icon"><img src="./_concept-assets/images/category-icons/norm/cat-06.png" alt=""/></span><span class="zv-cat__text"><span class="zv-cat__label">Taxi</span><span class="zv-cat__sub">Airport &amp; city</span></span></a>
+      </nav>
+      <!-- LEGACY 1×4 quick menu (숨김 보관 — 복원 시 주석 해제)
+      <nav class="zv-cats" aria-label="Services">
+        <a class="zv-cat" href="#"><span class="zv-cat__icon"><img src="./_concept-assets/images/category-icons/norm/cat-01.png" alt=""/></span><span class="zv-cat__label">Medical</span></a>
+        <a class="zv-cat" href="#"><span class="zv-cat__icon"><img src="./_concept-assets/images/category-icons/norm/cat-03.png" alt=""/></span><span class="zv-cat__label">Stays</span></a>
+        <a class="zv-cat"><span class="zv-cat__icon"><img src="./_concept-assets/images/category-icons/norm/cat-07.png" alt=""/></span><span class="zv-cat__label">eSIM</span></a>
+        <a class="zv-cat" href="#"><span class="zv-cat__icon"><img src="./_concept-assets/images/category-icons/norm/cat-06.png" alt=""/></span><span class="zv-cat__label">Taxi</span></a>
+      </nav>
+      -->
+
+      <!-- Recently Viewed — 이어보기 (최상단 큐레이션 자리) -->
+      <section class="zv-block zv-block--recent">
+        <a class="zv-sec-head">
+          <div>
+            <h2 class="zv-sec-head__title">Recently Viewed</h2>
+          </div>
+          <span class="zv-sec-head__chevron"><i class="ri-arrow-right-s-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-arrow-right-s-line"></use></svg></i></span>
+        </a>
+        <div class="zv-rail">
+          <a class="zv-recent-mini">
+            <div class="zv-recent-mini__thumb"><img src="./_concept-assets/images/procedures/proc-05.jpg" alt="" loading="lazy"/></div>
+            <div class="zv-recent-mini__info">
+              <p class="zv-recent-mini__brand">Cheongdam Star Clinic</p>
+              <p class="zv-recent-mini__name">Premium Botox</p>
+              <p class="zv-recent-mini__price">150,000 KRW</p>
+            </div>
+          </a>
+          <a class="zv-recent-mini">
+            <div class="zv-recent-mini__thumb"><img src="./_concept-assets/images/procedures/proc-06.jpg" alt="" loading="lazy"/></div>
+            <div class="zv-recent-mini__info">
+              <p class="zv-recent-mini__brand">Gangnam Beauty Clinic</p>
+              <p class="zv-recent-mini__name">HA Filler 1cc</p>
+              <p class="zv-recent-mini__price">200,000 KRW</p>
+            </div>
+          </a>
+          <a class="zv-recent-mini">
+            <div class="zv-recent-mini__thumb"><img src="./_concept-assets/images/procedures/proc-09.jpg" alt="" loading="lazy"/></div>
+            <div class="zv-recent-mini__info">
+              <p class="zv-recent-mini__brand">Gangnam-gu, Seoul</p>
+              <p class="zv-recent-mini__name">Cheongdam Aesthetics</p>
+              <p class="zv-recent-mini__rating"><i class="ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><strong>4.8</strong> (1,200+)</p>
+            </div>
+          </a>
+          <a class="zv-recent-mini">
+            <div class="zv-recent-mini__thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_suite.png" alt="" loading="lazy"/></div>
+            <div class="zv-recent-mini__info">
+              <p class="zv-recent-mini__brand">Hotel</p>
+              <p class="zv-recent-mini__name">Hotel Lotte Seoul</p>
+              <p class="zv-recent-mini__rating"><i class="ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><strong>4.8</strong> (1,200+)</p>
+            </div>
+          </a>
+          <a class="zv-recent-mini">
+            <div class="zv-recent-mini__thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_hanok.png" alt="" loading="lazy"/></div>
+            <div class="zv-recent-mini__info">
+              <p class="zv-recent-mini__brand">Hanok</p>
+              <p class="zv-recent-mini__name">Bukchon Hanok Stay</p>
+              <p class="zv-recent-mini__rating"><i class="ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><strong>4.7</strong> (400+)</p>
+            </div>
+          </a>
+        </div>
+        <a class="zv-seeall"><strong>Recently Viewed</strong> See all</a>
+      </section>
+
+      <!-- Top Picks for Maya (horizontal card scroll) -->
+      <section class="zv-block">
+        <a class="zv-sec-head" href="#">
+          <div>
+            <h2 class="zv-sec-head__title">Trending Procedures</h2>
+          </div>
+          <span class="zv-sec-head__chevron"><i class="ri-arrow-right-s-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-arrow-right-s-line"></use></svg></i></span>
+        </a>
+        <div class="zv-rail">
+          <a class="zv-card zv-card--sm">
+            <div class="zv-card__media">
+              <img src="./_concept-assets/images/procedures/proc-04.jpg" alt="" loading="lazy"/>
+              <button class="zv-card__bookmark" type="button"><i class="ri-heart-3-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-heart-3-line"></use></svg></i></button>
+            </div>
+            <div class="zv-card__body">
+              <p class="zv-card__brand">Cheongdam Aesthetics</p>
+              <h4 class="zv-card__title">Botox Wrinkle Treatment</h4>
+              <span class="zv-card__price-original">212,000 KRW</span>
+              <div class="zv-card__price-row">
+                <span class="zv-card__discount">15%</span>
+                <span class="zv-card__price-final">180,000 KRW</span>
+              </div>
+              <div class="zv-card__rating">
+                <i class="zv-card__rating-star ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i>
+                <strong>4.9</strong><span class="zv-card__rating-count">(100+)</span>
+              </div>
+            </div>
+          </a>
+          <a class="zv-card zv-card--sm">
+            <div class="zv-card__media">
+              <img src="./_concept-assets/images/procedures/proc-01.png" alt="" loading="lazy"/>
+              <button class="zv-card__bookmark" type="button"><i class="ri-heart-3-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-heart-3-line"></use></svg></i></button>
+            </div>
+            <div class="zv-card__body">
+              <p class="zv-card__brand">Gangnam Star Clinic</p>
+              <h4 class="zv-card__title">Botox Forehead Slim Line</h4>
+              <span class="zv-card__price-original">180,000 KRW</span>
+              <div class="zv-card__price-row">
+                <span class="zv-card__discount">40%</span>
+                <span class="zv-card__price-final">108,000 KRW</span>
+              </div>
+              <div class="zv-card__rating">
+                <i class="zv-card__rating-star ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i>
+                <strong>4.7</strong><span class="zv-card__rating-count">(50+)</span>
+              </div>
+            </div>
+          </a>
+          <a class="zv-card zv-card--sm">
+            <div class="zv-card__media">
+              <img src="./_concept-assets/images/procedures/proc-03.png" alt="" loading="lazy"/>
+              <button class="zv-card__bookmark active" type="button"><i class="ri-heart-3-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-heart-3-line"></use></svg></i></button>
+            </div>
+            <div class="zv-card__body">
+              <p class="zv-card__brand">Apgujeong Plastic</p>
+              <h4 class="zv-card__title">Lip Filler 1cc Premium</h4>
+              <div class="zv-card__price-row">
+                <span class="zv-card__price-final">340,000 KRW</span>
+              </div>
+              <div class="zv-card__rating">
+                <i class="zv-card__rating-star ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i>
+                <strong>4.6</strong><span class="zv-card__rating-count">(200+)</span>
+              </div>
+            </div>
+          </a>
+        </div>
+        <a class="zv-seeall" href="#"><strong>Trending Procedures</strong> See all</a>
+      </section>
+
+      <!-- Top Stays in Seoul — 호텔 박스 4개 (사진 헤더 + 객실 vertical 리스트) -->
+      <section class="zv-block">
+        <a class="zv-sec-head" href="#">
+          <div>
+            <h2 class="zv-sec-head__title">Popular Seoul hotels for you</h2>
+          </div>
+          <span class="zv-sec-head__chevron"><i class="ri-arrow-right-s-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-arrow-right-s-line"></use></svg></i></span>
+        </a>
+        <div class="hotel-box-list">
+
+          <!-- Box 1: Hotel Lotte Seoul -->
+          <article class="hotel-box">
+            <div class="hotel-box__hero">
+              <img class="hotel-box__hero-img" src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_suite.png" alt="" loading="lazy"/>
+              <button class="hotel-box__hero-fav" type="button"><i class="ri-heart-3-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-heart-3-line"></use></svg></i></button>
+              <div class="hotel-box__hero-overlay"></div>
+              <div class="hotel-box__hero-body">
+                <h4 class="hotel-box__hotel-name">Hotel Lotte Seoul</h4>
+                <p class="hotel-box__hero-sub"><i class="ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><strong>4.8</strong> (1,200+) · Myeongdong</p>
+              </div>
+            </div>
+            <ul class="hotel-box__rooms">
+              <li><a class="hotel-box__room">
+                <span class="hotel-box__room-thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_double.png" alt=""/></span>
+                <span class="hotel-box__room-info">
+                  <p class="hotel-box__room-name">Deluxe Double</p>
+                  <p class="hotel-box__room-spec">2 guests · Queen bed · 32 m²</p>
+                  <p class="hotel-box__room-price"><span class="hotel-box__room-price-discount">25%</span><span class="hotel-box__room-price-final">220,000 KRW</span><span class="hotel-box__room-price-was">293,000 KRW</span><span class="hotel-box__room-price-unit">/ night</span></p>
+                </span>
+              </a></li>
+              <li><a class="hotel-box__room">
+                <span class="hotel-box__room-thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_suite.png" alt=""/></span>
+                <span class="hotel-box__room-info">
+                  <p class="hotel-box__room-name">Premier Suite</p>
+                  <p class="hotel-box__room-spec">2 guests · King + sofa · 52 m²</p>
+                  <p class="hotel-box__room-price"><span class="hotel-box__room-price-final">280,000 KRW</span><span class="hotel-box__room-price-unit">/ night</span></p>
+                </span>
+              </a></li>
+              <li><a class="hotel-box__room">
+                <span class="hotel-box__room-thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_twin.png" alt=""/></span>
+                <span class="hotel-box__room-info">
+                  <p class="hotel-box__room-name">Family Twin</p>
+                  <p class="hotel-box__room-spec">3 guests · 2 single beds · 38 m²</p>
+                  <p class="hotel-box__room-price"><span class="hotel-box__room-price-final">340,000 KRW</span><span class="hotel-box__room-price-unit">/ night</span></p>
+                </span>
+              </a></li>
+            </ul>
+            <a class="hotel-box__footer">See all 24 rooms<i class="ri-arrow-right-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-arrow-right-line"></use></svg></i></a>
+          </article>
+
+          <!-- Box 2: Grand Hyatt Seoul -->
+          <article class="hotel-box">
+            <div class="hotel-box__hero">
+              <img class="hotel-box__hero-img" src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_double.png" alt="" loading="lazy"/>
+              <button class="hotel-box__hero-fav" type="button"><i class="ri-heart-3-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-heart-3-line"></use></svg></i></button>
+              <div class="hotel-box__hero-overlay"></div>
+              <div class="hotel-box__hero-body">
+                <h4 class="hotel-box__hotel-name">Grand Hyatt Seoul</h4>
+                <p class="hotel-box__hero-sub"><i class="ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><strong>4.9</strong> (800+) · Itaewon</p>
+              </div>
+            </div>
+            <ul class="hotel-box__rooms">
+              <li><a class="hotel-box__room">
+                <span class="hotel-box__room-thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_double.png" alt=""/></span>
+                <span class="hotel-box__room-info">
+                  <p class="hotel-box__room-name">Deluxe King</p>
+                  <p class="hotel-box__room-spec">2 guests · King bed · 38 m²</p>
+                  <p class="hotel-box__room-price"><span class="hotel-box__room-price-discount">15%</span><span class="hotel-box__room-price-final">410,000 KRW</span><span class="hotel-box__room-price-was">482,000 KRW</span><span class="hotel-box__room-price-unit">/ night</span></p>
+                </span>
+              </a></li>
+              <li><a class="hotel-box__room">
+                <span class="hotel-box__room-thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_suite.png" alt=""/></span>
+                <span class="hotel-box__room-info">
+                  <p class="hotel-box__room-name">Grand Suite</p>
+                  <p class="hotel-box__room-spec">2 guests · King + lounge · 80 m²</p>
+                  <p class="hotel-box__room-price"><span class="hotel-box__room-price-final">680,000 KRW</span><span class="hotel-box__room-price-unit">/ night</span></p>
+                </span>
+              </a></li>
+              <li><a class="hotel-box__room">
+                <span class="hotel-box__room-thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_twin.png" alt=""/></span>
+                <span class="hotel-box__room-info">
+                  <p class="hotel-box__room-name">Twin Mountain View</p>
+                  <p class="hotel-box__room-spec">3 guests · 2 single beds · 42 m²</p>
+                  <p class="hotel-box__room-price"><span class="hotel-box__room-price-final">460,000 KRW</span><span class="hotel-box__room-price-unit">/ night</span></p>
+                </span>
+              </a></li>
+            </ul>
+            <a class="hotel-box__footer">See all 18 rooms<i class="ri-arrow-right-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-arrow-right-line"></use></svg></i></a>
+          </article>
+
+          <!-- Box 3: Bukchon Hanok Stay -->
+          <article class="hotel-box">
+            <div class="hotel-box__hero">
+              <img class="hotel-box__hero-img" src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_hanok.png" alt="" loading="lazy"/>
+              <button class="hotel-box__hero-fav" type="button"><i class="ri-heart-3-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-heart-3-line"></use></svg></i></button>
+              <div class="hotel-box__hero-overlay"></div>
+              <div class="hotel-box__hero-body">
+                <h4 class="hotel-box__hotel-name">Bukchon Hanok Stay</h4>
+                <p class="hotel-box__hero-sub"><i class="ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><strong>4.7</strong> (400+) · Bukchon</p>
+              </div>
+            </div>
+            <ul class="hotel-box__rooms">
+              <li><a class="hotel-box__room">
+                <span class="hotel-box__room-thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_hanok.png" alt=""/></span>
+                <span class="hotel-box__room-info">
+                  <p class="hotel-box__room-name">Standard Hanok</p>
+                  <p class="hotel-box__room-spec">2 guests · Floor bed · 22 m²</p>
+                  <p class="hotel-box__room-price"><span class="hotel-box__room-price-discount">30%</span><span class="hotel-box__room-price-final">190,000 KRW</span><span class="hotel-box__room-price-was">271,000 KRW</span><span class="hotel-box__room-price-unit">/ night</span></p>
+                </span>
+              </a></li>
+              <li><a class="hotel-box__room">
+                <span class="hotel-box__room-thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_suite.png" alt=""/></span>
+                <span class="hotel-box__room-info">
+                  <p class="hotel-box__room-name">Private Yard Suite</p>
+                  <p class="hotel-box__room-spec">2 guests · King bed · 40 m²</p>
+                  <p class="hotel-box__room-price"><span class="hotel-box__room-price-final">260,000 KRW</span><span class="hotel-box__room-price-unit">/ night</span></p>
+                </span>
+              </a></li>
+              <li><a class="hotel-box__room">
+                <span class="hotel-box__room-thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_twin.png" alt=""/></span>
+                <span class="hotel-box__room-info">
+                  <p class="hotel-box__room-name">Twin Hanok</p>
+                  <p class="hotel-box__room-spec">3 guests · 2 floor beds · 28 m²</p>
+                  <p class="hotel-box__room-price"><span class="hotel-box__room-price-final">210,000 KRW</span><span class="hotel-box__room-price-unit">/ night</span></p>
+                </span>
+              </a></li>
+            </ul>
+            <a class="hotel-box__footer">See all 8 rooms<i class="ri-arrow-right-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-arrow-right-line"></use></svg></i></a>
+          </article>
+
+          <!-- Box 4: Conrad Seoul -->
+          <article class="hotel-box">
+            <div class="hotel-box__hero">
+              <img class="hotel-box__hero-img" src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_double.png" alt="" loading="lazy"/>
+              <button class="hotel-box__hero-fav" type="button"><i class="ri-heart-3-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-heart-3-line"></use></svg></i></button>
+              <div class="hotel-box__hero-overlay"></div>
+              <div class="hotel-box__hero-body">
+                <h4 class="hotel-box__hotel-name">Conrad Seoul</h4>
+                <p class="hotel-box__hero-sub"><i class="ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><strong>4.8</strong> (700+) · Yeouido</p>
+              </div>
+            </div>
+            <ul class="hotel-box__rooms">
+              <li><a class="hotel-box__room">
+                <span class="hotel-box__room-thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_double.png" alt=""/></span>
+                <span class="hotel-box__room-info">
+                  <p class="hotel-box__room-name">Executive King</p>
+                  <p class="hotel-box__room-spec">2 guests · King bed · 40 m²</p>
+                  <p class="hotel-box__room-price"><span class="hotel-box__room-price-discount">20%</span><span class="hotel-box__room-price-final">380,000 KRW</span><span class="hotel-box__room-price-was">475,000 KRW</span><span class="hotel-box__room-price-unit">/ night</span></p>
+                </span>
+              </a></li>
+              <li><a class="hotel-box__room">
+                <span class="hotel-box__room-thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_suite.png" alt=""/></span>
+                <span class="hotel-box__room-info">
+                  <p class="hotel-box__room-name">Conrad Suite</p>
+                  <p class="hotel-box__room-spec">2 guests · King + study · 72 m²</p>
+                  <p class="hotel-box__room-price"><span class="hotel-box__room-price-final">620,000 KRW</span><span class="hotel-box__room-price-unit">/ night</span></p>
+                </span>
+              </a></li>
+              <li><a class="hotel-box__room">
+                <span class="hotel-box__room-thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_twin.png" alt=""/></span>
+                <span class="hotel-box__room-info">
+                  <p class="hotel-box__room-name">Family Twin Suite</p>
+                  <p class="hotel-box__room-spec">4 guests · 2 twin · 60 m²</p>
+                  <p class="hotel-box__room-price"><span class="hotel-box__room-price-final">520,000 KRW</span><span class="hotel-box__room-price-unit">/ night</span></p>
+                </span>
+              </a></li>
+            </ul>
+            <a class="hotel-box__footer">See all 16 rooms<i class="ri-arrow-right-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-arrow-right-line"></use></svg></i></a>
+          </article>
+
+        </div>
+        <a class="zv-seeall" href="#"><strong>Popular Seoul hotels</strong> See all</a>
+      </section>
+
+      <!-- Honest Reviews — 기획서 8: uniform 2-col grid + 시술/숙소 필터 -->
+      <section class="zv-block zv-block--gradient-down">
+        <a class="zv-sec-head" href="#" onclick="event.preventDefault();var a=document.querySelector('.zv-review-chip--active');location.href='04-reviews.html?tab='+(a?a.getAttribute('data-filter'):'procedures');">
+          <div>
+            <h2 class="zv-sec-head__title">Honest Reviews</h2>
+          </div>
+          <span class="zv-sec-head__chevron"><i class="ri-arrow-right-s-line"><svg class="ri-svg" aria-hidden="true"><use href="#ri-arrow-right-s-line"></use></svg></i></span>
+        </a>
+        <div class="zv-review-filters" role="tablist" aria-label="Filter reviews">
+          <button class="zv-review-chip zv-review-chip--active" type="button" data-filter="procedures">Procedures</button>
+          <button class="zv-review-chip" type="button" data-filter="stays">Stays</button>
+        </div>
+        <div class="zv-rv-grid" data-active="procedures">
+          <article class="zv-rv-card" data-cat="procedures">
+            <div class="zv-rv-card__stars" aria-label="5 out of 5"><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i></div>
+            <div class="zv-rv-card__photos">
+              <span class="zv-rv-card__photo"><img src="./_concept-assets/images/procedures/proc-01.png" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__photo"><img src="./_concept-assets/images/procedures/proc-04.jpg" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__photo"><img src="./_concept-assets/images/procedures/proc-06.jpg" alt="" loading="lazy"/></span>
+            </div>
+            <p class="zv-rv-card__text">The consultation was genuinely thorough — the doctor explained every step in English, walked me through the risks honestly, and never pushed extra treatments. The result is subtle and natural, exactly what I hoped for, and the follow-up care afterward was just as careful.</p>
+            <div class="zv-rv-card__author">
+              <span class="zv-rv-card__nick">mika_seoul</span>
+              <span class="zv-rv-card__date">2026.03.14</span>
+            </div>
+            <a class="zv-rv-card__product">
+              <span class="zv-rv-card__thumb"><img src="./_concept-assets/images/procedures/proc-01.png" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__pmeta">
+                <span class="zv-rv-card__pname">Botox Wrinkle Treatment</span>
+                <span class="zv-rv-card__pprov">Gangnam Aesthetics</span>
+              </span>
+            </a>
+          </article>
+          <article class="zv-rv-card" data-cat="procedures">
+            <div class="zv-rv-card__stars" aria-label="5 out of 5"><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i></div>
+            <p class="zv-rv-card__text">Natural lips, none of the duck-look I feared.</p>
+            <div class="zv-rv-card__author">
+              <span class="zv-rv-card__nick">yuki_tokyo</span>
+              <span class="zv-rv-card__date">2026.02.28</span>
+            </div>
+            <a class="zv-rv-card__product">
+              <span class="zv-rv-card__thumb"><img src="./_concept-assets/images/procedures/proc-02.png" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__pmeta">
+                <span class="zv-rv-card__pname">Lip Filler 1cc</span>
+                <span class="zv-rv-card__pprov">Apgujeong Clinic</span>
+              </span>
+            </a>
+          </article>
+          <article class="zv-rv-card" data-cat="procedures">
+            <div class="zv-rv-card__stars" aria-label="4 out of 5"><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i></div>
+            <div class="zv-rv-card__photos">
+              <span class="zv-rv-card__photo"><img src="./_concept-assets/images/procedures/proc-03.png" alt="" loading="lazy"/></span>
+            </div>
+            <p class="zv-rv-card__text">Skin brightening over three sessions — my tone is the most even it's been in years.</p>
+            <div class="zv-rv-card__author">
+              <span class="zv-rv-card__nick">natasha_mood</span>
+              <span class="zv-rv-card__date">2026.02.10</span>
+            </div>
+            <a class="zv-rv-card__product">
+              <span class="zv-rv-card__thumb"><img src="./_concept-assets/images/procedures/proc-03.png" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__pmeta">
+                <span class="zv-rv-card__pname">Skin Brightening Program</span>
+                <span class="zv-rv-card__pprov">Cheongdam Derma</span>
+              </span>
+            </a>
+          </article>
+          <article class="zv-rv-card" data-cat="procedures">
+            <div class="zv-rv-card__stars" aria-label="5 out of 5"><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i></div>
+            <p class="zv-rv-card__text">Clean clinic, clear pricing, zero surprises.</p>
+            <div class="zv-rv-card__author">
+              <span class="zv-rv-card__nick">lina_k</span>
+              <span class="zv-rv-card__date">2026.01.22</span>
+            </div>
+            <a class="zv-rv-card__product">
+              <span class="zv-rv-card__thumb"><img src="./_concept-assets/images/procedures/proc-04.jpg" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__pmeta">
+                <span class="zv-rv-card__pname">Aqua Peel Facial</span>
+                <span class="zv-rv-card__pprov">Sinsa Skin Lab</span>
+              </span>
+            </a>
+          </article>
+          <article class="zv-rv-card" data-cat="procedures">
+            <div class="zv-rv-card__stars" aria-label="5 out of 5"><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i></div>
+            <div class="zv-rv-card__photos">
+              <span class="zv-rv-card__photo"><img src="./_concept-assets/images/procedures/proc-05.jpg" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__photo"><img src="./_concept-assets/images/procedures/proc-02.png" alt="" loading="lazy"/></span>
+            </div>
+            <p class="zv-rv-card__text">I was nervous as a first-timer, but the team walked me through every step and checked in along the way. It was painless, the room was spotless, and the result looks completely natural — friends keep asking where I went.</p>
+            <div class="zv-rv-card__author">
+              <span class="zv-rv-card__nick">sofia_rm</span>
+              <span class="zv-rv-card__date">2026.01.09</span>
+            </div>
+            <a class="zv-rv-card__product">
+              <span class="zv-rv-card__thumb"><img src="./_concept-assets/images/procedures/proc-05.jpg" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__pmeta">
+                <span class="zv-rv-card__pname">Ulthera Lifting</span>
+                <span class="zv-rv-card__pprov">Gangnam Aesthetics</span>
+              </span>
+            </a>
+          </article>
+          <article class="zv-rv-card" data-cat="procedures">
+            <div class="zv-rv-card__stars" aria-label="4 out of 5"><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i></div>
+            <p class="zv-rv-card__text">Quick gel removal and a fresh set in under an hour. The design matched my reference photo exactly.</p>
+            <div class="zv-rv-card__author">
+              <span class="zv-rv-card__nick">hannah_b</span>
+              <span class="zv-rv-card__date">2025.12.18</span>
+            </div>
+            <a class="zv-rv-card__product">
+              <span class="zv-rv-card__thumb"><img src="./_concept-assets/images/procedures/proc-06.jpg" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__pmeta">
+                <span class="zv-rv-card__pname">Gel Nail Premium</span>
+                <span class="zv-rv-card__pprov">Sinsa Nail Studio</span>
+              </span>
+            </a>
+          </article>
+          <article class="zv-rv-card" data-cat="stays">
+            <div class="zv-rv-card__stars" aria-label="5 out of 5"><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i></div>
+            <div class="zv-rv-card__photos">
+              <span class="zv-rv-card__photo"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_hanok.png" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__photo"><img src="./_concept-assets/images/hotels/hotel/destinations/dest_seoul.png" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__photo"><img src="./_concept-assets/images/hotels/hotel/destinations/dest_busan.png" alt="" loading="lazy"/></span>
+            </div>
+            <p class="zv-rv-card__text">Quiet hanok courtyard, heated floors, and a traditional breakfast each morning. The host family was incredibly warm and pointed us to little local spots we'd never have found on our own — easily the highlight of the trip.</p>
+            <div class="zv-rv-card__author">
+              <span class="zv-rv-card__nick">emma_travels</span>
+              <span class="zv-rv-card__date">2026.03.02</span>
+            </div>
+            <a class="zv-rv-card__product">
+              <span class="zv-rv-card__thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_double.png" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__pmeta">
+                <span class="zv-rv-card__pname">Bukchon Hanok Stay</span>
+                <span class="zv-rv-card__pprov">Jongno-gu · Bukchon</span>
+              </span>
+            </a>
+          </article>
+          <article class="zv-rv-card" data-cat="stays">
+            <div class="zv-rv-card__stars" aria-label="4 out of 5"><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i></div>
+            <p class="zv-rv-card__text">Spotless room right by the station. Perfect English at reception.</p>
+            <div class="zv-rv-card__author">
+              <span class="zv-rv-card__nick">marco_p</span>
+              <span class="zv-rv-card__date">2026.02.19</span>
+            </div>
+            <a class="zv-rv-card__product">
+              <span class="zv-rv-card__thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_suite.png" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__pmeta">
+                <span class="zv-rv-card__pname">Hongdae Boutique Twin</span>
+                <span class="zv-rv-card__pprov">Mapo-gu · Hongdae</span>
+              </span>
+            </a>
+          </article>
+          <article class="zv-rv-card" data-cat="stays">
+            <div class="zv-rv-card__stars" aria-label="5 out of 5"><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i></div>
+            <div class="zv-rv-card__photos">
+              <span class="zv-rv-card__photo"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_twin.png" alt="" loading="lazy"/></span>
+            </div>
+            <p class="zv-rv-card__text">Best view in Myeongdong and the breakfast spread was huge. Walking distance to everything we wanted to see.</p>
+            <div class="zv-rv-card__author">
+              <span class="zv-rv-card__nick">aiko_n</span>
+              <span class="zv-rv-card__date">2026.02.05</span>
+            </div>
+            <a class="zv-rv-card__product">
+              <span class="zv-rv-card__thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_twin.png" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__pmeta">
+                <span class="zv-rv-card__pname">Hotel Lotte Seoul</span>
+                <span class="zv-rv-card__pprov">Jung-gu · Myeongdong</span>
+              </span>
+            </a>
+          </article>
+          <article class="zv-rv-card" data-cat="stays">
+            <div class="zv-rv-card__stars" aria-label="5 out of 5"><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i><i class="zv-rv-star zv-rv-star--on ri-star-fill"><svg class="ri-svg" aria-hidden="true"><use href="#ri-star-fill"></use></svg></i></div>
+            <p class="zv-rv-card__text">Booked from abroad in minutes. Exactly as pictured.</p>
+            <div class="zv-rv-card__author">
+              <span class="zv-rv-card__nick">david_rk</span>
+              <span class="zv-rv-card__date">2026.01.15</span>
+            </div>
+            <a class="zv-rv-card__product">
+              <span class="zv-rv-card__thumb"><img src="./_concept-assets/images/hotels/hotel/rooms/hotel_room_hanok.png" alt="" loading="lazy"/></span>
+              <span class="zv-rv-card__pmeta">
+                <span class="zv-rv-card__pname">Conrad Seoul Deluxe</span>
+                <span class="zv-rv-card__pprov">Yeongdeungpo-gu · Yeouido</span>
+              </span>
+            </a>
+          </article>
+        </div>
+      </section>
+
+      <!-- Bottom padding for floating nav -->
+      <div class="zv-bottom-spacer"></div>
+    </div>
+
+    <!-- Bottom Nav — 라이브 앱 내비 (common.js) -->
+    <div id="bottom-nav-root"></div>
+    <script src="../common.js"></script>
+  </main>
+  <script>
+// ===== extracted from 00-main.html inline <script> (편집은 여기서) =====
+
+Zivo.renderBottomNav('home', { basePath: '../' });
+
+// Promo banner carousel — in-frame crossfade (배너 영역 안에서만 전환)
+    (function() {
+      const track = document.getElementById('promoBannerTrack');
+      const dotsWrap = document.getElementById('promoBannerDots');
+      if (!track) return;
+      const slides = Array.from(track.children);
+      const n = slides.length;
+      if (!n) return;
+      const dots = dotsWrap ? Array.from(dotsWrap.children) : [];
+      let cur = 0;
+      function show(i) {
+        cur = (i + n) % n;
+        track.style.transform = 'translateX(-' + (cur * 100) + '%)';
+        slides.forEach((s, idx) => s.classList.toggle('is-active', idx === cur));
+        dots.forEach((d, idx) => d.classList.toggle('is-active', idx === cur));
+      }
+      show(0);
+      setInterval(() => { show(cur + 1); }, 4000);
+    })();
+    // Header search button toggle + header scrolled state (MVP 패턴)
+    (function() {
+      const searchBar = document.querySelector('.zv-glass-search');
+      const headerEl = document.querySelector('.zv-hero__header');
+      const headerBtn = document.querySelector('.zv-hero__search-btn');
+      if (!searchBar || !headerBtn || !headerEl) return;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            headerBtn.classList.remove('show');
+            headerEl.classList.remove('scrolled');
+          } else {
+            headerBtn.classList.add('show');
+            headerEl.classList.add('scrolled');
+          }
+        });
+      }, { threshold: 0.1 });
+      io.observe(searchBar);
+    })();
+    // (tabs 폐기 — 카테고리 그리드와 중복이었음)
+
+
+    // Top Picks · Procedures · Top Stays 좋아요 — .active 토글
+    document.querySelectorAll('.zv-card__bookmark, .hotel-box__hero-fav').forEach(function(btn) {
+      function syncFav() {
+        var on = btn.classList.contains('active');
+        var icon = btn.querySelector('i');
+        var use = btn.querySelector('use');
+        if (icon) icon.className = on ? 'ri-heart-3-fill' : 'ri-heart-3-line';
+        if (use) use.setAttribute('href', on ? '#ri-heart-3-fill' : '#ri-heart-3-line');
+      }
+      syncFav();
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        btn.classList.toggle('active');
+        syncFav();
+      });
+    });
+
+// Review filter tabs (Procedures / Stays)
+    (function () {
+      var grid = document.querySelector('.zv-rv-grid');
+      var chips = document.querySelectorAll('.zv-review-chip[data-filter]');
+      chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          chips.forEach(function (c) { c.classList.remove('zv-review-chip--active'); });
+          chip.classList.add('zv-review-chip--active');
+          if (grid) grid.setAttribute('data-active', chip.getAttribute('data-filter'));
+        });
+      });
+    })();
+    // Review product block → procedure / stay detail page
+    (function () {
+      document.querySelectorAll('.zv-rv-card__product').forEach(function (a) {
+        var card = a.closest('.zv-rv-card');
+        var cat = card ? card.getAttribute('data-cat') : 'procedures';
+        a.setAttribute('href', cat === 'stays' ? './stays.html' : './procedure-detail.html');
+      });
+    })();
+
+window.addEventListener("DOMContentLoaded",function(){var n=document.querySelectorAll(".bottom-nav-item");if(n[0])n[0].setAttribute("href","00-main.html");if(n[4])n[4].setAttribute("href","05-mypage.html");});
+  </script>
+</body>
+</html>

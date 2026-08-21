@@ -1,0 +1,1787 @@
+/* ============================================
+   ZIVO Renewal — Components
+   design-system.css 토큰만 사용. 하드코딩 금지.
+   ============================================ */
+
+/* ============================================
+   Base reset (mobile shell)
+   ============================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-title-md);
+  line-height: var(--line-height-normal);
+  color: var(--text-body);
+  background: var(--gray-50);
+  -webkit-font-smoothing: antialiased;
+  /* 모바일 300ms tap delay 제거 — 모든 터치 element에 전파 */
+  touch-action: manipulation;
+}
+
+/* ============================================
+   Image media wrapper — 옅은 테두리 라인 (DS 룰)
+   모든 사진 컨테이너는 1px rgba(0,0,0,0.15) inset border 필수.
+   라운드 유지 + 흰 BG 위 흰 이미지 사라짐 방지.
+   ============================================ */
+.zv-card__media,
+.zv-dest__media,
+.zv-recent__thumb {
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+/* ============================================
+   Icon (인라인 SVG 사이즈 매핑, 이모지 금지)
+   ============================================ */
+.zv-icon { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+.zv-icon--xs { width: 14px; height: 14px; }
+.zv-icon--sm { width: 16px; height: 16px; }
+.zv-icon--md { width: 20px; height: 20px; }
+.zv-icon--lg { width: 24px; height: 24px; }
+.zv-icon--xl { width: 28px; height: 28px; }
+
+/* ============================================
+   Mobile viewport shell
+   ============================================ */
+.zv-screen {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--white);
+  position: relative;
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
+}
+
+/* ============================================
+   Hero — MVP home-container (블루 풀블리드 + 글래스 검색)
+   ============================================ */
+.zv-hero {
+  background: var(--white);
+  color: var(--gray-900);
+  padding: 0;
+  position: relative;
+}
+.zv-hero__header {
+  height: 52px;
+  padding: 0 var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--white);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+/* 검색바가 사라지면 헤더가 그림자 미세 추가 (콘텐츠 위 고정 시 분리감) */
+.zv-hero__header.scrolled {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+}
+.zv-hero__logo {
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  border-radius: var(--radius-sm);
+}
+.zv-hero__logo:active img { transform: scale(0.96); }
+.zv-hero__logo img { transition: transform var(--transition-base); }
+.zv-hero__logo img {
+  height: 100%;
+  width: auto;
+  display: block;
+}
+.zv-hero__icons { display: flex; gap: 4px; }
+.zv-hero__icon-btn {
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent;
+  color: var(--gray-900);
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+/* 검색 아이콘 — 글래스 검색바가 보이는 동안 숨김 (MVP sticky 패턴, 스크롤 시 .show 토글) */
+.zv-hero__search-btn {
+  opacity: 0;
+  transform: scale(0.8);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.zv-hero__search-btn.show {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+/* Glass search bar (MVP home-search-bar) */
+.zv-hero__search-section {
+  padding: 4px var(--space-md) 12px;
+}
+.zv-glass-search {
+  width: 100%;
+  height: 44px;
+  padding: 0 16px;
+  background-color: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: 999px;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--gray-400);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+.zv-glass-search__icon {
+  width: 24px; height: 24px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.zv-glass-search__text { color: var(--gray-400); font-size: 16px; }
+
+/* Content overlay (블루 위 흰 라운드 톱 — KKday 톤 16px 라운드) */
+.zv-content {
+  background: var(--white);
+  padding: 0;
+  position: relative;
+  z-index: 2;
+}
+
+/* (legacy banner slider 폐기 — promo-card split 패턴으로 교체) */
+
+/* ============================================
+   Section wrap (배경 흰색 풀폭, 위 패딩 통일)
+   ============================================ */
+.zv-section {
+  padding: var(--space-lg) 0 var(--space-md);
+  background: var(--white);
+}
+.zv-section--gray {
+  background: var(--gray-50);
+}
+.zv-section--tight { padding: var(--space-md) 0; }
+
+
+/* ============================================
+   AppHeader
+   ============================================ */
+.zv-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  height: 56px;
+  padding: 0 var(--space-md);
+  background: var(--white);
+  border-bottom: 1px solid var(--border-primary);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.zv-header__back {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--icon-primary);
+  margin-left: calc(-1 * var(--space-xs));
+}
+.zv-header__back:hover { background: var(--bg-hover); }
+.zv-header__title {
+  flex: 1;
+  font-size: var(--font-size-title-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0;
+  /* Title Case */
+}
+.zv-header__action {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--icon-primary);
+}
+.zv-header--brand .zv-header__title {
+  font-size: var(--font-size-display-sm);
+}
+
+/* ============================================
+   BottomNav — Material Symbols Rounded
+   ============================================ */
+.zv-bottomnav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: var(--white);
+  border-top: 1px solid var(--border-primary);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 20;
+  max-width: 480px;
+  margin: 0 auto;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.04);
+}
+.zv-bottomnav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 10px 0 8px;
+  border: 0;
+  background: transparent;
+  color: var(--gray-400);
+  cursor: pointer;
+}
+.zv-bottomnav__icon {
+  font-size: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.zv-bottomnav__label {
+  font-size: var(--font-size-caption-md);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0;
+}
+.zv-bottomnav__item--active {
+  color: var(--gray-900);
+}
+.zv-bottomnav__item--active .zv-bottomnav__label {
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ============================================
+   SearchBar (Hero)
+   ============================================ */
+.zv-search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: var(--white);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-full);
+  padding: 12px 16px;
+  box-shadow: var(--shadow-flat);
+  cursor: pointer;
+}
+.zv-search__icon { color: var(--icon-secondary); flex-shrink: 0; }
+.zv-search__text {
+  flex: 1;
+  font-size: var(--font-size-title-md);
+  color: var(--text-placeholder);
+}
+.zv-search__filter {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-color);
+  color: var(--white);
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+/* ============================================
+   ServiceCard — MVP 톤 (gray-50 통일 박스 + 컬러 아이콘)
+   ============================================ */
+.zv-services {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md) var(--space-sm);
+  padding: 0 var(--space-md);
+}
+.zv-service {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+.zv-service__icon {
+  width: 76px;
+  height: 76px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-50);
+  border-radius: var(--radius-xl);
+  position: relative;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.045);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+.zv-service:active .zv-service__icon { transform: scale(0.97); }
+/* Icon color per category (배경 통일 / 아이콘만 컬러) */
+.zv-service__label {
+  font-size: var(--font-size-body-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  text-align: center;
+  line-height: var(--line-height-tight);
+}
+
+/* ============================================
+   SectionHeader
+   ============================================ */
+.zv-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 var(--space-md) var(--space-sm-md);
+  gap: var(--space-sm);
+}
+.zv-section-head__group { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.zv-section-head__title {
+  font-size: var(--font-size-title-lg); /* 18 — 홈 예외 룰 */
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: var(--line-height-tight);
+}
+.zv-section-head__sub {
+  font-size: var(--font-size-body-sm);
+  color: var(--text-body);
+  margin: 0;
+}
+.zv-section-head__more {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-100);  /* 홈 예외 — 원형 배경 */
+  border-radius: var(--radius-full);
+  color: var(--text-primary);
+  border: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ============================================
+   DestinationCard — 사진 + 외부 캡션
+   ============================================ */
+.zv-dest {
+  flex: 0 0 148px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.zv-dest__media {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--gray-100);
+}
+.zv-dest__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.zv-dest__caption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 2px;
+}
+.zv-dest__name {
+  font-size: var(--font-size-title-md);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+  color: var(--text-primary);
+  line-height: var(--line-height-tight);
+}
+.zv-dest__meta {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-body);
+  margin: 0;
+}
+
+/* ============================================
+   HScroll — 가로 스크롤 컨테이너
+   ============================================ */
+.zv-hscroll {
+  display: flex;
+  gap: var(--space-sm-md);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0 var(--space-md) var(--space-sm);
+  scrollbar-width: none;
+}
+.zv-hscroll::-webkit-scrollbar { display: none; }
+.zv-hscroll > * { scroll-snap-align: start; }
+
+/* ============================================
+   Chip / Pill
+   ============================================ */
+.zv-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-primary);
+  background: var(--white);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-body);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.zv-chip--active {
+  background: var(--text-primary);
+  color: var(--white);
+  border-color: var(--text-primary);
+}
+
+/* ============================================
+   States — Empty / Loading / Error
+   ============================================ */
+.zv-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3xl) var(--space-md);
+  text-align: center;
+  gap: var(--space-md);
+}
+.zv-state__icon {
+  width: 64px;
+  height: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-100);
+  border-radius: var(--radius-full);
+  color: var(--text-body);
+  font-size: 28px;
+}
+.zv-state__title {
+  font-size: var(--font-size-title-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0;
+}
+.zv-state__sub {
+  font-size: var(--font-size-title-md);
+  color: var(--text-body);
+  margin: 0;
+  max-width: 280px;
+}
+.zv-state__cta {
+  margin-top: var(--space-sm);
+}
+
+/* ============================================
+   Button
+   ============================================ */
+.zv-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-tight);
+  padding: 12px 20px;
+  border: 0;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--font-size-title-md);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background 120ms ease;
+  /* Title Case for CTA */
+}
+.zv-btn--primary {
+  background: var(--primary-color);
+  color: var(--white);
+}
+.zv-btn--primary:hover { background: var(--primary-dark); }
+.zv-btn--ghost {
+  background: var(--white);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+}
+.zv-btn--ghost:hover { background: var(--bg-hover); }
+.zv-btn--block { width: 100%; }
+.zv-btn--lg { padding: 16px 24px; font-size: var(--font-size-title-md); }
+
+/* ============================================
+   Section header (제목 + 원형 chevron) — MVP 톤
+   ============================================ */
+.zv-sec-head {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--gray-900);
+  padding: 0 var(--space-md);
+  margin-bottom: 12px;
+}
+.zv-sec-head__title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--gray-900);
+  margin: 0;
+}
+.zv-sec-head__sub {
+  font-size: var(--font-size-body-sm);
+  color: var(--text-body);
+  margin: 0;
+}
+.zv-sec-head__sub strong { color: var(--text-primary); font-weight: var(--font-weight-semibold); }
+.zv-sec-head__chevron {
+  width: 24px; height: 24px;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-900);
+  flex-shrink: 0;
+}
+
+/* ============================================
+   Horizontal scroll rail (가로 카드 섹션)
+   ============================================ */
+.zv-rail {
+  display: flex;
+  gap: var(--space-sm-md);
+  overflow-x: auto;
+  padding: 0 var(--space-md);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.zv-rail::-webkit-scrollbar { display: none; }
+
+/* ============================================
+   Listing card v2 — MVP procedure-card 톤 (160 / 220 / full)
+   ============================================ */
+.zv-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: var(--white);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.zv-card--sm { width: var(--card-sm); }
+.zv-card--md { width: var(--card-md); }
+.zv-card__media {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--gray-100);
+}
+.zv-card__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.zv-card__bookmark {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 32px; height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 0;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  color: var(--gray-900);
+}
+.zv-card__bookmark [class^="ri-"] { font-size: 18px; }
+.zv-card__bookmark.active { color: var(--error); }
+.zv-card__body { padding: 10px 2px 0; }
+.zv-card__brand {
+  font-size: var(--font-size-caption-lg);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-body);
+  margin: 0 0 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Category tag — 서비스 구분 (시술/호텔/투어 등) */
+.zv-card__cat-tag {
+  display: block;
+  font-size: var(--font-size-caption-md);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 2px;
+  line-height: var(--line-height-tight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zv-card__cat-tag--procedure { color: var(--text-body); }
+.zv-card__cat-tag--hotel     { color: var(--text-body); }
+.zv-card__cat-tag--food      { color: var(--text-body); }
+.zv-card__cat-tag--beauty    { color: var(--text-body); }
+.zv-card__cat-tag--taxi      { color: var(--text-body); }
+.zv-card__cat-tag--esim      { color: var(--text-body); }
+.zv-card__cat-tag--tour      { color: var(--text-body); }
+.zv-card__cat-tag--hospital  { color: var(--text-body); }
+/* Brand row with hospital logo */
+.zv-card__brand-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-tight);
+  margin: 0 0 2px;
+  min-width: 0;
+}
+.zv-card__hosp-logo {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background: var(--white);
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+.zv-card__hosp-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.zv-card__brand-row .zv-card__brand { margin: 0; flex: 1; }
+.zv-card__title {
+  font-size: var(--font-size-body-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  margin: 0 0 2px;
+  line-height: var(--line-height-snug);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.zv-card__price-row { display: flex; align-items: baseline; gap: 4px; flex-wrap: nowrap; overflow: hidden; }
+.zv-card__price-row > * { white-space: nowrap; }
+.zv-card__discount {
+  font-size: var(--font-size-title-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--sale);
+}
+.zv-card__price-final {
+  font-size: var(--font-size-title-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+.zv-card__price-original { display: block; font-size: var(--font-size-caption-lg); font-weight: var(--font-weight-regular); color: var(--text-placeholder); text-decoration: line-through; line-height: 1.3; }
+.zv-card__rating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 2px;
+  font-size: var(--font-size-body-sm);
+}
+.zv-card__rating-star {
+  color: var(--secondary-color);
+  font-size: 14px;
+  line-height: 1;
+}
+.zv-card__rating strong { font-weight: var(--font-weight-semibold); color: var(--text-primary); }
+.zv-card__rating-count { color: var(--text-body); font-weight: var(--font-weight-regular); }
+
+
+/* See-all button under horizontal-scroll rails */
+.zv-seeall {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 44px;
+  margin: var(--space-md) var(--space-md) 0;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-xl);
+  background: var(--white);
+  font-size: var(--font-size-body-md);
+  color: var(--gray-600);
+  text-decoration: none;
+  cursor: pointer;
+}
+.zv-seeall strong { font-weight: 700; color: var(--gray-900); }
+
+/* ============================================
+   Recently viewed mini — 가로 박스 (썸네일 좌측 + 텍스트 우측)
+   ============================================ */
+.zv-recent-mini {
+  flex: 0 0 var(--card-md);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: inherit;
+}
+.zv-recent-mini__thumb {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--gray-100);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+.zv-recent-mini__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.zv-recent-mini__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.zv-recent-mini__brand {
+  font-size: var(--font-size-caption-lg);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-body);
+  margin: 0;
+  line-height: var(--line-height-tight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zv-recent-mini__name {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: var(--line-height-tight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zv-recent-mini__price {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: var(--line-height-tight);
+}
+.zv-recent-mini__price .zv-recent-mini__unit {
+  font-weight: var(--font-weight-regular);
+  color: var(--text-body);
+  font-size: var(--font-size-caption-lg);
+  margin-left: 2px;
+}
+/* 병원·숙소 case: 가격 대신 별점·리뷰수 (기획서 5-2) */
+.zv-recent-mini__rating {
+  display: flex; align-items: center; gap: 3px;
+  margin: 0; font-size: var(--font-size-body-sm);
+  color: var(--text-body); line-height: var(--line-height-tight);
+}
+.zv-recent-mini__rating i[class^="ri-"] { font-size: 13px; color: var(--secondary-color); line-height: 1; }
+.zv-recent-mini__rating strong { font-weight: var(--font-weight-semibold); color: var(--text-primary); }
+
+/* ============================================
+   Banner (이벤트 — 인라인 3축 허용)
+   ============================================ */
+.zv-banner {
+  position: relative;
+  margin: 0 var(--space-md);
+  border-radius: var(--radius-xl);
+  padding: var(--space-md) var(--space-md);
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: var(--white);
+  cursor: pointer;
+}
+.zv-banner__eyebrow {
+  font-size: var(--font-size-caption-lg);
+  font-weight: var(--font-weight-semibold);
+  opacity: 0.85;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.zv-banner__title {
+  font-size: var(--font-size-display-sm);
+  font-weight: var(--font-weight-bold);
+  margin: 0 0 4px;
+}
+.zv-banner__sub {
+  font-size: var(--font-size-body-md);
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* ============================================
+   Toast — fixed bottom-center pill
+   gray-900 BG / white text / 13px / radius-full
+   1.6s 노출 후 fade. 이모지 금지.
+   ============================================ */
+.zv-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(88px + env(safe-area-inset-bottom));
+  transform: translateX(-50%) translateY(8px);
+  background: var(--gray-900);
+  color: var(--white);
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+.zv-toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.zv-toast--hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(8px);
+}
+
+/* ============================================
+   Lightbox — 사진 클릭 시 풀스크린 확장
+   ============================================ */
+.zv-lightbox {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  cursor: zoom-out;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease, visibility 0s linear 150ms;
+}
+.zv-lightbox.is-open {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 150ms ease, visibility 0s linear 0s;
+}
+.zv-lightbox__img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+.zv-lightbox__close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 44px; height: 44px;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  border: 0;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+.zv-lightbox__close:hover { background: rgba(255, 255, 255, 0.25); }
+
+/* prev / next nav */
+.zv-lightbox__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px; height: 48px;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  border: 0;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  z-index: 2;
+}
+.zv-lightbox__nav:hover { background: rgba(255, 255, 255, 0.25); }
+.zv-lightbox__nav:disabled { opacity: 0.3; cursor: not-allowed; }
+.zv-lightbox__nav--prev { left: 16px; }
+.zv-lightbox__nav--next { right: 16px; }
+
+/* counter chip (bottom-center) */
+.zv-lightbox__counter {
+  position: absolute;
+  bottom: 88px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-caption-lg);
+  font-weight: var(--font-weight-semibold);
+  backdrop-filter: blur(8px);
+  letter-spacing: 0.04em;
+}
+
+/* Thumbnail rail (bottom-center) */
+.zv-lightbox__thumbs {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--gap-tight);
+  max-width: calc(100% - 32px);
+  overflow-x: auto;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: var(--radius-md);
+  scrollbar-width: none;
+}
+.zv-lightbox__thumbs::-webkit-scrollbar { display: none; }
+.zv-lightbox__thumb {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--gray-100);
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 150ms ease, border-color 150ms ease;
+}
+.zv-lightbox__thumb img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.zv-lightbox__thumb:hover { opacity: 0.85; }
+.zv-lightbox__thumb--active {
+  opacity: 1;
+  border-color: var(--white);
+}
+
+/* ============================================
+   Inline Ad Banner — 피드 중간 sponsored
+   미니멀: gray-50 BG + AD 뱃지만으로 광고 구분
+   ============================================ */
+.com-ad {
+  position: relative;
+  margin: 0;
+  padding: 14px var(--space-md);
+  background: var(--gray-50);
+  border: 0;
+  border-top: 1px solid var(--gray-100);
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+/* 카드형으로 전환 후 중복 border 규칙 불필요 — 삭제 */
+
+/* ============================================
+   Flag — name 라인 inline (avatar absolute 패턴 폐기)
+   .com-post__flag (05-community) / .det-flag (06/06b/06c) 공통
+   ============================================ */
+.com-post__flag, .det-flag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.85em;
+  line-height: 1;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+/* ============================================
+   Post Photos — 메인 카드는 padding 안쪽 정렬, 상세(det-body)는 풀폭 carousel 유지
+   ============================================ */
+.com-post__photos {
+  display: flex;
+  gap: var(--gap-tight);
+  margin: 0 0 10px;
+  padding: 0;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  border-radius: var(--radius-md);
+}
+/* 상세 페이지(06/06b/06c/06d)에서는 풀폭 carousel 유지 (det-body padding 무효화) */
+.det-body .com-post__photos {
+  margin: 0 -16px 16px;
+  padding: 0 16px;
+  border-radius: 0;
+}
+.com-post__photos::-webkit-scrollbar { display: none; }
+.com-post__photo {
+  flex: 0 0 86%;
+  aspect-ratio: 4 / 3;
+  background: var(--gray-100);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  scroll-snap-align: start;
+}
+.com-post__photos--1 .com-post__photo { flex: 0 0 100%; }
+/* --2: 1x2 grid (가로 carousel 폐기, 균등 분할) */
+.com-post .com-post__photos--2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  overflow: visible;
+  scroll-snap-type: none;
+  padding: 0;
+  margin: 0 0 10px;
+}
+.com-post .com-post__photos--2 .com-post__photo {
+  flex: none;
+  aspect-ratio: 1 / 1;
+  scroll-snap-align: none;
+}
+/* --4: 2x2 grid (overflow-x 해제 후 grid로 전환) */
+/* --4: 2x2 grid — base carousel margin/padding 명시 reset (specificity .com-post .--4) */
+.com-post .com-post__photos--4 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  overflow-x: visible;
+  overflow-y: visible;
+  scroll-snap-type: none;
+  padding: 0;
+  margin: 0 0 10px;
+}
+.com-post .com-post__photos--4 .com-post__photo {
+  flex: none;
+  aspect-ratio: 1 / 1;
+  scroll-snap-align: none;
+}
+/* --6: 3x2 grid */
+.com-post .com-post__photos--6 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  overflow-x: visible;
+  overflow-y: visible;
+  scroll-snap-type: none;
+  padding: 0;
+  margin: 0 0 10px;
+}
+.com-post .com-post__photos--6 .com-post__photo {
+  flex: none;
+  aspect-ratio: 1 / 1;
+  scroll-snap-align: none;
+}
+.com-post__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.com-post__photo--more { position: relative; }
+.com-post__photo--more::after {
+  content: attr(data-more);
+  position: absolute; inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-title-md);
+  font-weight: var(--font-weight-bold);
+}
+.com-ad__media {
+  width: 64px; height: 64px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+.com-ad__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.com-ad__body { flex: 1; min-width: 0; }
+.com-ad__sponsor {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-tight);
+  margin-bottom: 4px;
+}
+.com-ad__badge {
+  display: inline-block;
+  padding: 2px 4px;
+  background: var(--gray-900);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-caption-md);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+}
+.com-ad__sponsor-label {
+  font-size: var(--font-size-caption-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-body);
+  letter-spacing: 0.02em;
+}
+.com-ad__title {
+  font-size: var(--font-size-body-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 2px;
+  line-height: var(--line-height-snug);
+}
+.com-ad__sub {
+  font-size: var(--font-size-body-sm);
+  color: var(--text-body);
+  margin: 0;
+}
+.com-ad__info { display: none; }
+.com-ad__chevron {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-400);
+  align-self: center;
+}
+
+/* ============================================
+   Utility — Visually hidden (screen reader only)
+   ============================================ */
+.u-sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================
+   Community v2 — Creator-first 패턴
+   Stories / Tabs / Featured Creator / Multi-tags /
+   Reactions / Reply preview / Poll / Trending / Author-pro
+   ============================================ */
+
+/* ── Stories row (Top Creators 우선 가로 스크롤) ───── */
+.com-stories {
+  display: flex;
+  gap: 16px;
+  padding: 14px var(--space-md) 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--border-primary);
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  scroll-padding: 0 var(--space-md);
+}
+.com-stories::-webkit-scrollbar { display: none; }
+.com-story {
+  flex-shrink: 0;
+  width: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-tight);
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  scroll-snap-align: start;
+}
+.com-story__ring {
+  width: 56px; height: 56px;
+  border-radius: var(--radius-full);
+  padding: 2px;
+  background: var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+/* unread: primary 단색 링 (ZIVO 톤 유지, 보라+핑크 그라디언트 제거 — AI Slop #1 근접) */
+.com-story--unread .com-story__ring {
+  background: var(--primary-color);
+  padding: 2.4px;
+}
+.com-story__avatar {
+  width: 100%; height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--white);
+  padding: 2px;
+  display: block;
+  overflow: hidden;
+  transition: transform 100ms ease;
+}
+.com-story:active .com-story__avatar { transform: scale(0.94); }
+.com-story__avatar img {
+  width: 100%; height: 100%;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  display: block;
+}
+.com-story__add {
+  background: var(--gray-100);
+  color: var(--gray-600);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.com-story__name {
+  font-size: var(--font-size-caption-md);
+  color: var(--text-body);
+  margin: 0;
+  max-width: 60px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+/* ── Top tabs (For You / Following / Creators) ───── */
+.com-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 var(--space-md);
+  border-bottom: 1px solid var(--border-primary);
+  position: relative;
+}
+.com-tab {
+  flex: 1;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 12px 8px 14px;
+  font-size: var(--font-size-body-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-muted);
+  cursor: pointer;
+  position: relative;
+  letter-spacing: 0;
+  transition: color 150ms ease, background-color 100ms ease;
+}
+.com-tab:not(.com-tab--active):hover  { background: var(--gray-50); }
+.com-tab:not(.com-tab--active):active { background: var(--gray-100); }
+.com-tab--active {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+.com-tab--active::after {
+  content: '';
+  position: absolute;
+  left: 50%; bottom: 0;
+  transform: translateX(-50%);
+  width: 32px; height: 2px;
+  background: var(--gray-900);
+  border-radius: var(--radius-full);
+}
+
+/* ── Multi hashtags (카드 본문 아래) ───── */
+.com-tags {
+  display: flex;
+  flex-wrap: nowrap;       /* 줄바꿈 제거 → 가로 스크롤로 처리 (칩 수 증가 시 레이아웃 안정) */
+  overflow-x: auto;
+  gap: var(--gap-tight);
+  margin: 0 0 10px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  scroll-padding: 0 var(--space-md);
+}
+.com-tags::-webkit-scrollbar { display: none; }
+.com-tags__chip {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 4px 12px;
+  background: var(--gray-100);
+  border: 1px solid transparent;       /* 불필요한 gray-200 border 제거 — 배경 자체로 구분 */
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-caption-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-emphasis);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 100ms ease, color 150ms ease;
+  scroll-snap-align: start;
+}
+.com-tags__chip:hover  { background: var(--gray-200); color: var(--text-primary); }
+.com-tags__chip:active { background: var(--gray-300, #d1d5db); }
+
+/* ── Reaction strip ───── */
+.com-reactions {
+  display: flex;
+  align-items: center;
+  gap: 2px;                /* 좁게 — 이모지+카운트 버튼 자체 padding이 충분함 */
+  padding-top: 2px;
+  font-size: var(--font-size-body-sm);
+  color: var(--text-body);
+}
+.com-reaction {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 150ms ease;
+  background: transparent;
+  border: 0;
+}
+.com-reaction:hover { background: var(--gray-100); }
+.com-reaction:active { background: var(--gray-200); }
+.com-reaction__emo {
+  font-size: 16px;          /* ZIVO guide: 15 금지 → 16 */
+  line-height: 1;
+  filter: grayscale(0.15);
+  transition: transform 120ms ease;
+}
+.com-reaction--on .com-reaction__emo {
+  filter: none;
+  transform: scale(1.15);
+}
+/* Material Symbol icon 변형 (이모지 폐기, --error 컬러 + FILL 활성) */
+.com-reaction__icon {
+  font-size: 18px !important;
+  line-height: 1;
+  color: var(--gray-600);
+  transition: color 150ms ease, transform 120ms ease;
+  font-variation-settings: 'FILL' 0, 'wght' 300;
+}
+.com-reaction--on .com-reaction__icon {
+  color: var(--error);
+  font-variation-settings: 'FILL' 1, 'wght' 600;
+  transform: scale(1.1);
+}
+.com-reaction strong {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-body-sm);
+}
+.com-reactions__sep { flex: 1; min-width: 8px; }
+.com-reactions__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--text-body);
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  transition: background-color 100ms ease;
+}
+.com-reactions__more:hover  { background: var(--gray-100); }
+.com-reactions__more:active { background: var(--gray-200); }
+
+/* ── Trending row (가로 스크롤 hot post) ───── */
+.com-trending {
+  padding: 16px 0 var(--gutter);
+  background: var(--gray-50);
+}
+.com-trending__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-md);
+  margin-bottom: 12px;
+}
+.com-trending__title {
+  font-size: var(--font-size-title-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-tight);
+}
+.com-trending__more {
+  font-size: var(--font-size-body-sm);
+  color: var(--text-body);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.com-trending__rail {
+  display: flex;
+  gap: 10px;
+  padding: 0 var(--space-md) 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+}
+.com-trending__rail::-webkit-scrollbar { display: none; }
+.com-trending__card {
+  flex: 0 0 148px;
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  border: 1px solid var(--border-primary);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+}
+.com-trending__media {
+  aspect-ratio: 4 / 3;
+  background: var(--gray-100);
+  position: relative;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+.com-trending__media img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.com-trending__rank {
+  position: absolute;
+  left: 7px; top: 7px;
+  height: 20px;
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: rgba(26, 93, 247, 0.92);  /* primary 강조 — 검정 중립 → 브랜드 액센트 */
+  color: var(--white);
+  font-size: var(--font-size-caption-md);
+  font-weight: var(--font-weight-bold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.02em;
+}
+.com-trending__body { padding: 9px 10px 10px; }
+.com-trending__cap {
+  font-size: var(--font-size-caption-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 4px;
+  line-height: var(--line-height-snug);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.com-trending__sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-caption-md);
+  color: var(--text-body);
+  margin: 0;
+}
+
+/* ── Author row (verified + followers) ───── */
+.com-author-pro {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.com-author-pro__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-body-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: var(--line-height-tight);
+}
+.com-author-pro__sub {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-tight);
+  font-size: var(--font-size-caption-lg);
+  color: var(--text-body);
+  margin: 0;
+}
+.com-author-pro__dot {
+  width: 2px; height: 2px;
+  border-radius: var(--radius-full);
+  background: var(--gray-400);
+  display: inline-block;
+  flex-shrink: 0;
+}
+.com-author-pro__followers strong {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ============================================
+   Community Interactions — Rowan
+   목적: 사용자 액션에 즉각 피드백 + 콘텐츠 진입 맥락 전달
+   성능: CSS-only keyframe, JS는 클래스 토글만
+   ============================================ */
+
+/* ── 1. Tab 슬라이딩 indicator ──────────────────────
+   JS가 left/width 픽셀 세팅. com-tab--active::after 비활성화됨. */
+.com-tab-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  background: var(--gray-900);
+  border-radius: var(--radius-full);
+  transition: left 220ms cubic-bezier(0.22, 1, 0.36, 1),
+              width 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+/* ── 3. Reaction bounce keyframe ──────────────────────
+   활성화 토글 시 이모지가 280ms 튕김. JS가 --pop 클래스 토글. */
+@keyframes com-reaction-pop {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.45); }
+  60%  { transform: scale(0.88); }
+  80%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+.com-reaction__emo--pop,
+.com-reaction__icon--pop {
+  animation: com-reaction-pop 280ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+
+/* ── 6. FAB press 피드백 ──────────────────────────────
+   :active scale 0.94 + 그림자 축소. 100ms 물리 피드백. */
+.com-fab {
+  transition: transform 100ms ease, box-shadow 150ms ease;
+}
+.com-fab:active {
+  transform: scale(0.94);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── 7. Reduced-motion 전역 override ─────────────────
+   prefers-reduced-motion 사용자 접근성 필수 대응. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── com-post stagger fade-in (Ive #5) ──────────────────
+   JS: querySelectorAll('.com-post').forEach((c,i)=>c.style.setProperty('--i',i))
+   reduced-motion: prefers-reduced-motion 전역 override가 즉시 표시 처리 */
+@keyframes com-post-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.com-post {
+  animation: com-post-enter 100ms ease both;
+  animation-delay: calc(var(--i, 0) * 30ms);
+}
+
+/* ── Book this place — 게시물 본문 인라인 deep-link 카드 ──
+   com-overflow (post 메뉴: Report/Block/Translate/Save) */
+.com-book {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+  padding: 10px;
+  background: var(--gray-50);
+  border: 0;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 150ms ease;
+}
+.com-book:hover { background: var(--gray-100); }
+.com-book__media {
+  width: 56px; height: 56px;
+  border-radius: var(--radius-md);
+  background: var(--gray-100);
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+.com-book__media img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.com-book__body { flex: 1; min-width: 0; }
+.com-book__cat {
+  display: inline-block;
+  font-size: var(--font-size-caption-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-body);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 2px;
+}
+.com-book__name {
+  font-size: var(--font-size-body-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 2px;
+  line-height: var(--line-height-snug);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.com-book__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px var(--gap-tight);
+  font-size: var(--font-size-caption-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-body);
+  margin: 0;
+  white-space: nowrap;
+}
+.com-book__meta > span { flex-shrink: 0; }
+.com-book__price {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+.com-book__cta {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius-full);
+  background: var(--primary-color);
+  color: var(--white);
+  border: 0;
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* ── Overflow menu trigger (••• Report/Translate/Save/Block) ──
+   카드 우상단. Cook H — UGC AppStore 가이드 + i18n 외국인 커뮤니티 필수. */
+.com-overflow {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-full);
+  background: transparent;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--gray-600);
+  flex-shrink: 0;
+  transition: background-color 150ms ease;
+}
+.com-overflow:hover { background: var(--gray-100); }
+
+/* Sheet menu (overflow tap → bottom sheet) */
+.com-sheet {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: var(--white);
+  border-top-left-radius: var(--radius-xl, 20px);
+  border-top-right-radius: var(--radius-xl, 20px);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.16);
+  transform: translateY(100%);
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 90;
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+}
+.com-sheet.is-open { transform: translateY(0); }
+.com-sheet__handle {
+  width: 36px; height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--gray-200);
+  margin: 4px auto 8px;
+}
+.com-sheet__item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px var(--space-md);
+  background: transparent;
+  border: 0;
+  font-size: var(--font-size-body-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+}
+.com-sheet__item:active { background: var(--gray-100); }
+.com-sheet__item--danger { color: var(--error); }
+.com-sheet__backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+  z-index: 89;
+}
+.com-sheet__backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ============================================
+   Community Interactions — Press feedback / focus-visible
+   (scroll/transition 속성은 각 원본 클래스에 병합됨)
+   ============================================ */
+
+/* com-post press — 80ms background darkening */
+.com-post { transition: background-color 80ms ease; }
+.com-post:active { background: var(--gray-50); }
+
+/* com-overflow active */
+.com-overflow:active { background: var(--gray-200); }
+
+/* com-book active */
+.com-book:active { background: var(--gray-100); }
+
+/* com-filter hover / active (비활성만) */
+.com-filter {
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+  scroll-snap-align: start;
+}
+.com-filter:not(.com-filter--active):hover  { background: var(--gray-100); }
+.com-filter:not(.com-filter--active):active { background: var(--gray-200); }
+
+/* focus-visible keyboard a11y ring
+   double ring: white 2px gap + primary 4px */
+button:focus-visible,
+a:focus-visible,
+[role="tab"]:focus-visible,
+[role="button"]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--primary-color);
+}
+.com-sheet__item:focus-visible,
+.zv-lightbox__close:focus-visible,
+.zv-lightbox__nav:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.6), 0 0 0 4px var(--white);
+}

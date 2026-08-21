@@ -391,3 +391,69 @@ a:hover {
     max-height: 46vh;
   }
 }
+
+/* ── 살아 있는 화면 ──────────────────────────────── */
+
+/* 3D 모니터 자리에 앉는 실제 페이지. 그림이 아니라 눌러지는 것. */
+.live {
+  position: fixed;
+  z-index: 1;
+  overflow: hidden;
+  /* 세로 화면을 가로 모니터에 띄우면 좌우가 빕니다.
+     흰색이면 레이아웃이 깨진 것처럼 보여서, 개발자가 실제로 보는
+     브라우저 기기 미리보기처럼 어두운 크롬으로 채웁니다. */
+  background: #26252e;
+  box-shadow: 0 0 0 1px rgba(46, 42, 107, 0.35);
+}
+.live iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  transform-origin: top left;
+  background: #fff;
+}
+
+.live[data-zoomed] {
+  z-index: 5;
+  box-shadow: 0 24px 60px rgba(46, 42, 107, 0.3), 0 0 0 2.5px var(--ink);
+  border-radius: 3px;
+}
+
+/* 확대했을 때 뒤를 덮는 면. 아무 데나 눌러도 닫힙니다. */
+.live__veil {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  background: color-mix(in oklab, var(--paper) 72%, transparent);
+}
+
+.live__zoom {
+  position: absolute;
+  z-index: 1;
+  right: 4px;
+  bottom: 4px;
+  font-family: var(--hand);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--card);
+  border: 1.5px solid var(--ink);
+  border-radius: 3px;
+  padding: 2px 7px;
+  cursor: pointer;
+  opacity: 0.72;
+}
+.live__zoom:hover {
+  opacity: 1;
+}
+.live[data-zoomed] .live__zoom {
+  right: 10px;
+  bottom: 10px;
+  font-size: 16px;
+  padding: 5px 12px;
+  opacity: 1;
+}

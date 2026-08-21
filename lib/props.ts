@@ -27,6 +27,20 @@ export type Layer = {
   /** 바닥에서 띄우는 높이(유닛). 벽에 붙는 것은 올려야 가구 뒤로 숨지 않습니다. */
   lift?: number;
   svg: string;
+  /**
+   * 이 층에 실제로 동작하는 화면이 얹히는 자리.
+   * SVG 좌표(1120x400)로 적으면 3D에서 그 위치를 화면 좌표로 투영해 iframe을 앉힙니다.
+   * SVG에 그려 둔 화면 그림은 iframe이 뜨기 전까지 보이는 자리표시입니다.
+   */
+  live?: {
+    x: number; y: number; w: number; h: number;
+    /** public/ 아래 경로 */
+    src: string;
+    /** 그 페이지가 상정하는 화면 크기. 이 크기로 렌더한 뒤 자리에 맞춰 줄입니다. */
+    vw: number; vh: number;
+    /** 무엇이 뜨는지 한 줄 — 보조기기와 로딩 중 표시에 씁니다 */
+    label: string;
+  };
 };
 
 const INK = '#2E2A6B';
@@ -431,12 +445,21 @@ const SHARE_FRONT =
 export const ROOM_LAYERS: Record<string, Layer[]> = {
   web: [
     { depth: 0.97, lift: 0.72, svg: wrap(WEB_BACK, 11) },
-    { depth: 0.62, svg: wrap(WEB_MID, 12) },
+    {
+      depth: 0.62,
+      svg: wrap(WEB_MID, 12),
+      // 손님이 쓰는 앱 화면. 세로 화면이라 모니터 안에서 위아래로 꽉 차게 들어갑니다.
+      live: { x: 432, y: 130, w: 246, h: 140, src: '/zivo/app/index.html', vw: 390, vh: 844, label: '손님이 쓰는 앱 첫 화면' },
+    },
     { depth: 0.45, svg: wrap(WEB_FRONT, 13) },
   ],
   admin: [
     { depth: 0.97, lift: 0.72, svg: wrap(ADMIN_BACK, 21) },
-    { depth: 0.62, svg: wrap(ADMIN_MID, 22) },
+    {
+      depth: 0.62,
+      svg: wrap(ADMIN_MID, 22),
+      live: { x: 420, y: 158, w: 250, h: 118, src: '/zivo/admin/index.html', vw: 1440, vh: 900, label: '운영자가 쓰는 관리 화면' },
+    },
     { depth: 0.45, svg: wrap(ADMIN_FRONT, 23) },
   ],
   backend: [

@@ -5,7 +5,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { CORRIDOR, ROOMS, roomById, roomCenter, type Room } from '@/lib/rooms';
 import { damp } from '@/lib/anim';
-import { ROOM_LAYERS, toDataUri } from '@/lib/props';
+import { ROOM_LAYERS, toDataUri, type Layer } from '@/lib/props';
 import { useCorridorCamera, type CorridorCam } from './useCorridorCamera';
 
 const LENGTH = CORRIDOR.startZ - CORRIDOR.endZ;
@@ -34,6 +34,12 @@ export type SceneApi = {
   exit: () => void;
 };
 
+/** 3D 모니터를 화면 좌표로 투영한 사각형. DOM이 여기에 iframe을 앉힙니다. */
+export type LiveRect = {
+  left: number; top: number; width: number; height: number;
+  src: string; vw: number; vh: number; label: string;
+};
+
 type Props = {
   api: { current: SceneApi | null };
   activeId: string | null;
@@ -41,9 +47,10 @@ type Props = {
   onEnd: (atEnd: boolean) => void;
   onArrive: (id: string) => void;
   onLeave: () => void;
+  onLiveRect: (rect: LiveRect | null) => void;
 };
 
-export default function Scene({ api, activeId, onNear, onEnd, onArrive, onLeave }: Props) {
+export default function Scene({ api, activeId, onNear, onEnd, onArrive, onLeave, onLiveRect }: Props) {
   const cam = useRef<CorridorCam | null>(null);
   const busy = useRef(false);
   const activeRef = useRef<Room | null>(null);
@@ -168,7 +175,7 @@ export default function Scene({ api, activeId, onNear, onEnd, onArrive, onLeave 
       ))}
 
       {ROOMS.map((room) => (
-        <RoomBox key={room.id} room={room} active={activeId === room.id} />
+        <RoomBox key={room.id} room={room} active={activeId === room.id} onLiveRect={onLiveRect} />
       ))}
     </>
   );
@@ -240,7 +247,7 @@ function Door({
 }
 
 /** 방 안쪽. 지금은 빈 상자입니다 — 사물은 다음 단계에서 채웁니다. */
-function RoomBox({ room, active }: { room: Room; active: boolean }) {
+function RoomBox({ room, active, onLiveRect }: { room: Room; active: boolean; onLiveRect: (r: LiveRect | null) => void }) {
   const group = useRef<THREE.Group>(null);
   const { camera } = useThree();
   const [cx, , cz] = roomCenter(room);
@@ -282,7 +289,7 @@ function RoomBox({ room, active }: { room: Room; active: boolean }) {
       </mesh>
 
       {(ROOM_LAYERS[room.id] ?? []).map((layer, i) => (
-        <PropLayer key={i} room={room} depth={layer.depth} lift={layer.lift ?? 0} svg={layer.svg} order={i} />
+        <PropLayer key={i} room={room} layer={layer} order={i} active={active} onLiveRect={onLiveRect} />
       ))}
     </group>
   );
@@ -294,10 +301,20 @@ function RoomBox({ room, active }: { room: Room; active: boolean }) {
  * depth는 카메라가 서는 자리(0)에서 안쪽 벽(1)까지의 비율입니다.
  * 방 중심 기준으로 잡으면 앞 층이 카메라 등 뒤로 넘어갑니다.
  */
-function PropLayer({ room, depth, lift, svg, order }: { room: Room; depth: number; lift: number; svg: string; order: number }) {
+function PropLayer({
+  room, layer, order, active, onLiveRect,
+}: {
+  room: Room; layer: Layer; order: number; active: boolean;
+  onLiveRect: (r: LiveRect | null) => void;
+}) {
+  const { depth, svg, live } = layer;
+  const lift = layer.lift ?? 0;
   const dir = room.side === 'left' ? -1 : 1;
   // 카메라가 보는 깊이는 방의 x축(roomW)입니다. 화면을 채우는 폭은 z축(roomD).
-  const { roomW: DEPTH, roomD: D, roomH: H, roomOffset } = CORRIDOR;
+  const { roomW: DEPTH, roomOffset } = CORRIDOR;
+  const mesh = useRef<THREE.Mesh>(null);
+  const { camera, size } = useThree();
+  const last = useRef<string>('');
 
   const texture = useMemo(() => {
     const t = new THREE.TextureLoader().load(toDataUri(svg));
@@ -315,12 +332,43 @@ function PropLayer({ room, depth, lift, svg, order }: { room: Room; depth: numbe
 
   // 층은 전부 같은 실척입니다. 거리에 따라 키우면 가까운 층의 물건이
   // 작아지고 공중에 뜬 것처럼 보여 층 사이의 크기 관계가 깨집니다.
-  // 폭은 방 깊이에 맞춰 잡았습니다 — 이보다 넓으면 앞 층이 화면 밖으로 잘립니다.
   const w = LAYER_W;
   const h = LAYER_W * (400 / 1120);
 
+  /**
+   * 모니터 자리를 화면 좌표로 옮깁니다.
+   * 방에 들어가면 카메라가 문을 정면으로 보고 멈추므로 평면이 정면이고,
+   * 투영된 사각형은 축에 정렬됩니다 — 두 꼭짓점만 재면 충분합니다.
+   */
+  useFrame(() => {
+    if (!live || !mesh.current) return;
+    if (!active) {
+      if (last.current) { last.current = ''; onLiveRect(null); }
+      return;
+    }
+    const toScreen = (px: number, py: number) => {
+      const v = new THREE.Vector3((px / 1120 - 0.5) * w, (0.5 - py / 400) * h, 0);
+      mesh.current!.localToWorld(v);
+      v.project(camera);
+      return { x: (v.x * 0.5 + 0.5) * size.width, y: (-v.y * 0.5 + 0.5) * size.height };
+    };
+    const a = toScreen(live.x, live.y);
+    const b = toScreen(live.x + live.w, live.y + live.h);
+    const rect: LiveRect = {
+      left: Math.min(a.x, b.x),
+      top: Math.min(a.y, b.y),
+      width: Math.abs(b.x - a.x),
+      height: Math.abs(b.y - a.y),
+      src: live.src, vw: live.vw, vh: live.vh, label: live.label,
+    };
+    // 소수점까지 매 프레임 흘리면 리렌더가 계속 납니다. 반 픽셀 넘게 움직였을 때만.
+    const key = `${rect.left | 0}|${rect.top | 0}|${rect.width | 0}|${rect.height | 0}`;
+    if (key !== last.current) { last.current = key; onLiveRect(rect); }
+  });
+
   return (
     <mesh
+      ref={mesh}
       position={[x, h / 2 + lift, 0]}
       rotation={[0, dir === -1 ? Math.PI / 2 : -Math.PI / 2, 0]}
       renderOrder={order}

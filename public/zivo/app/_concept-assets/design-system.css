@@ -1,0 +1,398 @@
+/* ================================================================
+   ZIVO Renewal Design System v2 (new)
+   외국인 대상 종합 한국 여행 플랫폼 — 라이트 / 미니멀 톤
+   각 토큰의 사용처(WHERE) 표기.
+   ================================================================ */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
+:root {
+
+  /* ════════════════════════════════════════════════════════════
+     COLOR — Brand (Primary blue scale)
+     ════════════════════════════════════════════════════════════ */
+  --primary-50:  #E9EDFF;  /* WHERE: 8서비스 카테고리 pale BG (Procedure 아이콘 박스 등), button ghost hover BG */
+  --primary-100: #C2D8FC;  /* WHERE: primary-pale의 active/pressed 상태 */
+  --primary-300: #5E84FF;  /* WHERE: link hover light, gradient mid stop */
+  --primary-500: #1A5DF7;  /* WHERE: PRIMARY — CTA 버튼, 액티브 탭, 링크, 검색 filter 칩, 카테고리 cat-tag(Procedure), Hero 블루 BG */
+  --primary-700: #0E47C5;  /* WHERE: primary 버튼 hover/active, 짙은 액센트 */
+  --primary-900: #0833A1;  /* WHERE: gradient 최저 stop */
+
+  --primary-color:        var(--primary-500);   /* WHERE: 전역 alias — CTA / 액티브 / 링크 / 헤더 블루 BG */
+  --primary-dark:         var(--primary-700);   /* WHERE: hover / active 상태 */
+  --primary-light:        var(--primary-300);   /* WHERE: pale 액센트 */
+  --primary-pale:         var(--primary-50);    /* WHERE: 카테고리 아이콘 박스, hover 배경 */
+  --primary-pale-pressed: var(--primary-100);   /* WHERE: 클릭 직후 상태 */
+
+  /* ════════════════════════════════════════════════════════════
+     COLOR — Star rating only (다른 용도 절대 금지)
+     별점 fill = 브랜드 골드(#FF9F2B), 빈 별 = 그레이(#D4D7DC). 본진 브랜드 룰.
+     ════════════════════════════════════════════════════════════ */
+  --secondary-color: #FF9F2B;  /* WHERE: ★ 별점 fill (브랜드 골드) */
+  --star-empty:      #D4D7DC;  /* WHERE: ★ 빈 별 (empty rating) */
+
+  /* ════════════════════════════════════════════════════════════
+     COLOR — Gray (Slate · blue-gray, 11 stops)
+     Tailwind Slate 기반 (Linear / Stripe / Vercel 톤)
+     ════════════════════════════════════════════════════════════ */
+  --white:    #FFFFFF;   /* WHERE: 카드 BG, 모달, BottomNav BG, 검색바 텍스트 */
+  /* --gray-50 은 아래 '앱 본진 토큰 정렬' :root 에서 #F8F9FB 로 단일 정의 (정본 일치) */
+  --gray-100: #F1F5F9;   /* WHERE: 섹션 배경, 카드 hover, 미디어 placeholder, chevron 칩 BG, More 카드 BG */
+  --gray-200: #E2E8F0;   /* WHERE: 보더, divider, 카드 외곽 border, chip border */
+  --gray-300: #CBD5E1;   /* WHERE: 강한 divider (섹션 간 강조), 빈 별점 */
+  --gray-400: #94A3B8;   /* WHERE: placeholder 텍스트, disabled, 비활성 아이콘 */
+  --gray-500: #64748B;   /* WHERE: 보조 아이콘 (chevron, more icon), Brand 텍스트 강조 시 */
+  --gray-600: #475569;   /* WHERE: ⭐ 본문 텍스트 (description, review, message, brand sub) — text-body alias */
+  --gray-700: #334155;   /* WHERE: 강조 본문 (AAA 필요), 헤더 back/share 아이콘 */
+  --gray-800: #1E293B;   /* WHERE: 서브 제목, 토스트 BG */
+  --gray-900: #0F172A;   /* WHERE: ⭐ 강조 텍스트 (페이지/카드 제목, 가격, 강조) — text-primary alias */
+  --black:    #000000;   /* WHERE: 최대 대비 (특수 케이스 — 그라디언트 stop, 오버레이 베이스) */
+
+  /* ════════════════════════════════════════════════════════════
+     COLOR — CONCEPT 실물 진실 (concept 화면이 실제로 쓰는 중립 팔레트)
+     ⚠ 위 primary(블루) · gray(blue-slate) 는 구 시스템.
+       concept 화면(home/search/reviews/top-*/procedures/stays)은 아래 중립 그레이 +
+       검정 primary 로 동작한다. 신규 작업은 이 토큰을 기준으로.
+     ════════════════════════════════════════════════════════════ */
+  --ink:       #14171A;   /* WHERE: concept PRIMARY(검정) — 텍스트 강조·CTA·별·active. 페이지가 --primary-color 를 이 값으로 override */
+  --ink-sub:   #5B6168;   /* WHERE: 본문/보조 텍스트 (중립) */
+  --ink-muted: #8A9099;   /* WHERE: 캡션·placeholder (중립) */
+  --line-1:    #E7E9EC;   /* WHERE: 1px 중립 보더·divider (플랫, 컬러 사이드라인 금지) */
+  --surface-1: #F6F7F9;   /* WHERE: 섹션 회색 밴드 BG (Recently Viewed 등) */
+  --surface-2: #F8F9FB;   /* WHERE: 카테고리 아이콘 타일 BG (PNG 배경색과 일치 → 사각 안 보이게) */
+  --pink:      #FF4B6E;   /* WHERE: 시술(뷰티) 액센트 — 로즈핑크 */
+  --pink-tint: #FFE9EE;   /* WHERE: 시술 pale BG (칩·아이콘 박스) */
+
+  /* ════════════════════════════════════════════════════════════
+     COLOR — Semantic
+     ════════════════════════════════════════════════════════════ */
+  --success:       #0EA472;  /* WHERE: 예약 성공, 결제 완료, 활성 상태 */
+  --success-light: #D1FAE5;  /* WHERE: 성공 뱃지 BG, 활성 칩 */
+  --success-dark:  #065F46;  /* WHERE: 성공 강조 텍스트 */
+  --error:         #EF4444;  /* WHERE: 에러 메시지, 입력 검증 실패, 삭제 버튼 */
+  --error-light:   #FEE2E2;  /* WHERE: 에러 뱃지 BG */
+  --error-dark:    #DC2626;  /* WHERE: 에러 강조 텍스트 */
+  --warning:       #F59E0B;  /* WHERE: 경고, 주의 알림 */
+  --warning-light: #FEF3C7;  /* WHERE: 경고 뱃지 BG */
+  --warning-dark:  #92400E;  /* WHERE: 경고 강조 텍스트 */
+  --sale:          #FF3B30;  /* WHERE: 할인율 ("15% off"), 세일 가격 */
+  --info:          #3B82F6;  /* WHERE: 정보 메시지 (시술 가이드 등) */
+  --info-light:    #DBEAFE;  /* WHERE: 정보 뱃지 BG */
+  --info-dark:     #1E40AF;  /* WHERE: 정보 강조 텍스트 */
+  /* purple, sale-light 폐기 — 페이지 전용은 인라인으로 */
+
+  /* ════════════════════════════════════════════════════════════
+     COLOR — Service category accents (cat-tag · 카테고리 컬러)
+     WHERE: card cat-tag, category icon, 카테고리별 액센트 컬러
+     ════════════════════════════════════════════════════════════ */
+  --cat-procedure: #1A5DF7;   /* 시술 — primary blue */
+  --cat-hospital:  #047857;   /* 병원 — emerald */
+  --cat-hotel:     #0369A1;   /* 호텔 — cyan-blue */
+  --cat-food:      #EA580C;   /* 음식 — orange */
+  --cat-beauty:    #DB2777;   /* 뷰티 — pink */
+  --cat-taxi:      #B45309;   /* 택시 — amber */
+  --cat-esim:      #6D28D9;   /* 이심 — violet */
+  --cat-tour:      #0E7490;   /* 관광 — teal */
+  --cat-stay:      var(--cat-hotel);  /* 잘거리 alias */
+
+  /* ════════════════════════════════════════════════════════════
+     COLOR — Overlay / Glass
+     ════════════════════════════════════════════════════════════ */
+  --overlay-dark:   rgba(0, 0, 0, 0.50);   /* WHERE: 카운터/거리 칩 BG */
+  --overlay-darker: rgba(0, 0, 0, 0.60);   /* WHERE: 사진 위 텍스트 박스, 모달 backdrop */
+  --glass-subtle:   rgba(255, 255, 255, 0.10);  /* WHERE: 글래스 검색바 BG (블루 위) */
+  --glass-medium:   rgba(255, 255, 255, 0.20);  /* WHERE: 글래스 검색바 border */
+
+  /* ════════════════════════════════════════════════════════════
+     COLOR — Semantic aliases (의미 기반 — 우선 사용 권장)
+     ════════════════════════════════════════════════════════════ */
+  --text-primary:     var(--gray-900);   /* WHERE: 페이지/카드 제목, 가격, 강조 텍스트 */
+  --text-secondary:   var(--gray-800);   /* WHERE: 섹션 sub-heading, 테이블 헤더 */
+  --text-emphasis:    var(--gray-700);   /* WHERE: 강조 본문 (AAA 대비 필요 시) */
+  --text-body:        var(--gray-600);   /* WHERE: ⭐ 본문 (description, review, message) */
+  --text-muted:       var(--gray-600);   /* WHERE: 보조 설명, 캡션 (body와 동일값, 의미 구분용) */
+  --text-placeholder: var(--gray-400);   /* WHERE: input placeholder, 비활성 텍스트 */
+  --text-disabled:    var(--gray-300);   /* WHERE: 완전 비활성 텍스트 */
+
+  --bg-primary:   var(--white);      /* WHERE: 카드 BG, 모달, 콘텐츠 영역 */
+  --bg-secondary: var(--gray-50);    /* WHERE: 앱 배경, 섹션 alt BG */
+  --bg-tertiary:  var(--gray-100);   /* WHERE: 호버 BG, 구분 BG, 칩 BG */
+  --bg-hover:     var(--gray-100);   /* WHERE: 카드/버튼 hover 상태 */
+  --bg-active:    var(--gray-200);   /* WHERE: 카드/버튼 active 상태 */
+
+  --border-primary:   var(--gray-200);   /* WHERE: 카드 외곽, 입력 외곽, divider */
+  --border-secondary: var(--gray-300);   /* WHERE: 강조 외곽, 섹션 간 강조 divider */
+  --border-hover:     var(--gray-400);   /* WHERE: hover 시 외곽 강조 */
+
+  --icon-primary:   var(--gray-900);   /* WHERE: 강조 아이콘 (헤더 액션) */
+  --icon-secondary: var(--gray-600);   /* WHERE: 일반 아이콘 (chevron, 본문 내) */
+  --icon-muted:     var(--gray-400);   /* WHERE: 보조 아이콘 */
+  --icon-disabled:  var(--gray-300);   /* WHERE: 비활성 아이콘 */
+
+  /* chat tokens 폐기 — 채팅 페이지 자체 CSS에서 info-light/info-dark 직접 호출 */
+
+
+  /* ════════════════════════════════════════════════════════════
+     TYPOGRAPHY — Font family
+     ════════════════════════════════════════════════════════════ */
+  --font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', system-ui, sans-serif;
+  /* WHERE: 전역 폰트. 한국어/영어/CJK 모두 한 패밀리. */
+
+  /* ════════════════════════════════════════════════════════════
+     TYPOGRAPHY — Sizes (10 stops + 의미 네이밍 + T-shirt alias)
+     ════════════════════════════════════════════════════════════ */
+  --font-size-caption-md: 12px;   /* WHERE: 카드 cat-tag (Procedure / Hotel), tiny badge */
+  --font-size-caption-lg: 12px;   /* WHERE: meta·timestamp·brand 보조, recent-mini brand, near-card cat */
+  --font-size-body-sm:    13px;   /* WHERE: ⭐ price·label·nickname·rating·메타, recent-mini name·price */
+  --font-size-body-md:    14px;   /* WHERE: 카드 title, 보조 본문, 카드 meta */
+  --font-size-body-lg:    15px;   /* ⚠ 레거시 — ZIVO 가이드 본문은 16(no 15). 신규는 title-md(16) 사용 */
+  --font-size-title-md:   16px;   /* WHERE: 섹션 sub, listing title (큰 카드), section header */
+  --font-size-title-lg:   18px;   /* WHERE: 섹션 메인 제목 (Top Hotels 등), 모달 heading */
+  --font-size-display-sm: 20px;   /* WHERE: 페이지 타이틀, hero sub */
+  --font-size-display-md: 24px;   /* WHERE: hero greeting, landing section hero */
+  --font-size-display-lg: 32px;   /* WHERE: 온보딩·empty state hero, 큰 가격 강조 */
+  /* T-shirt aliases (backward compat) */
+  --font-size-xs:      var(--font-size-caption-md);
+  --font-size-sm:      var(--font-size-caption-lg);
+  --font-size-sm-base: var(--font-size-body-sm);
+  --font-size-base:    var(--font-size-body-md);
+  --font-size-base-lg: var(--font-size-body-lg);
+  --font-size-lg:      var(--font-size-title-md);
+  --font-size-xl:      var(--font-size-title-lg);
+  --font-size-2xl:     var(--font-size-display-sm);
+  --font-size-3xl:     var(--font-size-display-md);
+
+  /* ════════════════════════════════════════════════════════════
+     TYPOGRAPHY — Weight (4 단계)
+     ════════════════════════════════════════════════════════════ */
+  --font-weight-regular:  400;   /* WHERE: 본문, brand 보조, rating count */
+  --font-weight-medium:   500;   /* WHERE: cat-tag, rating 숫자, 보조 강조, 칩 */
+  --font-weight-semibold: 600;   /* WHERE: 카드 title, 섹션 제목, 강조 라벨, recent-mini name */
+  --font-weight-bold:     700;   /* WHERE: 가격 최종가, 큰 타이틀(hero), badge bold */
+
+  /* ════════════════════════════════════════════════════════════
+     TYPOGRAPHY — Line height
+     ════════════════════════════════════════════════════════════ */
+  --line-height-tight:   1.2;   /* WHERE: 큰 제목 (display, hero) */
+  --line-height-snug:    1.3;   /* WHERE: 카드 title 2줄 clamp */
+  --line-height-normal:  1.4;   /* WHERE: 본문 기본 */
+  --line-height-relaxed: 1.6;   /* WHERE: CJK 장문, 카드 본문 한국어 */
+
+  /* ════════════════════════════════════════════════════════════
+     TYPOGRAPHY — Letter spacing
+     ════════════════════════════════════════════════════════════
+     17개 언어 다국어 안전을 위해 음수 spacing 토큰 폐기.
+     Pretendard 폰트 자체 자간이 한국어/영어 모두 정밀.
+     ALL CAPS 라벨(cat-tag 등)에 한해 양수 0.06~0.08em 직접 사용.
+     ════════════════════════════════════════════════════════════ */
+
+
+  /* ════════════════════════════════════════════════════════════
+     SPACING — 4px base scale
+     ════════════════════════════════════════════════════════════ */
+  --space-2xs:   2px;    /* WHERE: 미세 갭 (rating star ↔ 숫자) */
+  --space-xs:    4px;    /* WHERE: chip 내부 간격, 작은 정보 줄 사이 */
+  --space-sm:    8px;    /* WHERE: 카드 내 항목 사이, 작은 박스 패딩 */
+  --space-sm-md: 12px;   /* WHERE: 카드 패딩, rail gap, section 내 항목 사이 */
+  --space-md:    16px;   /* WHERE: ⭐ 표준 패딩 — 화면 좌우 마진, 섹션 헤더 패딩 */
+  --space-lg:    24px;   /* WHERE: 섹션 간 간격, 카드 내 큰 영역 */
+  --space-xl:    32px;   /* WHERE: 섹션 블록 사이 (zv-block margin-bottom) */
+  --space-2xl:   48px;   /* WHERE: 큰 섹션 구분 (hero 끝 ↔ 콘텐츠 시작) */
+  --space-3xl:   64px;   /* WHERE: 페이지 끝 padding, empty state */
+  --gutter:      18px;   /* WHERE: concept 화면 좌우 거터 (concept 정본) */
+  --gap-tight:   6px;    /* WHERE: 타이트 인라인 갭 (4와 8 사이) */
+  --letter-spacing-display: -0.02em;  /* 큰 타이틀 자간 */
+  --letter-spacing-heading: -0.01em;  /* 섹션 헤딩 자간 */
+
+  /* ════════════════════════════════════════════════════════════
+     CARD WIDTH — 3 standards (가로 스크롤 카드 폭 통일)
+     ════════════════════════════════════════════════════════════ */
+  --card-sm:  160px;   /* WHERE: Procedures Trending, Top Picks 작은 카드 */
+  --card-md:  220px;   /* WHERE: ZIVO Magazine, Cover card, Top Picks medium */
+  --card-lg:  280px;   /* WHERE: Hotel box (호텔 그룹 박스) */
+
+  /* ════════════════════════════════════════════════════════════
+     RADIUS — 8 stops
+     ════════════════════════════════════════════════════════════ */
+  --radius-xs:   4px;    /* WHERE: 작은 badge */
+  --radius-sm:   6px;    /* WHERE: 입력 필드, 작은 칩 */
+  --radius-md:   6px;    /* WHERE: ⭐ 작은 카드, chip pill, 썸네일 small */
+  --radius-lg:   8px;    /* WHERE: ⭐ 표준 카드, 큰 미디어, 큰 칩 */
+  --radius-xl:   12px;   /* WHERE: 큰 카드, banner, hero 영역 */
+  --radius-2xl:  16px;   /* WHERE: hero overlay 상단 라운드 */
+  --radius-3xl:  24px;   /* WHERE: 풀스크린 sheet 상단 */
+  --radius-full: 9999px; /* WHERE: chip, pill, badge, avatar, BottomNav 아이콘 영역 */
+
+  /* ════════════════════════════════════════════════════════════
+     SHADOW — Tailwind/Linear precision (negative offset, slate-900 base)
+     6 stops elevation + semantic aliases
+     blur는 작고 정밀, 옆이 아닌 아래로 자연스럽게 떨어지는 톤
+     ════════════════════════════════════════════════════════════ */
+  --shadow-xs:
+    0 1px 1px rgba(15, 23, 42, 0.04);
+    /* WHERE: 카드 미세 분리감, 입력 outline */
+
+  --shadow-sm:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 1px 3px rgba(15, 23, 42, 0.06);
+    /* WHERE: review card·near-card·zv-card 옅은 부유감 */
+
+  --shadow-md:
+    0 2px 4px -1px rgba(15, 23, 42, 0.06),
+    0 4px 8px -2px rgba(15, 23, 42, 0.08);
+    /* WHERE: promo banner, event banner, hero search bar, 강조 카드 */
+
+  --shadow-lg:
+    0 4px 6px -2px rgba(15, 23, 42, 0.05),
+    0 10px 20px -4px rgba(15, 23, 42, 0.10);
+    /* WHERE: dropdown, popover, floating action */
+
+  --shadow-xl:
+    0 8px 10px -6px rgba(15, 23, 42, 0.06),
+    0 20px 28px -8px rgba(15, 23, 42, 0.12);
+    /* WHERE: 모달, full-screen sheet */
+
+  --shadow-2xl:
+    0 12px 16px -8px rgba(15, 23, 42, 0.08),
+    0 32px 48px -12px rgba(15, 23, 42, 0.18);
+    /* WHERE: hero modal, important alert */
+
+  /* Semantic aliases (의미 기반 우선 사용 권장) */
+  --shadow-flat:    var(--shadow-xs);   /* 가장 옅은 카드 */
+  --shadow-raised:  var(--shadow-sm);   /* 카드 일반 부유 */
+  --shadow-float:   var(--shadow-md);   /* 강조 카드, banner */
+  --shadow-popover: var(--shadow-lg);   /* dropdown, popover */
+  --shadow-sheet:   var(--shadow-xl);   /* sheet, modal */
+
+  /* Special-purpose */
+  --shadow-header:
+    0 1px 0 rgba(15, 23, 42, 0.06);
+    /* WHERE: sticky 헤더 hairline (스크롤 시 .scrolled 클래스) */
+  --shadow-dock:
+    0 -1px 0 rgba(15, 23, 42, 0.06),
+    0 -4px 12px rgba(15, 23, 42, 0.04);
+    /* WHERE: BottomNav 상단 그림자 */
+  --shadow-primary:
+    0 4px 12px rgba(26, 93, 247, 0.30);
+    /* WHERE: primary CTA 버튼 active/hover glow */
+  --shadow-focus:
+    0 0 0 3px rgba(26, 93, 247, 0.20);
+    /* WHERE: 포커스 ring (a11y) */
+  --shadow-focus-error:
+    0 0 0 3px rgba(239, 68, 68, 0.18);
+    /* WHERE: 에러 입력 포커스 ring (is-error 상태) */
+
+  /* ════════════════════════════════════════════════════════════
+     ICON SIZE (3 stops — 그 외는 인라인 px)
+     ════════════════════════════════════════════════════════════ */
+  --icon-2xs: 14px;   /* WHERE: 카드 별점 ★, chip 내 아이콘 */
+  --icon-sm:  20px;   /* WHERE: 검색바, 입력 prefix */
+  --icon-md:  24px;   /* WHERE: ⭐ 헤더 아이콘, BottomNav 아이콘 */
+
+  /* ════════════════════════════════════════════════════════════
+     TRANSITION (3 stops — base + fast micro-interaction)
+     ════════════════════════════════════════════════════════════ */
+  --transition-base:  200ms ease;   /* WHERE: ⭐ 기본 전환 (opacity, color, transform) */
+  --transition-fast:  160ms ease;   /* WHERE: input focus, vehicle row hover, swap */
+  --transition-micro: 120ms ease;   /* WHERE: row hover, button press, chip */
+
+  /* ════════════════════════════════════════════════════════════
+     RADIUS — extra (bubble)
+     ════════════════════════════════════════════════════════════ */
+  --radius-bubble: 18px;            /* WHERE: chat bubble (between xl=12 and 2xl=16) */
+
+  /* ════════════════════════════════════════════════════════════
+     ACCENT — Taxi (Korean yellow cab, Kakao T tone)
+     ════════════════════════════════════════════════════════════ */
+  --accent-taxi:        #FACC15;    /* WHERE: cab body, ETA bubble, "now available" badge */
+  --accent-taxi-dark:   #CA8A04;    /* WHERE: pressed/hover */
+  --accent-taxi-pale:   #FEF9C3;    /* WHERE: highlight tint background */
+  --accent-taxi-on:     #1F2937;    /* WHERE: text on yellow (uses near-black) */
+
+  /* ════════════════════════════════════════════════════════════
+     FONT — monospace (for code / URL / plate display)
+     ════════════════════════════════════════════════════════════ */
+  --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+
+  /* ════════════════════════════════════════════════════════════
+     Z-INDEX (5 stops)
+     ════════════════════════════════════════════════════════════ */
+  --z-sticky:    10;    /* WHERE: 탭/카테고리 sticky */
+  --z-header:    20;    /* WHERE: 스티키 헤더 */
+  --z-bottomnav: 20;    /* WHERE: 하단 네비 */
+  --z-modal:     100;   /* WHERE: 모달 / sheet */
+  --z-toast:     200;   /* WHERE: 토스트 알림 (최상단) */
+}
+
+/* ================================================================
+   Reset (minimal)
+   ================================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-title-md);   /* 16px main body (ZIVO guide: no 15) */
+  line-height: var(--line-height-normal);
+  color: var(--text-body);
+  /* 화면 배경은 components.css body 의 var(--gray-50) 한 곳에서 단일 관리 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+img { max-width: 100%; display: block; }
+button { font: inherit; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+
+/* ================================================================
+   A11y — Accessibility
+   ================================================================ */
+
+/* 1) Focus-visible — 키보드 포커스 시 primary ring (3px 20% opacity) */
+:focus { outline: none; }
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+  border-radius: var(--radius-md);
+  transition: box-shadow 120ms ease;
+}
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* 2) Reduced motion — 시각 민감 사용자 대응 (애니메이션·transition 최소화) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 3) CJK 자동 line-height — 한국어/일본어/중국어 본문 자동 1.6 (장문 가독성) */
+:lang(ko), :lang(ja), :lang(zh) {
+  line-height: var(--line-height-relaxed);
+}
+
+/* === 앱 본진(app/design-system.css) 토큰 정렬 — radius +1단계, gray 스케일 통일 === */
+:root {
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --gray-50: #F8F9FB;   /* WHERE: 앱 배경(회색 배경화면), 카드 카테고리 아이콘 BG, Reviews gradient bottom — 단일 정의 */
+  --gray-100: #F1F3F6;
+  --gray-200: #E3E6EC;
+  --gray-300: #D8DCE3;
+  --gray-400: #B4BAC5;
+  --gray-500: #949BA8;
+  --gray-600: #6A7280;
+  --gray-700: #575D6B;
+  --gray-800: #3D424F;
+  --gray-900: #1E2128;
+}
